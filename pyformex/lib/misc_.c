@@ -27,6 +27,11 @@
 #include <numpy/arrayobject.h>
 #include <math.h>
 
+// cast pointers to avoid warnings
+#define PYARRAY_DATA(p) PyArray_DATA((PyArrayObject *)p)
+#define PYARRAY_DIMS(p) PyArray_DIMS((PyArrayObject *)p)
+#define PYARRAY_FROM_OTF(p,q,r) (PyArrayObject *) PyArray_FROM_OTF(p,q,r)
+
 
 /****************** LIBRARY VERSION AND DOCSTRING *******************/
 
@@ -76,9 +81,9 @@ static PyObject * tofile_float32(PyObject *dummy, PyObject *args)
   if (!fp) goto fail;
 
   float *val;
-  val = (float *)PyArray_DATA(arr1);
+  val = (float *)PYARRAY_DATA(arr1);
   npy_intp * dims;
-  dims = PyArray_DIMS(arg1);
+  dims = PYARRAY_DIMS(arg1);
   int nr,nc;
   nr = dims[0];
   nc = dims[1];
@@ -118,9 +123,9 @@ static PyObject * tofile_int32(PyObject *dummy, PyObject *args)
   if (!fp) goto fail;
 
   int *val;
-  val = (int *)PyArray_DATA(arr1);
+  val = (int *)PYARRAY_DATA(arr1);
   npy_intp * dims;
-  dims = PyArray_DIMS(arg1);
+  dims = PYARRAY_DIMS(arg1);
   int nr,nc;
   nr = dims[0];
   nc = dims[1];
@@ -168,16 +173,16 @@ static PyObject * tofile_ifloat32(PyObject *dummy, PyObject *args)
   if (!fp) goto fail;
 
   float *val;
-  val = (float *)PyArray_DATA(arr2);
+  val = (float *)PYARRAY_DATA(arr2);
   npy_intp * dims;
-  dims = PyArray_DIMS(arg2);
+  dims = PYARRAY_DIMS(arg2);
   int nr,nc;
   nr = dims[0];
   nc = dims[1];
 
   int *ind;
-  ind = (int *)PyArray_DATA(arr1);
-  dims = PyArray_DIMS(arg1);
+  ind = (int *)PYARRAY_DATA(arr1);
+  dims = PYARRAY_DIMS(arg1);
   if (dims[0] != nr) goto fail;
 
   int i,j;
@@ -226,16 +231,16 @@ static PyObject * tofile_iint32(PyObject *dummy, PyObject *args)
   if (!fp) goto fail;
 
   int *val;
-  val = (int *)PyArray_DATA(arr2);
+  val = (int *)PYARRAY_DATA(arr2);
   npy_intp * dims;
-  dims = PyArray_DIMS(arg2);
+  dims = PYARRAY_DIMS(arg2);
   int nr,nc;
   nr = dims[0];
   nc = dims[1];
 
   int *ind;
-  ind = (int *)PyArray_DATA(arr1);
-  dims = PyArray_DIMS(arg1);
+  ind = (int *)PYARRAY_DATA(arr1);
+  dims = PYARRAY_DIMS(arg1);
   if (dims[0] != nr) goto fail;
 
   int i,j;
@@ -289,13 +294,13 @@ static PyObject * coords_fuse(PyObject *dummy, PyObject *args)
   if (arr4 == NULL) goto fail;
   /* We suppose the dimensions are correct*/
   npy_intp * dims;
-  dims = PyArray_DIMS(arg1);
+  dims = PYARRAY_DIMS(arg1);
   int nnod;
   nnod = dims[0];
-  x = (float *)PyArray_DATA(arr1);
-  val = (int *)PyArray_DATA(arr2);
-  flag = (int *)PyArray_DATA(arr3);
-  sel = (int *)PyArray_DATA(arr4);
+  x = (float *)PYARRAY_DATA(arr1);
+  val = (int *)PYARRAY_DATA(arr2);
+  flag = (int *)PYARRAY_DATA(arr3);
+  sel = (int *)PYARRAY_DATA(arr4);
   int i,j,ki,kj,nexti;
 
   nexti = 1;
@@ -404,13 +409,13 @@ static PyObject * nodalSum(PyObject *dummy, PyObject *args)
 
   npy_intp * dim;
   int nelems,nplex,nval;
-  dim = PyArray_DIMS(arg1);
+  dim = PYARRAY_DIMS(arg1);
   nelems = dim[0];
   nplex = dim[1];
   nval = dim[2];
 
-  val = (float *)PyArray_DATA(arr1);
-  elems = (int *)PyArray_DATA(arr2);
+  val = (float *)PYARRAY_DATA(arr1);
+  elems = (int *)PYARRAY_DATA(arr2);
 
   /* create return  array */
   if (all)
@@ -420,7 +425,7 @@ static PyObject * nodalSum(PyObject *dummy, PyObject *args)
     dim[1] = nval;
     ret = PyArray_SimpleNew(2,dim, NPY_FLOAT);
   }
-  out = (float *)PyArray_DATA(ret);
+  out = (float *)PYARRAY_DATA(ret);
 
   /* compute */
   nodal_sum(val,elems,out,nelems,nplex,nval,max,avg,all);
@@ -559,12 +564,12 @@ static PyObject * averageDirection(PyObject *dummy, PyObject *args)
   if (arr1 == NULL) return NULL;
 
   npy_intp * dims;
-  dims = PyArray_DIMS(arg1);
+  dims = PYARRAY_DIMS(arg1);
   int nvec,ndim;
   nvec = dims[0];
   ndim = dims[1];
 
-  vec = (float *)PyArray_DATA(arr1);
+  vec = (float *)PYARRAY_DATA(arr1);
   average_direction(vec,nvec,ndim,tol);
 
   /* Clean up and return */
@@ -588,13 +593,13 @@ static PyObject * averageDirectionIndexed(PyObject *dummy, PyObject *args)
 
   npy_intp * dims;
   int nvec,ndim;
-  dims = PyArray_DIMS(arg1);
+  dims = PYARRAY_DIMS(arg1);
   ndim = dims[1];
-  dims = PyArray_DIMS(arg2);
+  dims = PYARRAY_DIMS(arg2);
   nvec = dims[0];
 
-  vec = (float *)PyArray_DATA(arr1);
-  ind = (int *)PyArray_DATA(arr2);
+  vec = (float *)PYARRAY_DATA(arr1);
+  ind = (int *)PYARRAY_DATA(arr2);
   average_direction_indexed(vec,ndim,ind,nvec,tol);
 
   /* Clean up and return */
@@ -750,10 +755,10 @@ static PyObject * isoline(PyObject *dummy, PyObject *args)
 
   npy_intp * dims;
   int nx,ny;
-  dims = PyArray_DIMS(arg1);
+  dims = PYARRAY_DIMS(arg1);
   ny = dims[0];
   nx = dims[1];
-  data = (float *)PyArray_DATA(arr1);
+  data = (float *)PYARRAY_DATA(arr1);
 
   /* allocate memory for segments */
   int niseg = nx*ny; /* initial guess for number of segments */
@@ -810,7 +815,7 @@ static PyObject * isoline(PyObject *dummy, PyObject *args)
   dim[1] = 2;
   dim[2] = 2;
   PyObject *ret = PyArray_SimpleNew(3,dim, NPY_FLOAT);
-  float *out = (float *)PyArray_DATA(ret);
+  float *out = (float *)PYARRAY_DATA(ret);
   memcpy(out,segments,iseg*2*2*sizeof(float));
 
   /* Clean up and return */
@@ -1375,7 +1380,7 @@ static char isosurface__doc__[] = "Create an isosurface through data at given le
 static PyObject * isosurface(PyObject *dummy, PyObject *args)
 {
   PyObject *arg1=NULL;
-  PyArrayObject *arr1=NULL;
+  PyObject *arr1=NULL;
   float *data;
   float level;
   int tet;
@@ -1385,11 +1390,11 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
 
   npy_intp * dims;
   int nx,ny,nz;
-  dims = PyArray_DIMS(arg1);
+  dims = PYARRAY_DIMS(arg1);
   nz = dims[0];
   ny = dims[1];
   nx = dims[2];
-  data = (float *)PyArray_DATA(arr1);
+  data = (float *)PYARRAY_DATA(arr1);
 
   /* allocate memory for triangles */
   int nitri = 2*nx*ny*nz; /* initial guess for number of triangles */
@@ -1451,7 +1456,7 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
   dim[1] = 3;
   dim[2] = 3;
   PyObject *ret = PyArray_SimpleNew(3,dim, NPY_FLOAT);
-  float *out = (float *)PyArray_DATA(ret);
+  float *out = (float *)PYARRAY_DATA(ret);
   memcpy(out,triangles,itri*3*3*sizeof(float));
 
   /* Clean up and return */

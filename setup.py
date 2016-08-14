@@ -252,7 +252,7 @@ except ValueError:
 
 
 
-if pypy or jython or py3k:
+if pypy or jython:
     accel = False
     status_msgs(
         "WARNING: C extensions are not supported on this Python platform,"

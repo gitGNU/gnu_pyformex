@@ -145,6 +145,12 @@ lib:
 	find build -name '*.so' -exec mv {} pyformex/lib \;
 	rm -rf build
 
+# Create the C library for Python3
+lib3:
+	python3 setup.py build_ext
+	find build -name '*.so' -exec mv {} pyformex/lib \;
+	rm -rf build
+
 
 # Create the minutes of the user meeting
 minutes:

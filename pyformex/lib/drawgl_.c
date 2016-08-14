@@ -35,6 +35,10 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+// cast pointers to avoid warnings
+#define PYARRAY_DATA(p) PyArray_DATA((PyArrayObject *)p)
+#define PYARRAY_DIMS(p) PyArray_DIMS((PyArrayObject *)p)
+#define PYARRAY_NDIM(p) PyArray_NDIM((PyArrayObject *)p)
 
 /****************** LIBRARY VERSION AND DOCSTRING *******************/
 
@@ -129,26 +133,26 @@ draw_polygons(PyObject *dummy, PyObject *args)
 
   arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
-  x = (float *)PyArray_DATA(arr1);
-  nel = PyArray_DIMS(arr1)[0];
-  nplex = PyArray_DIMS(arr1)[1];
+  x = (float *)PYARRAY_DATA(arr1);
+  nel = PYARRAY_DIMS(arr1)[0];
+  nplex = PYARRAY_DIMS(arr1)[1];
 
   arr2 = PyArray_FROM_OTF(arg2, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr2 != NULL) {
-    ndn = PyArray_NDIM(arr2);
-    n = (float *)PyArray_DATA(arr2);
+    ndn = PYARRAY_NDIM(arr2);
+    n = (float *)PYARRAY_DATA(arr2);
   }
 
   arr3 = PyArray_FROM_OTF(arg3, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr3 != NULL) {
-    ndc = PyArray_NDIM(arr3);
-    c = (float *)PyArray_DATA(arr3);
+    ndc = PYARRAY_NDIM(arr3);
+    c = (float *)PYARRAY_DATA(arr3);
   }
 
   arr4 = PyArray_FROM_OTF(arg4, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr4 != NULL) {
-    ndt = PyArray_NDIM(arr4);
-    t = (float *)PyArray_DATA(arr4);
+    ndt = PYARRAY_NDIM(arr4);
+    t = (float *)PYARRAY_DATA(arr4);
   }
 
   if (objtype < 0) objtype = gl_objtype(nplex);
@@ -240,36 +244,36 @@ draw_polygon_elems(PyObject *dummy, PyObject *args)
 
   arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
-  x = (float *)PyArray_DATA(arr1);
+  x = (float *)PYARRAY_DATA(arr1);
 
   arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
-  e = (int *)PyArray_DATA(arr2);
-  nel = PyArray_DIMS(arr2)[0];
-  nplex = PyArray_DIMS(arr2)[1];
+  e = (int *)PYARRAY_DATA(arr2);
+  nel = PYARRAY_DIMS(arr2)[0];
+  nplex = PYARRAY_DIMS(arr2)[1];
 
   arr3 = PyArray_FROM_OTF(arg3, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr3 != NULL) {
-    ndn = PyArray_NDIM(arr3);
-    n = (float *)PyArray_DATA(arr3);
+    ndn = PYARRAY_NDIM(arr3);
+    n = (float *)PYARRAY_DATA(arr3);
   }
 
   arr4 = PyArray_FROM_OTF(arg4, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr4 != NULL) {
-    ndc = PyArray_NDIM(arr4);
-    c = (float *)PyArray_DATA(arr4);
+    ndc = PYARRAY_NDIM(arr4);
+    c = (float *)PYARRAY_DATA(arr4);
   }
 
   arr5 = PyArray_FROM_OTF(arg5, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr5 != NULL) {
-    ndt = PyArray_NDIM(arr5);
-    t = (float *)PyArray_DATA(arr5);
+    ndt = PYARRAY_NDIM(arr5);
+    t = (float *)PYARRAY_DATA(arr5);
   }
 
   if (objtype < 0) objtype = gl_objtype(nplex);
 
 #ifdef DEBUG
-  npts = PyArray_DIMS(arr1)[0];
+  npts = PYARRAY_DIMS(arr1)[0];
   printf("** npts = %d, nelems=%d, nplex=%d, ndn=%d, ndc=%d, ndt=%d, objtype=%d\n",npts,nel,nplex,ndn,ndc,ndt,objtype);
 #endif
 
@@ -356,9 +360,9 @@ pick_polygons(PyObject *dummy, PyObject *args)
   if (!PyArg_ParseTuple(args,"Oi",&arg1,&objtype)) return NULL;
   arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
-  x = (float *)PyArray_DATA(arr1);
-  nel = PyArray_DIMS(arr1)[0];
-  nplex = PyArray_DIMS(arr1)[1];
+  x = (float *)PYARRAY_DATA(arr1);
+  nel = PYARRAY_DIMS(arr1)[0];
+  nplex = PYARRAY_DIMS(arr1)[1];
 #ifdef DEBUG
   printf("** nel = %d\n",nel);
   printf("** nplex = %d\n",nplex);
@@ -408,17 +412,17 @@ pick_polygon_elems(PyObject *dummy, PyObject *args)
   if (!PyArg_ParseTuple(args,"OOi",&arg1,&arg2,&objtype)) return NULL;
   arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) goto fail;
-  x = (float *)PyArray_DATA(arr1);
+  x = (float *)PYARRAY_DATA(arr1);
 #ifdef DEBUG
-  npts = PyArray_DIMS(arr1)[0];
+  npts = PYARRAY_DIMS(arr1)[0];
   printf("** npts = %d\n",npts);
 #endif
 
   arr2 = PyArray_FROM_OTF(arg2,NPY_INT,NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
-  e = (int *)PyArray_DATA(arr2);
-  nel = PyArray_DIMS(arr2)[0];
-  nplex = PyArray_DIMS(arr2)[1];
+  e = (int *)PYARRAY_DATA(arr2);
+  nel = PYARRAY_DIMS(arr2)[0];
+  nplex = PYARRAY_DIMS(arr2)[1];
 #ifdef DEBUG
   printf("** nel = %d\n",nel);
   printf("** nplex = %d\n",nplex);
@@ -472,11 +476,11 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
 
   arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) goto fail;
-  x = (float *)PyArray_DATA(arr1);
-  nsurf = PyArray_DIMS(arr1)[0];
-  ns = PyArray_DIMS(arr1)[1];
-  nt = PyArray_DIMS(arr1)[2];
-  ndim = PyArray_DIMS(arr1)[3];
+  x = (float *)PYARRAY_DATA(arr1);
+  nsurf = PYARRAY_DIMS(arr1)[0];
+  ns = PYARRAY_DIMS(arr1)[1];
+  nt = PYARRAY_DIMS(arr1)[2];
+  ndim = PYARRAY_DIMS(arr1)[3];
 #ifdef DEBUG
   printf("** nsurf = %d\n",nsurf);
   printf("** ns = %d\n",ns);
@@ -486,9 +490,9 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
 
   arr2 = PyArray_FROM_OTF(arg2,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
-  s = (float *)PyArray_DATA(arr2);
-  nds = PyArray_NDIM(arr2);
-  nsknots = PyArray_DIMS(arr2)[nds-1];
+  s = (float *)PYARRAY_DATA(arr2);
+  nds = PYARRAY_NDIM(arr2);
+  nsknots = PYARRAY_DIMS(arr2)[nds-1];
   nsorder = nsknots - ns;
 #ifdef DEBUG
   printf("** nds = %d\n",nds);
@@ -497,9 +501,9 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
 
   arr3 = PyArray_FROM_OTF(arg3,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr3 == NULL) goto fail;
-  t = (float *)PyArray_DATA(arr3);
-  ndt = PyArray_NDIM(arr3);
-  ntknots = PyArray_DIMS(arr3)[ndt-1];
+  t = (float *)PYARRAY_DATA(arr3);
+  ndt = PYARRAY_NDIM(arr3);
+  ntknots = PYARRAY_DIMS(arr3)[ndt-1];
   ntorder = ntknots - nt;
 #ifdef DEBUG
   printf("** ndt = %d\n",ndt);
@@ -508,10 +512,10 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
 
   arr4 = PyArray_FROM_OTF(arg4,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr4 != NULL) {
-    ndc = PyArray_NDIM(arr4);
+    ndc = PYARRAY_NDIM(arr4);
     if (ndc > 0) {
-      ncdim = PyArray_DIMS(arr4)[ndc-1];
-      c = (float *)PyArray_DATA(arr4);
+      ncdim = PYARRAY_DIMS(arr4)[ndc-1];
+      c = (float *)PYARRAY_DATA(arr4);
     }
   }
 #ifdef DEBUG

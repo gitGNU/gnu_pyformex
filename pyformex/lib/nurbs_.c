@@ -32,6 +32,9 @@
 #include "numpy/arrayobject.h"
 #include <math.h>
 
+// cast pointers to avoid warnings
+#define PYARRAY_DATA(p) PyArray_DATA((PyArrayObject *)p)
+#define PYARRAY_DIMS(p) PyArray_DIMS((PyArrayObject *)p)
 
 /****************** LIBRARY VERSION AND DOCSTRING *******************/
 
@@ -1677,19 +1680,19 @@ static PyObject * horner(PyObject *self, PyObject *args)
     goto fail;
 
   /* We suppose the dimensions are correct*/
-  a_dim = PyArray_DIMS(arr1);
-  u_dim = PyArray_DIMS(arr2);
+  a_dim = PYARRAY_DIMS(arr1);
+  u_dim = PYARRAY_DIMS(arr2);
   n = a_dim[1];
   nd = a_dim[0];
   nu = u_dim[0];
-  a = (double *)PyArray_DATA(arr1);
-  u = (double *)PyArray_DATA(arr2);
+  a = (double *)PYARRAY_DATA(arr1);
+  u = (double *)PYARRAY_DATA(arr2);
 
   /* Create the return array */
   dim[0] = nu;
   dim[1] = nd;
   ret = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
-  pnt = (double *)PyArray_DATA(ret);
+  pnt = (double *)PYARRAY_DATA(ret);
 
   /* Compute */
   int i,j;
@@ -1764,7 +1767,7 @@ static PyObject * allBernstein(PyObject *self, PyObject *args)
   /* Create the return array */
   dim[0] = n+1;
   ret = PyArray_SimpleNew(1,dim, NPY_DOUBLE);
-  B = (double *)PyArray_DATA(ret);
+  B = (double *)PYARRAY_DATA(ret);
 
   /* Compute */
   all_bernstein(n,u,B);
@@ -1813,22 +1816,22 @@ static PyObject * curvePoints(PyObject *self, PyObject *args)
   if(arr3 == NULL)
     goto fail;
 
-  P_dim = PyArray_DIMS(arr1);
-  U_dim = PyArray_DIMS(arr2);
-  u_dim = PyArray_DIMS(arr3);
+  P_dim = PYARRAY_DIMS(arr1);
+  U_dim = PYARRAY_DIMS(arr2);
+  u_dim = PYARRAY_DIMS(arr3);
   nc = P_dim[0];
   nd = P_dim[1];
   nk = U_dim[0];
   nu = u_dim[0];
-  P = (double *)PyArray_DATA(arr1);
-  U = (double *)PyArray_DATA(arr2);
-  u = (double *)PyArray_DATA(arr3);
+  P = (double *)PYARRAY_DATA(arr1);
+  U = (double *)PYARRAY_DATA(arr2);
+  u = (double *)PYARRAY_DATA(arr3);
 
   /* Create the return array */
   dim[0] = nu;
   dim[1] = nd;
   ret = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
-  pnt = (double *)PyArray_DATA(ret);
+  pnt = (double *)PYARRAY_DATA(ret);
 
   /* Compute */
   curve_points(P, nc, nd, U, nk, u, nu, pnt);
@@ -1888,23 +1891,23 @@ static PyObject * curveDerivs(PyObject *self, PyObject *args)
   if(arr3 == NULL)
     goto fail;
 
-  P_dim = PyArray_DIMS(arr1);
-  U_dim = PyArray_DIMS(arr2);
-  u_dim = PyArray_DIMS(arr3);
+  P_dim = PYARRAY_DIMS(arr1);
+  U_dim = PYARRAY_DIMS(arr2);
+  u_dim = PYARRAY_DIMS(arr3);
   nc = P_dim[0];
   nd = P_dim[1];
   nk = U_dim[0];
   nu = u_dim[0];
-  P = (double *)PyArray_DATA(arr1);
-  U = (double *)PyArray_DATA(arr2);
-  u = (double *)PyArray_DATA(arr3);
+  P = (double *)PYARRAY_DATA(arr1);
+  U = (double *)PYARRAY_DATA(arr2);
+  u = (double *)PYARRAY_DATA(arr3);
 
   /* Create the return array */
   dim[0] = n+1;
   dim[1] = nu;
   dim[2] = nd;
   ret = PyArray_SimpleNew(3,dim, NPY_DOUBLE);
-  pnt = (double *)PyArray_DATA(ret);
+  pnt = (double *)PYARRAY_DATA(ret);
 
   /* Compute */
   curve_derivs(n, P, nc, nd, U, nk, u, nu, pnt);
@@ -1959,25 +1962,25 @@ static PyObject * curveKnotRefine(PyObject *self, PyObject *args)
   if(arr3 == NULL)
     goto fail;
 
-  P_dim = PyArray_DIMS(arr1);
-  U_dim = PyArray_DIMS(arr2);
-  u_dim = PyArray_DIMS(arr3);
+  P_dim = PYARRAY_DIMS(arr1);
+  U_dim = PYARRAY_DIMS(arr2);
+  u_dim = PYARRAY_DIMS(arr3);
   nc = P_dim[0];
   nd = P_dim[1];
   nk = U_dim[0];
   nu = u_dim[0];
-  P = (double *)PyArray_DATA(arr1);
-  U = (double *)PyArray_DATA(arr2);
-  u = (double *)PyArray_DATA(arr3);
+  P = (double *)PYARRAY_DATA(arr1);
+  U = (double *)PYARRAY_DATA(arr2);
+  u = (double *)PYARRAY_DATA(arr3);
 
   /* Create the return arrays */
   dim[0] = nc+nu;
   dim[1] = nd;
   ret1 = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
-  newP = (double *)PyArray_DATA(ret1);
+  newP = (double *)PYARRAY_DATA(ret1);
   dim[0] = nk+nu;
   ret2 = PyArray_SimpleNew(1,dim, NPY_DOUBLE);
-  newU = (double *)PyArray_DATA(ret2);
+  newU = (double *)PYARRAY_DATA(ret2);
 
   /* Compute */
   curve_knot_refine(P, nc, nd, U, nk, u, nu, newP, newU);
@@ -2030,13 +2033,13 @@ static PyObject * curveDecompose(PyObject *self, PyObject *args)
   if(arr2 == NULL)
     goto fail;
 
-  P_dim = PyArray_DIMS(arr1);
-  U_dim = PyArray_DIMS(arr2);
+  P_dim = PYARRAY_DIMS(arr1);
+  U_dim = PYARRAY_DIMS(arr2);
   nc = P_dim[0];
   nd = P_dim[1];
   nk = U_dim[0];
-  P = (double *)PyArray_DATA(arr1);
-  U = (double *)PyArray_DATA(arr2);
+  P = (double *)PYARRAY_DATA(arr1);
+  U = (double *)PYARRAY_DATA(arr2);
 
   /* Compute number of knots to insert */
   int count = 0;
@@ -2058,7 +2061,7 @@ static PyObject * curveDecompose(PyObject *self, PyObject *args)
   dim[0] = nc+count;
   dim[1] = nd;
   ret = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
-  newP = (double *)PyArray_DATA(ret);
+  newP = (double *)PYARRAY_DATA(ret);
 
   /* Compute */
   curve_decompose(P, nc, nd, U, nk, newP);
@@ -2115,14 +2118,14 @@ static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
   if(arr3 == NULL)
     goto fail;
 
-  P_dim = PyArray_DIMS(arr1);
+  P_dim = PYARRAY_DIMS(arr1);
   nc = P_dim[0];
   nd = P_dim[1];
-  U_dim = PyArray_DIMS(arr2);
+  U_dim = PYARRAY_DIMS(arr2);
   nv = U_dim[0];
-  P = (double *)PyArray_DATA(arr1);
-  Uv = (double *)PyArray_DATA(arr2);
-  Um = (int *)PyArray_DATA(arr3);
+  P = (double *)PYARRAY_DATA(arr1);
+  Uv = (double *)PYARRAY_DATA(arr2);
+  Um = (int *)PYARRAY_DATA(arr3);
 
   /* Compute derived data as needed by curve_knot_remove */
   int *Sm = (int*) malloc(nv*sizeof(int));
@@ -2151,11 +2154,11 @@ static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
   dim[0] = nc-t;
   dim[1] = nd;
   ret1 = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
-  newP = (double *)PyArray_DATA(ret1);
+  newP = (double *)PYARRAY_DATA(ret1);
   for (i=0; i<dim[0]*dim[1]; ++i) newP[i] = P[i];
   dim[0] = nk-t;
   ret2 = PyArray_SimpleNew(1,dim, NPY_DOUBLE);
-  newU = (double *)PyArray_DATA(ret2);
+  newU = (double *)PYARRAY_DATA(ret2);
   for (i=0; i<dim[0]; ++i) newU[i] = U[i];
 
   /* Clean up and return */
@@ -2207,13 +2210,13 @@ static PyObject * curveDegreeElevate(PyObject *self, PyObject *args)
   if(arr2 == NULL)
     goto fail;
 
-  P_dim = PyArray_DIMS(arr1);
-  U_dim = PyArray_DIMS(arr2);
+  P_dim = PYARRAY_DIMS(arr1);
+  U_dim = PYARRAY_DIMS(arr2);
   nc = P_dim[0];
   nd = P_dim[1];
   nk = U_dim[0];
-  P = (double *)PyArray_DATA(arr1);
-  U = (double *)PyArray_DATA(arr2);
+  P = (double *)PYARRAY_DATA(arr1);
+  U = (double *)PYARRAY_DATA(arr2);
 
   /* Create thework spaces */
   nq = nc*(t+1);
@@ -2234,11 +2237,11 @@ static PyObject * curveDegreeElevate(PyObject *self, PyObject *args)
   dim[1] = nd;
   printf("Create space for %d new control points\n",nq);
   ret1 = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
-  newP = (double *)PyArray_DATA(ret1);
+  newP = (double *)PYARRAY_DATA(ret1);
   dim[0] = nu;
   ret2 = PyArray_SimpleNew(1,dim, NPY_DOUBLE);
   printf("Create space for %d new knots\n",nu);
-  newU = (double *)PyArray_DATA(ret2);
+  newU = (double *)PYARRAY_DATA(ret2);
   for (i=0; i<nq*nd; ++i) newP[i] = Pw[i];
   for (i=0; i<nu; ++i) newU[i] = Uw[i];
 
@@ -2292,13 +2295,13 @@ static PyObject * curveDegreeReduce(PyObject *self, PyObject *args)
   if(arr2 == NULL)
     goto fail;
 
-  P_dim = PyArray_DIMS(arr1);
-  U_dim = PyArray_DIMS(arr2);
+  P_dim = PYARRAY_DIMS(arr1);
+  U_dim = PYARRAY_DIMS(arr2);
   nc = P_dim[0];
   nd = P_dim[1];
   nk = U_dim[0];
-  P = (double *)PyArray_DATA(arr1);
-  U = (double *)PyArray_DATA(arr2);
+  P = (double *)PYARRAY_DATA(arr1);
+  U = (double *)PYARRAY_DATA(arr2);
 
   /* Create the work spaces */
   nq = nc*2;
@@ -2319,11 +2322,11 @@ static PyObject * curveDegreeReduce(PyObject *self, PyObject *args)
   dim[1] = nd;
   printf("Create space for %d new control points\n",nq);
   ret1 = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
-  newP = (double *)PyArray_DATA(ret1);
+  newP = (double *)PYARRAY_DATA(ret1);
   dim[0] = nu;
   ret2 = PyArray_SimpleNew(1,dim, NPY_DOUBLE);
   printf("Create space for %d new knots\n",nu);
-  newU = (double *)PyArray_DATA(ret2);
+  newU = (double *)PYARRAY_DATA(ret2);
   for (i=0; i<nq*nd; ++i) newP[i] = Pw[i];
   for (i=0; i<nu; ++i) newU[i] = Uw[i];
 
@@ -2383,24 +2386,24 @@ static PyObject * curveGlobalInterpolationMatrix(PyObject *self, PyObject *args)
   if(arr2 == NULL)
     goto fail;
 
-  Q_dim = PyArray_DIMS(arr1);
-  u_dim = PyArray_DIMS(arr2);
+  Q_dim = PYARRAY_DIMS(arr1);
+  u_dim = PYARRAY_DIMS(arr2);
   nc = Q_dim[0];
   nd = Q_dim[1];
   nu = u_dim[0];
   if (nu != nc) goto fail;
 
-  Q = (double *)PyArray_DATA(arr1);
-  u = (double *)PyArray_DATA(arr2);
+  Q = (double *)PYARRAY_DATA(arr1);
+  u = (double *)PYARRAY_DATA(arr2);
 
   /* Create the return arrays */
   dim[0] = nc+p+1;
   ret1 = PyArray_SimpleNew(1,dim, NPY_DOUBLE);
-  U = (double *)PyArray_DATA(ret1);
+  U = (double *)PYARRAY_DATA(ret1);
   dim[0] = nc;
   dim[1] = nc;
   ret2 = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
-  A = (double *)PyArray_DATA(ret2);
+  A = (double *)PYARRAY_DATA(ret2);
 
   /* Compute */
   curve_global_interp_mat(p, Q, nc, nd, u, U, A);
@@ -2464,26 +2467,26 @@ static PyObject * surfacePoints(PyObject *self, PyObject *args)
   if(arr4 == NULL)
     goto fail;
 
-  P_dim = PyArray_DIMS(arr1);
-  U_dim = PyArray_DIMS(arr2);
-  V_dim = PyArray_DIMS(arr3);
-  u_dim = PyArray_DIMS(arr4);
+  P_dim = PYARRAY_DIMS(arr1);
+  U_dim = PYARRAY_DIMS(arr2);
+  V_dim = PYARRAY_DIMS(arr3);
+  u_dim = PYARRAY_DIMS(arr4);
   ns = P_dim[0];
   nt = P_dim[1];
   nd = P_dim[2];
   nU = U_dim[0];
   nV = V_dim[0];
   nu = u_dim[0];
-  P = (double *)PyArray_DATA(arr1);
-  U = (double *)PyArray_DATA(arr2);
-  V = (double *)PyArray_DATA(arr3);
-  u = (double *)PyArray_DATA(arr4);
+  P = (double *)PYARRAY_DATA(arr1);
+  U = (double *)PYARRAY_DATA(arr2);
+  V = (double *)PYARRAY_DATA(arr3);
+  u = (double *)PYARRAY_DATA(arr4);
 
   /* Create the return array */
   dim[0] = nu;
   dim[1] = nd;
   ret = PyArray_SimpleNew(2,dim, NPY_DOUBLE);
-  pnt = (double *)PyArray_DATA(ret);
+  pnt = (double *)PYARRAY_DATA(ret);
 
   /* Compute */
   surface_points(P,ns,nt,nd,U,nU,V,nV,u,nu,pnt);
@@ -2533,7 +2536,8 @@ static PyObject * surfaceDerivs(PyObject *self, PyObject *args)
   npy_intp *P_dim, *U_dim, *V_dim, *u_dim, dim[4];
   double *P, *U, *V, *u, *pnt;
   PyObject *a1, *a2, *a3, *a4;
-  PyObject *arr1=NULL, *arr2=NULL, *arr3=NULL, *arr4=NULL, *ret=NULL;
+  PyObject *arr1=NULL, *arr2=NULL, *arr3=NULL, *arr4=NULL;
+  PyObject *ret=NULL;
 
   if(!PyArg_ParseTuple(args, "OOOOii", &a1, &a2, &a3, &a4, &mu, &mv))
     return NULL;
@@ -2550,20 +2554,20 @@ static PyObject * surfaceDerivs(PyObject *self, PyObject *args)
   if(arr4 == NULL)
     goto fail;
 
-  P_dim = PyArray_DIMS(arr1);
-  U_dim = PyArray_DIMS(arr2);
-  V_dim = PyArray_DIMS(arr3);
-  u_dim = PyArray_DIMS(arr4);
+  P_dim = PYARRAY_DIMS(arr1);
+  U_dim = PYARRAY_DIMS(arr2);
+  V_dim = PYARRAY_DIMS(arr3);
+  u_dim = PYARRAY_DIMS(arr4);
   ns = P_dim[0];
   nt = P_dim[1];
   nd = P_dim[2];
   nU = U_dim[0];
   nV = V_dim[0];
   nu = u_dim[0];
-  P = (double *)PyArray_DATA(arr1);
-  U = (double *)PyArray_DATA(arr2);
-  V = (double *)PyArray_DATA(arr3);
-  u = (double *)PyArray_DATA(arr4);
+  P = (double *)PYARRAY_DATA(arr1);
+  U = (double *)PYARRAY_DATA(arr2);
+  V = (double *)PYARRAY_DATA(arr3);
+  u = (double *)PYARRAY_DATA(arr4);
 
   /* Create the return array */
   dim[0] = mu+1;
@@ -2571,7 +2575,7 @@ static PyObject * surfaceDerivs(PyObject *self, PyObject *args)
   dim[2] = nu;
   dim[3] = nd;
   ret = PyArray_SimpleNew(4,dim, NPY_DOUBLE);
-  pnt = (double *)PyArray_DATA(ret);
+  pnt = (double *)PYARRAY_DATA(ret);
 
   /* Compute */
   surface_derivs(mu,mv,P,ns,nt,nd,U,nU,V,nV,u,nu,pnt);
@@ -2615,11 +2619,21 @@ static PyMethodDef _methods_[] =
 /* Initialize the module */
 PyMODINIT_FUNC initnurbs_(void)
 {
-  PyObject* module;
-  module = Py_InitModule3("nurbs_", _methods_, __doc__);
-  PyModule_AddStringConstant(module,"__version__",__version__);
-  PyModule_AddIntConstant(module,"accelerated",1);
+  PyObject* m;
+  m = Py_InitModule3("nurbs_", _methods_, __doc__);
+  if (m == NULL)
+#if PY_MAJOR_VERSION >= 3
+    return NULL;
+#else
+    return;
+#endif
+  PyModule_AddStringConstant(m,"__version__",__version__);
+  PyModule_AddIntConstant(m,"accelerated",1);
   import_array(); /* Get access to numpy array API */
+
+#if PY_MAJOR_VERSION >= 3
+  return m;
+#endif
 }
 
 /* End */
