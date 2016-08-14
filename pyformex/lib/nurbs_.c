@@ -35,11 +35,12 @@
 // cast pointers to avoid warnings
 #define PYARRAY_DATA(p) PyArray_DATA((PyArrayObject *)p)
 #define PYARRAY_DIMS(p) PyArray_DIMS((PyArrayObject *)p)
+#define PYARRAY_FROM_OTF(p,q,r) (PyArrayObject *) PyArray_FROM_OTF(p,q,r)
 
 /****************** LIBRARY VERSION AND DOCSTRING *******************/
 
 static char *__version__ = "1.0.2-a6";
-static char *__doc__ = "nurbs_ module\n\
+static char *__doc__ = "pyformex.lib.nurbs_ module\n\
 \n\
 This module provides accelerated versions of the pyFormex NURBS\n\
 functions.\n\
@@ -2597,7 +2598,7 @@ static PyObject * surfaceDerivs(PyObject *self, PyObject *args)
 }
 
 
-static PyMethodDef _methods_[] =
+static PyMethodDef extension_methods[] =
 {
 	{"binomial", binomial, METH_VARARGS, binomial_doc},
 	{"horner", horner, METH_VARARGS, horner_doc},
@@ -2613,21 +2614,42 @@ static PyMethodDef _methods_[] =
 	{"curveGlobalInterpolationMatrix", curveGlobalInterpolationMatrix, METH_VARARGS, curveGlobalInterpolationMatrix_doc},
 	{"surfacePoints", surfacePoints, METH_VARARGS, surfacePoints_doc},
 	{"surfaceDerivs", surfaceDerivs, METH_VARARGS, surfaceDerivs_doc},
-	{NULL, NULL}
+	{NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
 /* Initialize the module */
-PyMODINIT_FUNC initnurbs_(void)
+#if PY_MAJOR_VERSION >= 3
+
+static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "misc_",   // module name
+        NULL,      // module doc
+        -1,        //sizeof(struct module_state),
+        extension_methods,
+        NULL,
+        NULL, //myextension_traverse,
+        NULL, //myextension_clear,
+        NULL
+};
+
+
+#define INITERROR return NULL
+PyMODINIT_FUNC PyInit_nurbs_(void)
+#else
+#define INITERROR return
+void initnurbs_(void)
+#endif
 {
   PyObject* m;
-  m = Py_InitModule3("nurbs_", _methods_, __doc__);
-  if (m == NULL)
 #if PY_MAJOR_VERSION >= 3
-    return NULL;
+  m = PyModule_Create(&moduledef);
 #else
-    return;
+  m = Py_InitModule3("nurbs_", extension_methods, NULL);
 #endif
+  if (m == NULL)
+    INITERROR;
   PyModule_AddStringConstant(m,"__version__",__version__);
+  PyModule_AddStringConstant(m,"__doc__",__doc__);
   PyModule_AddIntConstant(m,"accelerated",1);
   import_array(); /* Get access to numpy array API */
 

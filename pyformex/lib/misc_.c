@@ -36,7 +36,7 @@
 /****************** LIBRARY VERSION AND DOCSTRING *******************/
 
 static char *__version__ = "1.0.2-a6";
-static char *__doc__ = "misc_ module\n\
+static char *__doc__ = "pyformex.lib.misc_\n\
 \n\
 This module provides accelerated versions of miscellaneous pyFormex functions.\n\
 \n";
@@ -58,6 +58,11 @@ float dotprod(float *a, int ia, float *b, int ib, int n)
   }
   return t;
 }
+
+#if PY_MAJOR_VERSION >= 3
+//  PyFile_AsFile does not exist in Python3 !!
+//  so we do not have these accelerated functions
+#else
 
 /**************************************************** tofile_float32 ****/
 /* Write an array to file */
@@ -264,6 +269,7 @@ static PyObject * tofile_iint32(PyObject *dummy, PyObject *args)
   return NULL;
 }
 
+#endif
 
 /**************************************************** coords_fuse ****/
 /* Fuse nodes : new and much faster algorithm */
@@ -1467,28 +1473,61 @@ static PyObject * isosurface(PyObject *dummy, PyObject *args)
 
 /********************************************************/
 /* The methods defined in this module */
-static PyMethodDef _methods_[] = {
+static PyMethodDef extension_methods[] = {
     {"_fuse", coords_fuse, METH_VARARGS, "Fuse nodes."},
     {"nodalSum", nodalSum, METH_VARARGS, "Nodal sum."},
     {"averageDirection", averageDirection, METH_VARARGS, "Average directions."},
     {"averageDirectionIndexed", averageDirectionIndexed, METH_VARARGS, "Average directions."},
     {"isoline", isoline, METH_VARARGS, isoline__doc__},
     {"isosurface", isosurface, METH_VARARGS, isosurface__doc__},
+#if PY_MAJOR_VERSION < 3
     {"tofile_float32", tofile_float32, METH_VARARGS, "Write float32 array to file."},
     {"tofile_int32", tofile_int32, METH_VARARGS, "Write int32 array to file."},
     {"tofile_ifloat32", tofile_ifloat32, METH_VARARGS, "Write indexed float32 array to file."},
     {"tofile_iint32", tofile_iint32, METH_VARARGS, "Write indexed int32 array to file."},
+#endif
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
 /* Initialize the module */
-PyMODINIT_FUNC initmisc_(void)
+#if PY_MAJOR_VERSION >= 3
+
+static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "misc_",   // module name
+        NULL,      // module doc
+        -1,        //sizeof(struct module_state),
+        extension_methods,
+        NULL,
+        NULL, //myextension_traverse,
+        NULL, //myextension_clear,
+        NULL
+};
+
+
+#define INITERROR return NULL
+PyMODINIT_FUNC PyInit_misc_(void)
+#else
+#define INITERROR return
+void initmisc_(void)
+#endif
 {
-  PyObject* module;
-  module = Py_InitModule3("misc_", _methods_, __doc__);
-  PyModule_AddStringConstant(module,"__version__",__version__);
-  PyModule_AddIntConstant(module,"accelerated",1);
+  PyObject* m;
+#if PY_MAJOR_VERSION >= 3
+  m = PyModule_Create(&moduledef);
+#else
+  m = Py_InitModule3("misc_", extension_methods, NULL);
+#endif
+  if (m == NULL)
+    INITERROR;
+  PyModule_AddStringConstant(m,"__version__",__version__);
+  PyModule_AddStringConstant(m,"__doc__",__doc__);
+  PyModule_AddIntConstant(m,"accelerated",1);
   import_array(); /* Get access to numpy array API */
+
+#if PY_MAJOR_VERSION >= 3
+  return m;
+#endif
 }
 
 /* End */
