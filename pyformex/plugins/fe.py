@@ -187,8 +187,8 @@ class Model(Geometry):
         """
         nnodes = self.nnodes()
         if old is None and new is None:
-            old = np.unique(random.randint(0, nnodes-1, nnodes))
-            new = np.unique(random.randint(0, nnodes-1, nnodes))
+            old = np.unique(np.random.randint(0, nnodes-1, nnodes))
+            new = np.unique(np.random.randint(0, nnodes-1, nnodes))
             nn = max(old.size, new.size)
             old = old[:nn]
             new = new[:nn]
@@ -202,8 +202,8 @@ class Model(Geometry):
             new = np.arange(old.size)
 
         all = np.arange(nnodes)
-        old = np.concatenate([old, setdiff1d(all, old)])
-        new = np.concatenate([new, setdiff1d(all, new)])
+        old = np.concatenate([old, np.setdiff1d(all, old)])
+        new = np.concatenate([new, np.setdiff1d(all, new)])
         oldnew = old[new]
         newold = np.argsort(oldnew)
         self.coords = self.coords[oldnew]
