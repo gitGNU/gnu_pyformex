@@ -59,7 +59,7 @@ import manifest
 __RELEASE__ = '1.0.2-a6'
 
 # The acceleration libraries
-LIB_MODULES = [ 'drawgl_', 'misc_', 'nurbs_' ]
+LIB_MODULES = [ 'misc_', 'nurbs_' ]
 
 ext_modules = [Extension('pyformex/lib/%s'%m,
                          sources = ['pyformex/lib/%s.c'%m],

@@ -29,8 +29,7 @@ from __future__ import print_function
 
 import pyformex as pf
 from pyformex import utils, olist, simple, geomtools
-from pyformex.lib.drawgl_e import glColor
-from pyformex.lib import drawgl
+from pyformex.lib import drawgl_e as drawgl
 from pyformex.formex import *
 from pyformex.opengl.colors import *
 
@@ -236,14 +235,14 @@ def drawNurbsCurves(x,knots,color=None,alpha=1.0,samplingTolerance=5.0):
     if color is not None and color.ndim == 1:
         # Handle single color
         pf.debug('Set single color: OK', pf.DEBUG.DRAW)
-        glColor(color)
+        drawgl.glColor(color)
         color = None
 
     ki = knots
     for i, xi in enumerate(x):
         if color is not None and color.ndim == 2:
             # Handle element color
-            glColor(color[i])
+            drawgl.glColor(color[i])
         if knots.ndim > 1:
             ki = knots[i]
         GLU.gluBeginCurve(nurb)
@@ -410,7 +409,7 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
         if color is not None and color.ndim == 1:
             # Handle single color
             pf.debug('Set single color: OK', pf.DEBUG.DRAW)
-            glColor(color)
+            drawgl.glColor(color)
             color = None
 
         si = sknots
@@ -418,7 +417,7 @@ def drawNurbsSurfaces(x,sknots,tknots,color=None,alpha=1.0,normals='auto',sampli
         for i, xi in enumerate(x):
             if color is not None and color.ndim == 2:
                 # Handle element color
-                glColor(color[i])
+                drawgl.glColor(color[i])
             if sknots.ndim > 1:
                 si = sknots[i]
             if tknots.ndim > 1:

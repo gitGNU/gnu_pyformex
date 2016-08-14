@@ -44,7 +44,7 @@ SOURCE= ${PYFORMEXDIR}/pyformex \
 	$(wildcard ${PYFORMEXDIR}/plugins/*.py) \
 	$(wildcard ${LIBDIR}/*.py) \
 
-LIBSOURCE= ${addprefix ${LIBDIR}/, drawgl_.c misc_.c nurbs_.c}
+LIBSOURCE= ${addprefix ${LIBDIR}/, misc_.c nurbs_.c}
 LIBOBJECTS= $(CSOURCE:.c=.o)
 LIBOBJECTS= $(CSOURCE:.c=.so)
 

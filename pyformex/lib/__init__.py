@@ -29,9 +29,9 @@ to load with the (slower) Python versions.
 from __future__ import print_function
 
 import pyformex as pf
-__all__ = [ 'misc', 'nurbs', 'drawgl', 'accelerated' ]
+__all__ = [ 'misc', 'nurbs', 'accelerated' ]
 
-misc = nurbs = drawgl = None
+misc = nurbs = None
 accelerated = []
 
 
@@ -65,15 +65,6 @@ if accelerate:
     except ImportError:
         pf.debug("Error while loading the pyFormex compiled nurbs library", pf.DEBUG.LIB)
 
-    if gui:
-        # !! We need to import GL before drawgl, to define the GL calls !
-        from OpenGL import GL
-        try:
-            from pyformex.lib import drawgl_ as drawgl
-            checkVersion(drawgl)
-        except ImportError:
-            pf.debug("Error while loading the pyFormex compiled drawgl library", pf.DEBUG.LIB)
-
 # Load Python libraries if acceleration libraries failed
 
 if misc is None:
@@ -84,14 +75,9 @@ if nurbs is None:
     pf.debug("Using the (slower) Python nurbs functions", pf.DEBUG.LIB)
     from pyformex.lib import nurbs_e as nurbs
 
-if gui and drawgl is None:
-    pf.debug("Using the (slower) Python draw functions", pf.DEBUG.LIB)
-    from pyformex.lib import drawgl_e as drawgl
-
 pf.debug("Accelerated: %s" % accelerated, pf.DEBUG.LIB|pf.DEBUG.INFO)
 pf.debug(misc, pf.DEBUG.LIB)
 pf.debug(nurbs, pf.DEBUG.LIB)
-pf.debug(drawgl, pf.DEBUG.LIB)
 
 # make sure we could at least import one version
 assert(misc is not None)

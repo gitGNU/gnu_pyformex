@@ -129,7 +129,7 @@ if os.path.exists(os.path.join(parentdir, '.git')):
 ########## import libraries ##############
 
 
-libraries = [ 'misc_', 'nurbs_', 'drawgl_' ]
+libraries = [ 'misc_', 'nurbs_' ]
 
 if installtype in 'SG':
     # Running from source tree: check if compiled libraries are up-to-date
