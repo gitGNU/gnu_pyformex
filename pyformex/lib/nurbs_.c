@@ -28,6 +28,7 @@
 //
 
 #include "Python.h"
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include "numpy/arrayobject.h"
 #include <math.h>
 
@@ -1668,10 +1669,10 @@ static PyObject * horner(PyObject *self, PyObject *args)
 
   if (!PyArg_ParseTuple(args, "OO", &arg1, &arg2))
     return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(arg2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(arg2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
 
@@ -1802,13 +1803,13 @@ static PyObject * curvePoints(PyObject *self, PyObject *args)
 
   if (!PyArg_ParseTuple(args, "OOO", &a1, &a2, &a3))
     return NULL;
-  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
-  arr3 = PyArray_FROM_OTF(a3, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr3 = PyArray_FROM_OTF(a3, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr3 == NULL)
     goto fail;
 
@@ -1877,13 +1878,13 @@ static PyObject * curveDerivs(PyObject *self, PyObject *args)
 
   if(!PyArg_ParseTuple(args, "OOOi", &a1, &a2, &a3, &n))
     return NULL;
-  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
-  arr3 = PyArray_FROM_OTF(a3, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr3 = PyArray_FROM_OTF(a3, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr3 == NULL)
     goto fail;
 
@@ -1948,13 +1949,13 @@ static PyObject * curveKnotRefine(PyObject *self, PyObject *args)
 
   if(!PyArg_ParseTuple(args, "OOO", &a1, &a2, &a3))
     return NULL;
-  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
-  arr3 = PyArray_FROM_OTF(a3, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr3 = PyArray_FROM_OTF(a3, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr3 == NULL)
     goto fail;
 
@@ -2022,10 +2023,10 @@ static PyObject * curveDecompose(PyObject *self, PyObject *args)
 
   if(!PyArg_ParseTuple(args, "OO", &a1, &a2))
     return NULL;
-  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
 
@@ -2104,13 +2105,13 @@ static PyObject * curveKnotRemove(PyObject *self, PyObject *args)
 
   if(!PyArg_ParseTuple(args, "OOOiid", &a1, &a2, &a3, &iv, &num, &tol))
     return NULL;
-  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
-  arr3 = PyArray_FROM_OTF(a3, NPY_INT, NPY_IN_ARRAY);
+  arr3 = PyArray_FROM_OTF(a3, NPY_INT, NPY_ARRAY_IN_ARRAY);
   if(arr3 == NULL)
     goto fail;
 
@@ -2199,10 +2200,10 @@ static PyObject * curveDegreeElevate(PyObject *self, PyObject *args)
 
   if(!PyArg_ParseTuple(args, "OOi", &a1, &a2, &t))
     return NULL;
-  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
 
@@ -2284,10 +2285,10 @@ static PyObject * curveDegreeReduce(PyObject *self, PyObject *args)
 
   if(!PyArg_ParseTuple(args, "OO", &a1, &a2))
     return NULL;
-  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
 
@@ -2375,10 +2376,10 @@ static PyObject * curveGlobalInterpolationMatrix(PyObject *self, PyObject *args)
 
   if (!PyArg_ParseTuple(args, "OOi", &a1, &a2, &p))
     return NULL;
-  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
 
@@ -2450,16 +2451,16 @@ static PyObject * surfacePoints(PyObject *self, PyObject *args)
 
   if (!PyArg_ParseTuple(args, "OOOO", &a1, &a2, &a3, &a4))
     return NULL;
-  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
-  arr3 = PyArray_FROM_OTF(a3, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr3 = PyArray_FROM_OTF(a3, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr3 == NULL)
     goto fail;
-  arr4 = PyArray_FROM_OTF(a4, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr4 = PyArray_FROM_OTF(a4, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr4 == NULL)
     goto fail;
 
@@ -2536,16 +2537,16 @@ static PyObject * surfaceDerivs(PyObject *self, PyObject *args)
 
   if(!PyArg_ParseTuple(args, "OOOOii", &a1, &a2, &a3, &a4, &mu, &mv))
     return NULL;
-  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(a1, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr1 == NULL)
     return NULL;
-  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(a2, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr2 == NULL)
     goto fail;
-  arr3 = PyArray_FROM_OTF(a3, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr3 = PyArray_FROM_OTF(a3, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr3 == NULL)
     goto fail;
-  arr4 = PyArray_FROM_OTF(a4, NPY_DOUBLE, NPY_IN_ARRAY);
+  arr4 = PyArray_FROM_OTF(a4, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
   if(arr4 == NULL)
     goto fail;
 

@@ -22,10 +22,8 @@
 //  along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-// Use this to work on API cleanup
-//#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-
 #include <Python.h>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 #include <math.h>
 
@@ -72,7 +70,7 @@ static PyObject * tofile_float32(PyObject *dummy, PyObject *args)
   char *fmt; /* single element format */
 
   if (!PyArg_ParseTuple(args, "OOs", &arg1, &arg2, &fmt)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
   fp = PyFile_AsFile(arg2);
   if (!fp) goto fail;
@@ -114,7 +112,7 @@ static PyObject * tofile_int32(PyObject *dummy, PyObject *args)
   char *fmt; /* single element format */
 
   if (!PyArg_ParseTuple(args, "OOs", &arg1, &arg2, &fmt)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_INT, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_INT, NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
   fp = PyFile_AsFile(arg2);
   if (!fp) goto fail;
@@ -162,9 +160,9 @@ static PyObject * tofile_ifloat32(PyObject *dummy, PyObject *args)
   char *fmt; /* single element format */
 
   if (!PyArg_ParseTuple(args, "OOOs", &arg1, &arg2, &arg3, &fmt)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_INT, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_INT, NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
-  arr2 = PyArray_FROM_OTF(arg2, NPY_FLOAT, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(arg2, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
   fp = PyFile_AsFile(arg3);
   if (!fp) goto fail;
@@ -220,9 +218,9 @@ static PyObject * tofile_iint32(PyObject *dummy, PyObject *args)
   char *fmt; /* single element format */
 
   if (!PyArg_ParseTuple(args, "OOOs", &arg1, &arg2, &arg3, &fmt)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_INT, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_INT, NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
-  arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
   fp = PyFile_AsFile(arg3);
   if (!fp) goto fail;
@@ -281,13 +279,13 @@ static PyObject * coords_fuse(PyObject *dummy, PyObject *args)
   int *val,*sel;
   float tol;
   if (!PyArg_ParseTuple(args, "OOOOf", &arg1, &arg2, &arg3, &arg4, &tol)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
-  arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
-  arr3 = PyArray_FROM_OTF(arg3, NPY_INT, NPY_INOUT_ARRAY);
+  arr3 = PyArray_FROM_OTF(arg3, NPY_INT, NPY_ARRAY_INOUT_ARRAY);
   if (arr3 == NULL) goto fail;
-  arr4 = PyArray_FROM_OTF(arg4, NPY_INT, NPY_INOUT_ARRAY);
+  arr4 = PyArray_FROM_OTF(arg4, NPY_INT, NPY_ARRAY_INOUT_ARRAY);
   if (arr4 == NULL) goto fail;
   /* We suppose the dimensions are correct*/
   npy_intp * dims;
@@ -399,9 +397,9 @@ static PyObject * nodalSum(PyObject *dummy, PyObject *args)
   int *elems;
   int avg, all, max;
   if (!PyArg_ParseTuple(args, "OOiii", &arg1, &arg2, &max, &avg, &all)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
-  arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
 
   npy_intp * dim;
@@ -557,7 +555,7 @@ static PyObject * averageDirection(PyObject *dummy, PyObject *args)
   PyObject *arr1=NULL;
   float *vec, tol;
   if (!PyArg_ParseTuple(args, "Of", &arg1, &tol)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_INOUT_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_ARRAY_INOUT_ARRAY);
   if (arr1 == NULL) return NULL;
 
   npy_intp * dims;
@@ -583,9 +581,9 @@ static PyObject * averageDirectionIndexed(PyObject *dummy, PyObject *args)
   int *ind;
   float *vec, tol;
   if (!PyArg_ParseTuple(args, "OOf", &arg1, &arg2, &tol)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_INOUT_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_ARRAY_INOUT_ARRAY);
   if (arr1 == NULL) return NULL;
-  arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_INOUT_ARRAY);
+  arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_ARRAY_INOUT_ARRAY);
   if (arr2 == NULL) goto fail;
 
   npy_intp * dims;
@@ -747,7 +745,7 @@ static PyObject * isoline(PyObject *dummy, PyObject *args)
   float level;
   //printf("ISOLINE\n");
   if (!PyArg_ParseTuple(args, "Of", &arg1, &level)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_INOUT_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_ARRAY_INOUT_ARRAY);
   if (arr1 == NULL) return NULL;
 
   npy_intp * dims;
@@ -1377,12 +1375,12 @@ static char isosurface__doc__[] = "Create an isosurface through data at given le
 static PyObject * isosurface(PyObject *dummy, PyObject *args)
 {
   PyObject *arg1=NULL;
-  PyObject *arr1=NULL;
+  PyArrayObject *arr1=NULL;
   float *data;
   float level;
   int tet;
   if (!PyArg_ParseTuple(args, "Ofi", &arg1, &level, &tet)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_INOUT_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_ARRAY_INOUT_ARRAY);
   if (arr1 == NULL) return NULL;
 
   npy_intp * dims;

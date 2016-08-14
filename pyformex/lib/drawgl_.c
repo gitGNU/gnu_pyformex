@@ -30,6 +30,7 @@
 */
 
 #include <Python.h>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -126,25 +127,25 @@ draw_polygons(PyObject *dummy, PyObject *args)
 
   if (!PyArg_ParseTuple(args,"OOOOfi",&arg1,&arg2,&arg3,&arg4,&alpha,&objtype)) return NULL;
 
-  arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
   x = (float *)PyArray_DATA(arr1);
   nel = PyArray_DIMS(arr1)[0];
   nplex = PyArray_DIMS(arr1)[1];
 
-  arr2 = PyArray_FROM_OTF(arg2, NPY_FLOAT, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(arg2, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr2 != NULL) {
     ndn = PyArray_NDIM(arr2);
     n = (float *)PyArray_DATA(arr2);
   }
 
-  arr3 = PyArray_FROM_OTF(arg3, NPY_FLOAT, NPY_IN_ARRAY);
+  arr3 = PyArray_FROM_OTF(arg3, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr3 != NULL) {
     ndc = PyArray_NDIM(arr3);
     c = (float *)PyArray_DATA(arr3);
   }
 
-  arr4 = PyArray_FROM_OTF(arg4, NPY_FLOAT, NPY_IN_ARRAY);
+  arr4 = PyArray_FROM_OTF(arg4, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr4 != NULL) {
     ndt = PyArray_NDIM(arr4);
     t = (float *)PyArray_DATA(arr4);
@@ -237,29 +238,29 @@ draw_polygon_elems(PyObject *dummy, PyObject *args)
 
   if (!PyArg_ParseTuple(args,"OOOOOfi",&arg1,&arg2,&arg3,&arg4,&arg5,&alpha,&objtype)) return NULL;
 
-  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
   x = (float *)PyArray_DATA(arr1);
 
-  arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
   e = (int *)PyArray_DATA(arr2);
   nel = PyArray_DIMS(arr2)[0];
   nplex = PyArray_DIMS(arr2)[1];
 
-  arr3 = PyArray_FROM_OTF(arg3, NPY_FLOAT, NPY_IN_ARRAY);
+  arr3 = PyArray_FROM_OTF(arg3, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr3 != NULL) {
     ndn = PyArray_NDIM(arr3);
     n = (float *)PyArray_DATA(arr3);
   }
 
-  arr4 = PyArray_FROM_OTF(arg4, NPY_FLOAT, NPY_IN_ARRAY);
+  arr4 = PyArray_FROM_OTF(arg4, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr4 != NULL) {
     ndc = PyArray_NDIM(arr4);
     c = (float *)PyArray_DATA(arr4);
   }
 
-  arr5 = PyArray_FROM_OTF(arg5, NPY_FLOAT, NPY_IN_ARRAY);
+  arr5 = PyArray_FROM_OTF(arg5, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr5 != NULL) {
     ndt = PyArray_NDIM(arr5);
     t = (float *)PyArray_DATA(arr5);
@@ -353,7 +354,7 @@ pick_polygons(PyObject *dummy, PyObject *args)
   printf("** pick_polygons\n");
 #endif
   if (!PyArg_ParseTuple(args,"Oi",&arg1,&objtype)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
   x = (float *)PyArray_DATA(arr1);
   nel = PyArray_DIMS(arr1)[0];
@@ -405,7 +406,7 @@ pick_polygon_elems(PyObject *dummy, PyObject *args)
   printf("** pick_polygon_elems\n");
 #endif
   if (!PyArg_ParseTuple(args,"OOi",&arg1,&arg2,&objtype)) return NULL;
-  arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) goto fail;
   x = (float *)PyArray_DATA(arr1);
 #ifdef DEBUG
@@ -413,7 +414,7 @@ pick_polygon_elems(PyObject *dummy, PyObject *args)
   printf("** npts = %d\n",npts);
 #endif
 
-  arr2 = PyArray_FROM_OTF(arg2,NPY_INT,NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(arg2,NPY_INT,NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
   e = (int *)PyArray_DATA(arr2);
   nel = PyArray_DIMS(arr2)[0];
@@ -469,7 +470,7 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
 
   if (!PyArg_ParseTuple(args,"OOOOff",&arg1,&arg2,&arg3,&arg4,&alpha,&sampling)) return NULL;
 
-  arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_IN_ARRAY);
+  arr1 = PyArray_FROM_OTF(arg1,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) goto fail;
   x = (float *)PyArray_DATA(arr1);
   nsurf = PyArray_DIMS(arr1)[0];
@@ -483,7 +484,7 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
   printf("** ndim = %d\n",ndim);
 #endif
 
-  arr2 = PyArray_FROM_OTF(arg2,NPY_FLOAT,NPY_IN_ARRAY);
+  arr2 = PyArray_FROM_OTF(arg2,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
   s = (float *)PyArray_DATA(arr2);
   nds = PyArray_NDIM(arr2);
@@ -494,7 +495,7 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
   printf("** nsknots = %d\n",nsknots);
 #endif
 
-  arr3 = PyArray_FROM_OTF(arg3,NPY_FLOAT,NPY_IN_ARRAY);
+  arr3 = PyArray_FROM_OTF(arg3,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr3 == NULL) goto fail;
   t = (float *)PyArray_DATA(arr3);
   ndt = PyArray_NDIM(arr3);
@@ -505,7 +506,7 @@ static PyObject* draw_nurbs_surfaces(PyObject *dummy, PyObject *args)
   printf("** ntknots = %d\n",ntknots);
 #endif
 
-  arr4 = PyArray_FROM_OTF(arg4,NPY_FLOAT,NPY_IN_ARRAY);
+  arr4 = PyArray_FROM_OTF(arg4,NPY_FLOAT,NPY_ARRAY_IN_ARRAY);
   if (arr4 != NULL) {
     ndc = PyArray_NDIM(arr4);
     if (ndc > 0) {
