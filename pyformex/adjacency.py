@@ -118,7 +118,7 @@ def reduceAdjacency(adj):
     n = adj.shape[0]
     adj[adj == arange(n).reshape(n, -1)] = -1 # remove the item i
     adj = sortAdjacency(adj)
-    adj[adj[:, :-1] == adj[:, 1:]] = -1 #remove duplicate items
+    adj[where(adj[:, :-1] == adj[:, 1:])] = -1 #remove duplicate items
     adj = sortAdjacency(adj)
     return adj
 
@@ -199,8 +199,8 @@ class Adjacency(ndarray):
      [-1 -1 -1]]
     """
     #
-    #  BV: WE SHOULD ADD A CONSISTENCY CHECK THAT WE HAVE BIDIRECTIONAL
-    #      CONNECTIONS: if row a has a value b, row b should have a value a
+    #  TODO: WE SHOULD ADD A CONSISTENCY CHECK THAT WE HAVE BIDIRECTIONAL
+    #        CONNECTIONS: if row a has a value b, row b should have a value a
     #
 
     #

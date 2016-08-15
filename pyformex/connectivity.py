@@ -1037,7 +1037,7 @@ class Connectivity(ndarray):
             if sel.testDegenerate().any():
                 LO = lo.copy()
                 # change the double entries to -1
-                LO[LO[:, :-1] == LO[:, 1:]] = -1
+                LO[where(LO[:, :-1] == LO[:, 1:])] = -1
             else:
                 LO = lo
             uniq, uniqid = uniqueRows(LO, permutations=permutations)
