@@ -227,6 +227,25 @@ def apply_config_changes(cfg):
             del cfg[key]
 
 
+def list_modules(pkgs):
+    """List the Python modules in the specified pyFormex packages.
+
+    Parameters:
+
+    - `pkgs`: a list of pyFormex package names. The package name is a
+      subdirectory of the main pyformex package. Two special package names
+      are recognized:
+
+      - 'core': list the modules in the top level pyformex package
+      - 'all': list all pyformex packages
+
+    """
+    for subpkg in pkgs:
+        #print("### %s ###" % subpkg)
+        files = utils.moduleList(subpkg)
+        print('\n'.join(files))
+
+
 def run_pytest(modules):
     """Run the pytests for the specified pyFormex modules.
 
@@ -456,8 +475,8 @@ def run(argv=[]):
        help="List the pyFormex Python source files and exit.",
        )
     MO("--listmodules",
-       action="append", dest="listmodules", default=None,
-       help="List the pyFormex Python modules in the specified subpackage and exit. The default is to list all. Specify 'core' to just list the modules not in any subpackage.",
+       action="store", dest="listmodules", default=None, metavar='PKG', nargs='*',
+       help="List the Python modules in the specified pyFormex subpackage and exit. Specify 'core' to just list the modules in the pyFormex top level. Specify 'all' to list all modules. The default is to list the modules in core, lib, plugins, gui, opengl.",
        )
     MO("--search",
        action="store_true", dest="search", default=False,
@@ -681,10 +700,11 @@ def run(argv=[]):
             os.system(cmd)
         return
 
-    if pf.options.listmodules:
-        for subpkg in pf.options.listmodules:
-            files = utils.moduleList(subpkg)
-            print('\n'.join(files))
+    if pf.options.listmodules is not None:
+        #print(pf.options.listmodules)
+        if not pf.options.listmodules:
+            pf.options.listmodules = [ 'core', 'lib', 'plugins', 'gui', 'opengl' ]
+        list_modules(pf.options.listmodules)
         return
 
     # Start normal pyformex program (gui or nogui)
