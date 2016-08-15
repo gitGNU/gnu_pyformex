@@ -36,6 +36,7 @@ from __future__ import print_function
 import pyformex as pf
 
 from pyformex import utils
+from pyformex import software
 import sys, os
 
 calpy_path = None  # never tried to detect
@@ -45,14 +46,14 @@ def detect(trypaths=None):
 
     global calpy_path
 
-    calpy = utils.checkExternal('calpy')
+    calpy = software.checkExternal('calpy')
     if not calpy:
         return
 
     print("You have calpy version %s" % calpy)
     path = ''
     calpy = calpy.split('-')[0]  # trim the version trailer
-    if utils.checkVersion('calpy', '0.3.4-rev3', external=True) >= 0:
+    if software.checkVersion('calpy', '0.3.4-rev3', external=True) >= 0:
         P = utils.command('calpy --whereami')
         if not P.sta:
             path = P.out.splitlines()[0]
@@ -86,7 +87,7 @@ def check(trypaths=None):
     except ImportError:
         pass
 
-    if utils.hasModule('calpy', check=True):
+    if software.hasModule('calpy', check=True):
         return True
     else:
         pf.warning("Sorry, I can not run this example, because you do not have calpy installed (at least not in a place where I can find it).")
