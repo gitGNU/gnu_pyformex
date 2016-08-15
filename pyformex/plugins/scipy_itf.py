@@ -29,15 +29,15 @@ Documentation for Scipy can be found on http://scipy.org/scipylib/index.html.
 
 Note that while NumPy (also a Scipy project) is required for pyFormex, the full
 SciPy package is not. There are however some functions of the SciPy library that
-can be made to good use. If you have SciPy installed, you will have these extended
-functionalities.
+can be made to good use. If you have SciPy installed, you will have these
+extended functionalities.
 
 """
 from __future__ import print_function
 
 
-from pyformex import utils
-utils.requireModule('scipy')
+from pyformex import software
+software.requireModule('scipy')
 
 from pyformex.connectivity import Connectivity
 import pyformex.arraytools as at
@@ -60,7 +60,7 @@ def convexHull(points):
     are in a plane or all the points of a 2D set are on a line.
 
     """
-    utils.requireModule('scipy', '0.12.0')
+    software.requireModule('scipy', '0.12.0')
     from scipy.spatial import ConvexHull
 
     points = at.checkArray(points,ndim=2,kind='f')

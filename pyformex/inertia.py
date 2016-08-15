@@ -433,7 +433,7 @@ def surface_volume_inertia(x,center_only=False):
     >>> S = sphere(4).toFormex()
     >>> V,C,I = surface_volume_inertia(S.coords)
     >>> print(V,C,I)
-    4.04701 [-0. -0. -0.] [ 1.58  1.58  1.58  0.    0.    0.  ]
+    4.04701 [-0. -0. -0.] [ 1.58  1.58  1.58 -0.    0.    0.  ]
 
     """
     def K(x,y):

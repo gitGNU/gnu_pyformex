@@ -685,12 +685,12 @@ class TriSurface(Mesh):
         >>> S = sphere(8)
         >>> I = S.volumeInertia()
         >>> print(I.mass)
-        4.1526684761
+        4.15268468857
         >>> print(I.ctr)
         [-0. -0. -0.]
         >>> print(I.tensor)
-        [[ 1.65 -0.   -0.  ]
-         [-0.    1.65 -0.  ]
+        [[ 1.65  0.   -0.  ]
+         [ 0.    1.65 -0.  ]
          [-0.   -0.    1.65]]
 
         """
