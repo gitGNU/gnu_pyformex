@@ -274,14 +274,8 @@ class Field(object):
                 if totype == 'elemc':
                     data = self.data.mean(axis=1)
                 elif totype == 'node':
-                    data = at.nodalSum(self.data,self.geometry.elems,avg=True,return_all=False)
-                    # If the elems nodal numbering contains gaps, nodalSum
-                    # will fill in zero values for the unused nodes.
-                    # However, if unused nodes exist at the end of the
-                    # coords array, these nodes will not be given values,
-                    # so will fill them in here.
-                    if data.shape[0] < self.geometry.nnodes():
-                        data = at.growAxis(data,self.geometry.nnodes()-data.shape[0],axis=0)
+                    print("DANGEROUS CONVERSION")
+                    data = at.nodalAvg(self.data,self.geometry.elems,self.geometry.nnodes())
             elif self.fldtype == 'elemc':
                 if totype == 'elemn':
                     data = at.multiplex(self.data,self.geometry.nplex(),axis=1)

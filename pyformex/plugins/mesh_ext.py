@@ -201,28 +201,29 @@ def scaledJacobian(self,scaled=True,blksize=100000):
         return Jscaled.min(axis=1)
 
 
-@utils.deprecated_by('mesh_ext Mesh.elementToNodal','Field.convert')
-def elementToNodal(self, val):
-    """_Compute nodal values from element values.
+# REMOVED in 1.0.3
+# @utils.deprecated_by('mesh_ext Mesh.elementToNodal','Field.convert')
+# def elementToNodal(self, val):
+#     """_Compute nodal values from element values.
 
-    Given scalar values defined on elements, finds the average values at
-    the nodes.
-    Returns the average values at the (maxnodenr+1) nodes.
-    Nodes not occurring in elems will have all zero values.
-    NB. It now works with scalar. It could be extended to vectors.
+#     Given scalar values defined on elements, finds the average values at
+#     the nodes.
+#     Returns the average values at the (maxnodenr+1) nodes.
+#     Nodes not occurring in elems will have all zero values.
+#     NB. It now works with scalar. It could be extended to vectors.
 
-    This method is deprecated: you should use the
-    :class:`Fields` class::
+#     This method is deprecated: you should use the
+#     :class:`Fields` class::
 
-      Field(aMesh,fldtype='elemc',data=val).convert('node')
+#       Field(aMesh,fldtype='elemc',data=val).convert('node')
 
-    """
-    eval = val.reshape(-1, 1, 1)
-    #
-    # Do we really need to duplicate all th
-    eval = column_stack(repeat([eval], self.nplex(), 0))#assign this area to all nodes of the elem
-    nval = nodalSum(val=eval, elems=self.elems, avg=True, return_all=False)
-    return nval.reshape(-1)
+#     """
+#     eval = val.reshape(-1, 1, 1)
+#     #
+#     # Do we really need to duplicate all th
+#     eval = column_stack(repeat([eval], self.nplex(), 0))#assign this area to all nodes of the elem
+#     nval = nodalSum(val=eval, elems=self.elems, avg=True, return_all=False)
+#     return nval.reshape(-1)
 
 
 # BV:

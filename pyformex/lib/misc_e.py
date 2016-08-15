@@ -60,31 +60,42 @@ def _fuse(x, val, flag, sel, tol):
             nexti += 1
 
 
-def nodalSum(val, elems, work, avg, return_all=False):
+def nodalSum(val, elems, nnod):
     """Compute the nodal sum of values defined on elements.
 
-    val   : (nelems,nplex,nval) values at points of elements.
-    elems : (nelems,nplex) nodal ids of points of elements.
-    work  : (nnod,nval)  returns the summed values at the nodes
+    Parameters:
 
-    On return each value is replaced with the sum of values at that node.
-    If avg=True, the values are replaced with the average instead.
+    - `val`   : float (nelems,nplex,nval): nval values at nplex nodes
+      of nelems elements.
+    - `elems` : int (nelems,nplex): node indices of the elements.
+    - `nnod`  : int: the number of nodes. Should be higher than the maxnod,
+      the highest node number in elems. If negative, will be set to
+      maxnod+1.
 
-    The summation is done inplace, so there is no return value!
+    Returns a tuple of two arrays:
+
+    - `sum`: float: (nnod, nval): sum of all the values at same node
+    - `cnt`: int: (nnod): number of values summed at each node
+
     """
-    raise ImportError("The nodalSum function in the emulation library is missing!")
-    nodes = np.unique(elems)
-    for i in nodes:
-        wi = where(elems==i)
-        vi = val[wi]
-        if avg:
-            raise RuntimeError("THIS DOES NOT WORK!!!!")
-            vi = vi.sum(axis=0)/vi.shape[0]
-        else:
-            vi = vi.sum(axis=0)
-        work[i] = vi
-        val[wi] = vi
+    if nnod < 0:
+        nnod = elems.max() + 1
 
+    # create return arrays
+    nval = val.shape[2]
+    sum = np.zeros((nnod,nval),dtype=np.float32)
+    cnt = np.zeros((nnod,),dtype=np.int32)
+
+    print("val: %s" % str(val.shape))
+    print("elems: %s" % str(elems.shape))
+    print("sum: %s" % str(sum.shape))
+    print("cnt: %s" % str(cnt.shape))
+    for i,elem in enumerate(elems):
+        for j,node in enumerate(elem):
+            sum[node] += val[i,j]
+            cnt[node] += 1
+
+    return sum,cnt[:,np.newaxis]
 
 
 def tofile_int32(val, fil, fmt):

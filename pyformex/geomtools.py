@@ -1311,9 +1311,15 @@ def averageNormals(coords,elems,atNodes=False,treshold=None):
     If atNodes == True, a more compact array with the unique averages
     at the nodes is returned.
     """
-    n = polygonNormals(coords[elems])
-    n = nodalSum(n, elems, return_all=not atNodes, direction_treshold=treshold)
-    return normalize(n)
+    if treshold is not None:
+        print("AVERAGE NORMALS THRESHOLD IS NOT IMPLEMENTED!")
+    normals = polygonNormals(coords[elems])
+    normals,cnt = nodalSum(normals, elems, coords.shape[0])
+    # No need to take average, since we are going to normalize anyway
+    normals = normalize(normals)
+    if not atNodes:
+        normals = normals[elems]
+    return normals
 
 
 def triangleInCircle(x):

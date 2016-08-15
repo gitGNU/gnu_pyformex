@@ -2347,36 +2347,84 @@ def uniformParamValues(n,umin=0.0,umax=1.0):
         return umin + arange(n+1) * (umax-umin) / float(n)
 
 
-def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
-    """Compute the nodal sum of values defined on elements.
+def nodalSum(val, elems, nnod=-1):
+    """Compute the nodal sum of values defined on element nodes.
 
-    val is a (nelems,nplex,nval) array of values defined at points of elements.
-    elems is a (nelems,nplex) array with nodal ids of all points of elements.
+    Parameters:
 
-    The return value is a (nelems,nplex,nval) array where each value is
-    replaced with the sum of its value at that node.
-    If avg=True, the values are replaced with the average instead.
-    If return_all==True(default), returns an array with shape (nelems,nplex,3),
-    else, returns an array with shape (maxnodenr+1,3). In the latter case,
-    nodes not occurring in elems will have all zero values.
+    - `val`   : float (nelems,nplex,nval): nval values at nplex nodes
+      of nelems elements.
+    - `elems` : int (nelems,nplex): node indices of the elements.
+    - `nnod`  : int: the number of nodes. Should be higher than the maxnod,
+      the highest node number in elems. If negative, will be set to
+      maxnod+1.
 
-    If a direction_treshold is specified and nval > 1, values will only be
-    summed if their direction is close (projection of one onto the other is
-    higher than the specified tolerance).
+    Returns a tuple of two arrays:
+
+    - `sum`: float: (nnod, nval): sum of all the values at same node
+    - `cnt`: int: (nnod): number of values summed at each node
+
+    See also: :func:`nodalAvg`
     """
-    from pyformex.lib import misc
+    from pyformex.lib import misc_e as misc
     if val.ndim != 3:
         val = val.reshape(val.shape+(1,))
     if elems.shape != val.shape[:2]:
         raise RuntimeError("shapes of val %s and elems %s do not match"%(elems.shape, val.shape[:2]))
-    val = val.astype(float32)
-    elems = elems.astype(int32)
-    if val.shape[2] > 1 and direction_treshold is not None:
-        #nodalSum2(val,elems,direction_treshold)
-        val = misc.nodalSum(val, elems, elems.max(), avg, return_all)
-    else:
-        val = misc.nodalSum(val, elems, elems.max(), avg, return_all)
-    return val
+    return misc.nodalSum(val, elems, nnod)
+
+
+def nodalAvg(val, elems, nnod=-1):
+    """Compute the nodal average of values defined on element nodes.
+
+    Parameters:
+
+    - `val`   : float (nelems,nplex,nval): nval values at nplex nodes
+      of nelems elements.
+    - `elems` : int (nelems,nplex): node indices of the elements.
+    - `nnod`  : int: the number of nodes. Should be higher than the maxnod,
+      the highest node number in elems. If negative, will be set to
+      maxnod+1.
+
+    Returns the nodal average of the values at the common nodes.
+
+    This is equivalent with the quotient of the two values returned
+    by :func:`nodalSum`
+    """
+    sum,cnt = nodalSum(val, elems, nnod)
+    return sum/cnt
+
+
+# def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
+#     """Compute the nodal sum of values defined on elements.
+
+#     val is a (nelems,nplex,nval) array of values defined at points of elements.
+#     elems is a (nelems,nplex) array with nodal ids of all points of elements.
+
+#     The return value is a (nelems,nplex,nval) array where each value is
+#     replaced with the sum of its value at that node.
+#     If avg=True, the values are replaced with the average instead.
+#     If return_all==True(default), returns an array with shape (nelems,nplex,3),
+#     else, returns an array with shape (maxnodenr+1,3). In the latter case,
+#     nodes not occurring in elems will have all zero values.
+
+#     If a direction_treshold is specified and nval > 1, values will only be
+#     summed if their direction is close (projection of one onto the other is
+#     higher than the specified tolerance).
+#     """
+#     from pyformex.lib import misc
+#     if val.ndim != 3:
+#         val = val.reshape(val.shape+(1,))
+#     if elems.shape != val.shape[:2]:
+#         raise RuntimeError("shapes of val %s and elems %s do not match"%(elems.shape, val.shape[:2]))
+#     val = val.astype(float32)
+#     elems = elems.astype(int32)
+#     if val.shape[2] > 1 and direction_treshold is not None:
+#         #nodalSum2(val,elems,direction_treshold)
+#         val = misc.nodalSum(val, elems, elems.max(), avg, return_all)
+#     else:
+#         val = misc.nodalSum(val, elems, elems.max(), avg, return_all)
+#     return val
 
 
 def pprint(a,label=''):
