@@ -126,6 +126,7 @@ DATA_FILES = listTree(
     excludefiles=['.*\.pyc','.*~$','PTAPE.*'],
     includefiles=[
         'README',
+        'template.py',
         'benedict_6\.jpg',
         'bifurcation\.off',
         'blippo\.pgf',

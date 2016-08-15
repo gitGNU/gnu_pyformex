@@ -36,6 +36,7 @@ LIBDIR= ${PYFORMEXDIR}/lib
 DOCDIR= ${PYFORMEXDIR}/doc
 BINDIR= ${PYFORMEXDIR}/bin
 EXTDIR= ${PYFORMEXDIR}/extra
+DATADIR= ${PYFORMEXDIR}/data
 SPHINXDIR= sphinx
 
 SOURCE= ${PYFORMEXDIR}/pyformex \
@@ -67,7 +68,7 @@ EXAMPLES= \
 	$(wildcard ${PYFORMEXDIR}/examples/*.py) \
 	$(wildcard ${PYFORMEXDIR}/examples/Demos/*.py) \
 
-EXAMPLEDATA= $(wildcard ${PYFORMEXDIR}/data/*.db)
+EXAMPLEDATA= $(wildcard ${DATADIR}/*.db)
 
 DOCSOURCE= \
 	$(wildcard ${SPHINXDIR}/*.rst) \
@@ -91,7 +92,7 @@ OTHERSTAMPABLE= README Makefile ReleaseNotes \
 
 NONSTAMPABLE= COPYING
 
-STAMPABLE= $(filter-out ${PYFORMEXDIR}/template.py,${SOURCE}) \
+STAMPABLE= ${SOURCE} \
 	${EXECUTABLE} ${CSOURCE} ${EXAMPLES} ${DOCSOURCE} ${BINSOURCE} \
 	${LIBSOURCE} \
 	$(filter-out ${EXTDIR}/pygl2ps/gl2ps_wrap.c,${EXTSOURCE}) \

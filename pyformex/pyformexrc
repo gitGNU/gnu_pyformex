@@ -58,7 +58,7 @@ userconfdir = os.path.join(homedir,'.config','pyformex')
 siteprefs = '/etc/pyformex.conf'
 localprefs = 'pyformex.conf'
 autorun = os.path.join(userconfdir,'startup.py')
-scripttemplate = os.path.join(pyformexdir,'template.py')
+scripttemplate = os.path.join(datadir,'template.py')
 curfile = ''
 curproj = ''
 
