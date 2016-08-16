@@ -276,9 +276,9 @@ class Project(TrackedDict):
         f = open(self.filename, 'w'+self.mode)
         # write header
         h = self.header_data()
-        print(h)
-        print(utils.dictStr(h))
-        header = "%s" % h
+        #print(h)
+        #print(utils.dictStr(h))
+        header = "%s\n" % h
         f.write(header)
         f.flush()
         if self.mode == 'b':
