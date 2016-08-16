@@ -86,16 +86,12 @@ def nodalSum(val, elems, nnod):
     sum = np.zeros((nnod,nval),dtype=np.float32)
     cnt = np.zeros((nnod,),dtype=np.int32)
 
-    print("val: %s" % str(val.shape))
-    print("elems: %s" % str(elems.shape))
-    print("sum: %s" % str(sum.shape))
-    print("cnt: %s" % str(cnt.shape))
     for i,elem in enumerate(elems):
         for j,node in enumerate(elem):
             sum[node] += val[i,j]
             cnt[node] += 1
 
-    return sum,cnt[:,np.newaxis]
+    return sum,cnt
 
 
 def tofile_int32(val, fil, fmt):

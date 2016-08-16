@@ -47,7 +47,7 @@ accelerate = gui = False
 if pf.options:
     # testing for not False makes other values than T/F (like None) pass
     # test for existence of these is for sphinx
-    accelerate = pf.cfg.get('uselib',False) is not False
+    accelerate = pf.options.uselib is not False
     gui = hasattr(pf.options,'gui') and pf.options.gui
 
 

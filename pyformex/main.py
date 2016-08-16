@@ -718,9 +718,8 @@ def run(argv=[]):
         pf.cfg['gui/redirect'] = pf.options.redirect
     delattr(pf.options, 'redirect') # avoid abuse
 
-    if pf.options.uselib is not None:
-        pf.cfg['uselib'] = pf.options.uselib
-    delattr(pf.options, 'uselib') # avoid abuse
+    if pf.options.uselib is None:
+        pf.options.uselib = pf.cfg['uselib']
 
     ###################################################################
 

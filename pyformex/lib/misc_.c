@@ -347,81 +347,60 @@ static PyObject * coords_fuse(PyObject *dummy, PyObject *args)
 
 /**************************************************** nodal_sum ****/
 /* Nodal sum of values defined on elements */
-/* args:  val, elems, avg
-    val   : (nelems,nplex,nval) values defined at nplex points of elements.
-    elems : (nelems,nplex) nodal ids of points of elements.
-    out   : (nelems,nplex,nval) return values where each value is
-            replaced with the sum of its value at that node.
-    avg   : 0/1 : If avg=True, the values are replaced with the average instead.
-            (CURRENTLY NOT IMPLEMENTED)
-    The operations can be done in-place by specifying the same array
-    for val and out.
-
-    Workspace:
-    cnt :
-    work : (elems.max()+1,nval) : workspace, should be zero on entry
-
-
+/*
+   Arguments: see nodalSum
 */
 
 
-void nodal_sum(float *val, int *elems, float *out, int nelems, int nplex, int nval, int maxnod, int avg, int all)
+void nodal_sum(float *val, int *elems, float *sum, int *cnt, int nelems, int nplex, int nval, int nnod)
 {
-  int i,k,n,nnod=maxnod+1;
-  int *cnt = (int *) malloc(nnod*sizeof(int));
-  float *work;
-
-  if (all)
-    work = (float *) malloc(nnod*nval*sizeof(float));
-  else
-    work = out;
+  int i,k,n;
 
   for (i=0; i<nnod; i++) cnt[i] = 0;
-  for (i=0; i<nnod*nval; i++) work[i] = 0.0;
+  for (i=0; i<nnod*nval; i++) sum[i] = 0.0;
 
   /* Loop over the input and sum */
-  for (i=0; i<nelems*nplex; i++) {
+  for (i=0; i<nelems*nplex; ++i) {
     n = elems[i];
-    for (k=0; k<nval; k++) work[n*nval+k] += val[i*nval+k];
+    for (k=0; k<nval; ++k) sum[n*nval+k] += val[i*nval+k];
     cnt[n]++;
   }
-  /* Divide by count */
-  if (avg)
-    for (n=0; n<=maxnod; n++)
-      if (cnt[n] > 0)
-  	for (k=0; k<nval; k++) work[n*nval+k] /= cnt[n];
-
-  /* Place back results */
-  if (all)
-    for (i=0; i<nelems*nplex; i++) {
-      n = elems[i];
-      for (k=0; k<nval; k++) out[i*nval+k] = work[n*nval+k];
-  }
-
-  if (all)
-    free(work);
-  free(cnt);
 }
 
-/*
+/* nodalSum(val, elems, nnod)
 
-   maxnod: highest node number
+    """Compute the nodal sum of values defined on elements.
+
+    Parameters:
+
+    - `val`   : float (nelems,nplex,nval): nval values at nplex nodes
+      of nelems elements.
+    - `elems` : int (nelems,nplex): node indices of the elements.
+    - `nnod`  : int: the number of nodes. Should be higher than the maxnod,
+      the highest node number in elems. If negative, will be set to
+      maxnod+1.
+
+    Returns a tuple of two arrays:
+
+    - `sum`: float: (nnod, nval): sum of all the values at same node
+    - `cnt`: int: (nnod): number of values summed at each node
+
+    """
 */
 static PyObject * nodalSum(PyObject *dummy, PyObject *args)
 {
-  PyObject *arg1=NULL, *arg2=NULL, *ret=NULL;
+  PyObject *arg1=NULL, *arg2=NULL, *ret1=NULL, *ret2=NULL;
   PyObject *arr1=NULL, *arr2=NULL;
-  float *val,*out;
-  int *elems;
-  int avg, all, maxnod;
-  if (!PyArg_ParseTuple(args, "OOiii", &arg1, &arg2, &maxnod, &avg, &all)) return NULL;
+  float *val,*sum;
+  int *elems,*cnt;
+  int nnod,nelems,nplex,nval,i;
+  if (!PyArg_ParseTuple(args, "OOi", &arg1, &arg2, &nnod)) return NULL;
   arr1 = PyArray_FROM_OTF(arg1, NPY_FLOAT, NPY_ARRAY_IN_ARRAY);
   if (arr1 == NULL) return NULL;
   arr2 = PyArray_FROM_OTF(arg2, NPY_INT, NPY_ARRAY_IN_ARRAY);
   if (arr2 == NULL) goto fail;
 
   npy_intp * dim;
-  int nelems,nplex,nval;
   dim = PYARRAY_DIMS(arg1);
   nelems = dim[0];
   nplex = dim[1];
@@ -430,23 +409,29 @@ static PyObject * nodalSum(PyObject *dummy, PyObject *args)
   val = (float *)PYARRAY_DATA(arr1);
   elems = (int *)PYARRAY_DATA(arr2);
 
-  /* create return  array */
-  if (all)
-    ret = PyArray_SimpleNew(3,dim, NPY_FLOAT);
-  else {
-    dim[0] = maxnod+1;
-    dim[1] = nval;
-    ret = PyArray_SimpleNew(2,dim, NPY_FLOAT);
+  if (nnod < 0) {
+    nnod = 0;
+    for (i=0; i<nelems*nplex; ++i)
+      if (elems[i] > nnod) nnod = elems[i];
+    ++nnod;
   }
-  out = (float *)PYARRAY_DATA(ret);
+
+  /* create return arrays */
+  npy_intp newdim[2];
+  newdim[0] = nnod;
+  newdim[1] = nval;
+  ret1 = PyArray_SimpleNew(2,newdim, NPY_FLOAT);
+  ret2 = PyArray_SimpleNew(1,newdim, NPY_INT);
+  sum = (float *)PYARRAY_DATA(ret1);
+  cnt = (int *)PYARRAY_DATA(ret2);
 
   /* compute */
-  nodal_sum(val,elems,out,nelems,nplex,nval,maxnod,avg,all);
+  nodal_sum(val,elems,sum,cnt,nelems,nplex,nval,nnod);
 
   /* Clean up and return */
   Py_DECREF(arr1);
   Py_DECREF(arr2);
-  return ret;
+  return Py_BuildValue("OO",ret1,ret2);
  fail:
   Py_XDECREF(arr1);
   Py_XDECREF(arr2);

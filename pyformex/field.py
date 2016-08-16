@@ -274,7 +274,6 @@ class Field(object):
                 if totype == 'elemc':
                     data = self.data.mean(axis=1)
                 elif totype == 'node':
-                    print("DANGEROUS CONVERSION")
                     data = at.nodalAvg(self.data,self.geometry.elems,self.geometry.nnodes())
             elif self.fldtype == 'elemc':
                 if totype == 'elemn':

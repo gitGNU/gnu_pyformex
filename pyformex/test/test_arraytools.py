@@ -101,5 +101,24 @@ def test_niceLogSize():
     assert niceLogSize(0.00045676) == -3
 
 
+def test_nodalSum_Avg():
+    val = np.array([
+        [[ 0.,  0.],
+         [ 2., 20.],
+         [ 3., 30.],
+         [ 1., 10.]],
+        [[ 2., 20.],
+         [ 4., 40.],
+         [ 5., 50.],
+         [ 3., 30.]]])
+    elems = np.array([
+        [0, 2, 3, 1],
+        [2, 4, 5, 3]])
+    sum,cnt = nodalSum(val,elems)
+    assert isclose(sum,[[0,0],[1,10],[4,40],[6,60],[4,40],[5,50]]).all()
+    assert (cnt == [1, 1, 2, 2, 1, 1]).all()
+    avg = nodalAvg(val,elems)
+    print(avg)
+    assert isclose(avg,[[0,0],[1,10],[2,20],[3,30],[4,40],[5,50]]).all()
 
 # End

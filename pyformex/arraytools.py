@@ -2366,11 +2366,13 @@ def nodalSum(val, elems, nnod=-1):
 
     See also: :func:`nodalAvg`
     """
-    from pyformex.lib import misc_e as misc
+    from pyformex.lib import misc
     if val.ndim != 3:
         val = val.reshape(val.shape+(1,))
     if elems.shape != val.shape[:2]:
         raise RuntimeError("shapes of val %s and elems %s do not match"%(elems.shape, val.shape[:2]))
+    val = val.astype(Float)
+    elems = elems.astype(Int)
     return misc.nodalSum(val, elems, nnod)
 
 
@@ -2392,7 +2394,7 @@ def nodalAvg(val, elems, nnod=-1):
     by :func:`nodalSum`
     """
     sum,cnt = nodalSum(val, elems, nnod)
-    return sum/cnt
+    return sum/cnt[:,newaxis]
 
 
 # def nodalSum(val,elems,avg=False,return_all=True,direction_treshold=None):
