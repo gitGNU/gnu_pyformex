@@ -1016,12 +1016,12 @@ def moduleList(package='all'):
         modules = [ m for m in modules if not '.' in m ]
     elif package != 'all':
         modules = [ m for m in modules if m.startswith(package+'.') ]
-    if sys.hexversion < 0x03000000:
-        if 'compat_3k' in modules:
-            modules.remove('compat_3k')
-    else:
+    if pf.PY3:
         if 'compat_2k' in modules:
             modules.remove('compat_2k')
+    else:
+        if 'compat_3k' in modules:
+            modules.remove('compat_3k')
     return modules
 
 

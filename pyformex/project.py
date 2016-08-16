@@ -199,15 +199,15 @@ class Project(TrackedDict):
         signature: pyFormex ...
         contents: ['a', 'b', 'c', 'd', 'e']
       <BLANKLINE>
-      >>> print(utils.dictStr(P))
-      {'a': 1, 'b': 2, 'c': 3, 'd': [1, 2, 3], 'e': {'g': 5, 'f': 4}}
+      >>> print(utils.dictStr(P)) # doctest: +ELLIPSIS
+      {'a': 1, 'b': 2, 'c': 3, 'd': [1, 2, 3], 'e': ...}
       >>> P.save(quiet=True)
       >>> P.clear()
-      >>> print(dict.__str__(P))
+      >>> print(utils.dictStr(P))
       {}
       >>> P.load(quiet=True)
-      >>> print(utils.dictStr(P))
-      {'a': 1, 'b': 2, 'c': 3, 'd': [1, 2, 3], 'e': {'g': 5, 'f': 4}}
+      >>> print(utils.dictStr(P)) # doctest: +ELLIPSIS
+      {'a': 1, 'b': 2, 'c': 3, 'd': [1, 2, 3], 'e': ...}
 
     """
 
@@ -275,7 +275,11 @@ class Project(TrackedDict):
             #print("  Contents: %s" % self.keys())
         f = open(self.filename, 'w'+self.mode)
         # write header
-        f.write("%s\n" % self.header_data())
+        h = self.header_data()
+        print(h)
+        print(utils.dictStr(h))
+        header = "%s" % h
+        f.write(header)
         f.flush()
         if self.mode == 'b':
             # When using binary, can as well use highest protocol

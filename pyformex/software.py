@@ -93,7 +93,7 @@ known_externals = {
     }
 
 
-if sys.hexversion >= 0x03000000:
+if pf.PY3:
     # Some detect commands fail on Python3
     del known_externals['calculix']
     del known_externals['postabq']

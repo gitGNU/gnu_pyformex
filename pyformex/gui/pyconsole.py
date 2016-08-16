@@ -30,11 +30,11 @@ from __future__ import print_function
 import sys
 import traceback
 
-
+import pyformex as pf
 from pyformex.gui import QtGui, QtCore
 from pyformex.gui.guimain import Board
 
-if sys.hexversion < 0x03000000:
+if not pf.PY3:
     range = xrange
 
 
@@ -61,7 +61,6 @@ parent=None):
         self.setUndoRedoEnabled(False)
         self.document().setDefaultFont(QtGui.QFont("monospace", 10, QtGui.QFont.Normal))
         self.showMessage(startup_message)
-
 
 
     def write(self,s,color=None):

@@ -94,13 +94,17 @@ if sys.hexversion & 0xFFFF0000 > target_version:
     #print(startup_warnings)
 
 
-# Compatibility with Python2 and Python3
+# A single variable to flag Python 3
+PY3 = sys.hexversion >= 0x03000000
+
+# Compatibility between Python2 and Python3
 # We keep these in separate modules, because the ones for 2k might
 # not compile in 3k and vice-versa.
-if sys.hexversion < 0x03000000:
-    from pyformex.compat_2k import *
-else:
+
+if PY3:
     from pyformex.compat_3k import *
+else:
+    from pyformex.compat_2k import *
 
 
 #### Detect install type ########

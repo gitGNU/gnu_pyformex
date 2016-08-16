@@ -132,7 +132,7 @@ class Attributes(Dict):
 
 
     def __repr__(self):
-        return dict.__repr__(utils.removeDict(self, ['_default_dict_']))
+        return __str__(self)
 
 
 # End

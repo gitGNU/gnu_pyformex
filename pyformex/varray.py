@@ -69,6 +69,7 @@ by default, but provides the methods to sort them when needed.
 """
 from __future__ import print_function
 
+import pyformex as pf
 from pyformex import arraytools as at
 import numpy as np
 import sys
@@ -395,7 +396,7 @@ class Varray(object):
         self._row += 1
         return row
 
-    if (sys.hexversion) < 0x03000000:
+    if not pf.PY3:
         # In Python2 the next method is used instead of __next__
         next = __next__
 
