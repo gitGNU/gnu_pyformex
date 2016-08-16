@@ -30,6 +30,7 @@ from __future__ import print_function
 
 
 from pyformex.mydict import Dict, returnNone
+from pyformex import utils
 
 
 class Attributes(Dict):
@@ -127,13 +128,11 @@ class Attributes(Dict):
         This will print the Attributes in a format like a dict, but with
         the keys sorted, and the _default_dict_ item is not printed.
         """
-        s = [ "'%s': %r" % item for item in self.items() if item[0] != '_default_dict_' ]
-        return '{' + ', '.join(sorted(s)) + '}'
+        return utils.dictStr(self,['_default_dict_' ])
 
 
     def __repr__(self):
-        from pyformex.utils import removeDict
-        return dict.__repr__(removeDict(self, ['_default_dict_']))
+        return dict.__repr__(utils.removeDict(self, ['_default_dict_']))
 
 
 # End

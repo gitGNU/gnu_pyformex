@@ -684,8 +684,8 @@ class TriSurface(Mesh):
         >>> from pyformex.simple import sphere
         >>> S = sphere(8)
         >>> I = S.volumeInertia()
-        >>> print(I.mass)
-        4.15268468857
+        >>> print(I.mass)  # doctest: +ELLIPSIS
+        4.1526846...
         >>> print(I.ctr)
         [-0. -0. -0.]
         >>> print(I.tensor)

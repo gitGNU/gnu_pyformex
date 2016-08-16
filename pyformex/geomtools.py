@@ -1059,7 +1059,7 @@ def hexVolume(x):
 
     Example:
 
-    >>> from elements import Hex8
+    >>> from pyformex.elements import Hex8
     >>> X = Coords(Hex8.vertices).reshape(-1,8,3)
     >>> print(hexVolume(X))
     [ 1.]

@@ -1888,6 +1888,22 @@ def selectDictValues(d, values):
     return [ k for k in d if d[k] in values ]
 
 
+def dictStr(d,skipkeys=[]):
+    """Convert a dict to a string.
+
+    This is much like dict.__str__, but formats all keys as
+    strings and prints the items with the keys sorted.
+
+    This function is can be used as replacement for the __str__
+    method od dict-like classes.
+
+    A list of strings skipkeys kan be specified, to suppress the
+    printing of some special key values.
+    """
+    s = [ "'%s': %r" % item for item in d.items() if item[0] not in skipkeys ]
+    return '{' + ', '.join(sorted(s)) + '}'
+
+
 def formatDict(d):
     """Format a dict in Python source representation.
 
