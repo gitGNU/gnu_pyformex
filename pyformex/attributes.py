@@ -59,11 +59,11 @@ class Attributes(Dict):
     {}
     >>> A(color='red',alpha=0.7,ontop=True)
     >>> print(A)
-    {'color': 'red', 'alpha': 0.7, 'ontop': True}
+    {'alpha': 0.7, 'color': 'red', 'ontop': True}
     >>> A.ontop = None
     >>> A.alpha = 0.8
     >>> print(A)
-    {'color': 'red', 'alpha': 0.8}
+    {'alpha': 0.8, 'color': 'red'}
     >>> B = Attributes({'color':'green'},default=A)
     >>> print(B)
     {'color': 'green'}
@@ -122,8 +122,13 @@ class Attributes(Dict):
 
 
     def __str__(self):
-        from pyformex.utils import removeDict
-        return dict.__str__(removeDict(self, ['_default_dict_']))
+        """Create a string representation of the Attributes.
+
+        This will print the Attributes in a format like a dict, but with
+        the keys sorted, and the _default_dict_ item is not printed.
+        """
+        s = [ "'%s': %r" % item for item in self.items() if item[0] != '_default_dict_' ]
+        return '{' + ', '.join(sorted(s)) + '}'
 
 
     def __repr__(self):
