@@ -105,7 +105,7 @@ class Tensor(np.ndarray):
 
     """
 
-    _contracted_order = ( (0,0), (1,1), (2,2), (1,2), (2,0), (0,1) )
+    _contracted_order = [(0, 1, 2, 1, 2, 0), (0, 1, 2, 2, 0, 1)]
     _contracted_index = np.array([
         [ 0, 5, 4],
         [ 5, 1, 3],
@@ -173,7 +173,7 @@ class Tensor(np.ndarray):
         """Returned the symmetric tensor data as a numpy array with shape (6,)
 
         """
-        return self.sym[zip(*Tensor._contracted_order)]
+        return self.sym[Tensor._contracted_order]
 
     @property
     def tensor(self):

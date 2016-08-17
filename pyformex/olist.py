@@ -32,6 +32,13 @@ from __future__ import print_function
 
 
 def lrange(*args):
+    """Return a range as a list.
+
+    This is a convenience function for compatibility between Python2
+    and Python3. In Python2 the range() function returns a list, in
+    Python3 it doesn't. Use lrange instead of range whenever you need
+    the whole list of numbers (thus not in a for loop).
+    """
     return list(range(*args))
 
 
