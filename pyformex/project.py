@@ -29,7 +29,9 @@ Functions for managing a project in pyFormex.
 from __future__ import print_function
 
 import pyformex as pf
-from pyformex import (pickle, utils, zip,)
+from pyformex import pickle
+from pyformex import utils
+from pyformex import zip
 
 from pyformex.track import TrackedDict
 
@@ -37,6 +39,7 @@ import os, sys
 import gzip
 
 _signature_ = pf.fullVersion()
+
 
 module_relocations = {
     'plugins.mesh': 'pyformex.mesh',
@@ -60,8 +63,9 @@ class_relocations = {
     'formex.Formex': 'pyformex.formex.Formex'
 }
 
-def find_global(module, name):
-    """Override the import path of some classes"""
+
+def find_class(module, name):
+    """Find a class whose name or module has changed"""
     pf.debug("I want to import %s from %s" % (name, module), pf.DEBUG.PROJECT)
     clas = '%s.%s' % (module, name)
     pf.debug("Object is %s" % clas, pf.DEBUG.PROJECT)
@@ -80,17 +84,31 @@ def find_global(module, name):
     return clas
 
 
-def pickle_load(f,try_resolve=True):
-    """Load data from pickle file f."""
-    pi = pickle.Unpickler(f)
-    if try_resolve:
-        pi.find_global = find_global
-    else:
-        pf.debug("NOT TRYING TO RESOLVE RELOCATIONS: YOU MAY GET INTO TROUBLE", pf.DEBUG.PROJECT)
+if pf.PY3:
 
-    return pi.load()
+    class Unpickler(pickle.Unpickler):
+        """Customized Unpickler class"""
 
-highest_format = 3
+        def __init__(self,f,try_resolve=True):
+            """Initialize the Unpickler"""
+            pickle.Unpickler.__init__(self,f)
+            if try_resolve:
+                self.find_class = find_class
+            else:
+                pf.debug("NOT TRYING TO RESOLVE RELOCATIONS: YOU MAY GET INTO TROUBLE", pf.DEBUG.PROJECT)
+
+
+else:
+    def Unpickler(f,try_resolve=True):
+        """Create an Unpickler object"""
+        unpickler = pickle.Unpickler(f)
+        if try_resolve:
+            unpickler.find_global = find_class
+        else:
+            pf.debug("NOT TRYING TO RESOLVE RELOCATIONS: YOU MAY GET INTO TROUBLE", pf.DEBUG.PROJECT)
+        return unpickler
+
+
 
 class Project(TrackedDict):
     """Project: a persistent storage of pyFormex data.
@@ -211,6 +229,12 @@ class Project(TrackedDict):
 
     """
 
+    # Historically there have been a few different formats of the
+    # written Project files (.pyf). This variable holds the latest
+    # version.
+    latest_format = 3
+
+
     def __init__(self,filename=None,access='wr',convert=True,signature=_signature_,compression=5,binary=True,data={},**kargs):
         """Create a new project."""
         if 'create' in kargs:
@@ -275,10 +299,9 @@ class Project(TrackedDict):
             #print("  Contents: %s" % self.keys())
         f = open(self.filename, 'w'+self.mode)
         # write header
-        h = self.header_data()
-        #print(h)
-        #print(utils.dictStr(h))
-        header = "%s\n" % h
+        header = "%s\n" % self.header_data()
+        if pf.PY3:
+            header = header.encode('utf-8')
         f.write(header)
         f.flush()
         if self.mode == 'b':
@@ -348,7 +371,7 @@ class Project(TrackedDict):
         The loaded definitions will update the current project.
         """
         f = self.readHeader(quiet)
-        if self.format < highest_format:
+        if self.format < Project.latest_format:
             if not quiet:
                 print("Format looks like %s" % self.format)
             utils.warn('warn_old_project')
@@ -357,12 +380,12 @@ class Project(TrackedDict):
                 if not quiet:
                     print("Unpickling gzip")
                 pyf = gzip.GzipFile(fileobj=f, mode='rb')
-                p = pickle_load(pyf, try_resolve)
+                p = Unpickler(pyf, try_resolve).load()
                 pyf.close()
             except:
                 if not quiet:
                     print("Unpickling clear")
-                p = pickle_load(f, try_resolve)
+                p = Unpickler(f, try_resolve).load()
             self.update(p)
 
 
