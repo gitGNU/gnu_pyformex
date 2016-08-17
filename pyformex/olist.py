@@ -31,18 +31,23 @@ order of the items in the lists.
 from __future__ import print_function
 
 
+def lrange(*args):
+    return list(range(*args))
+
+
 def roll(a,n=1):
     """Roll the elements of a list n positions forward (backward if n < 0)
 
-    >>> roll(range(5),2)
+    >>> roll(lrange(5),2)
     [2, 3, 4, 0, 1]
     """
     return a[n:] + a[:n]
 
+
 def union(a, b):
     """Return a list with all items in a or in b, in the order of a,b.
 
-    >>> union(range(3),range(1,4))
+    >>> union(lrange(3),lrange(1,4))
     [0, 1, 2, 3]
     """
     return a + [ i for i in b if i not in a ]
@@ -51,7 +56,7 @@ def union(a, b):
 def difference(a, b):
     """Return a list with all items in a but not in b, in the order of a.
 
-    >>> difference(range(3),range(1,4))
+    >>> difference(lrange(3),lrange(1,4))
     [0]
     """
     return [ i for i in a if i not in b ]
@@ -60,7 +65,7 @@ def difference(a, b):
 def symdifference(a, b):
     """Return a list with all items in a or b but not in both.
 
-    >>> symdifference(range(3),range(1,4))
+    >>> symdifference(lrange(3),lrange(1,4))
     [0, 3]
     """
     return difference(a, b) + difference(b, a)
@@ -69,7 +74,7 @@ def symdifference(a, b):
 def intersection (a, b):
     """Return a list with all items in a and  in b, in the order of a.
 
-    >>> intersection(range(3),range(1,4))
+    >>> intersection(lrange(3),lrange(1,4))
     [1, 2]
     """
     return [ i for i in a if i in b ]
@@ -78,7 +83,7 @@ def intersection (a, b):
 def concatenate(a):
     """Concatenate a list of lists.
 
-    >>> concatenate([range(3),range(1,4)])
+    >>> concatenate([lrange(3),lrange(1,4)])
     [0, 1, 2, 1, 2, 3]
     """
     import functools
@@ -158,7 +163,7 @@ def toFront(l, i):
 
     This changes the list inplace and does not return a value.
 
-    >>> L = range(5)
+    >>> L = lrange(5)
     >>> toFront(L,3)
     >>> L
     [3, 0, 1, 2, 4]
@@ -215,19 +220,13 @@ class List(list):
     Any method other than the ones defined here will return a new List
     with the method applied to each of the items, using the same arguments.
 
-    As an exmaple, List([a,b]).len() will return List([a.len(),b.len()])
+    As an example, List([a,b]).len() will return List([a.len(),b.len()])
 
     >>> L = List(['first','second'])
     >>> L.upper()
     ['FIRST', 'SECOND']
-    >>> import pickle
-    >>> with open('test.pickle','w') as f: pickle.dump(L,f)
-    >>> L = 'third'
-    >>> print(L)
-    third
-    >>> with open('test.pickle','r') as f: L = pickle.load(f)
-    >>> print(L)
-    ['first', 'second']
+    >>> L.startswith('f')
+    [True, False]
 
     """
     def __init__(self,*args):
