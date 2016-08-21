@@ -35,7 +35,7 @@ convex hulls of the points projected on each of the coordinate planes.
 Switch off perspective and look along one of the global axis directions
 to see the 2D hulls matching.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

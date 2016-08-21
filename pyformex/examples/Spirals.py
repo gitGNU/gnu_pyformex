@@ -28,7 +28,7 @@ evenly along a curve.
 
 See also the Sweep example for a more sophisticated application of spirals.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

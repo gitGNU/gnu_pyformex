@@ -28,7 +28,7 @@ defines a few essential functions.
 It is the very first thing that is executed when starting pyFormex.
 It is loaded even before main.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os, sys
 import time, datetime

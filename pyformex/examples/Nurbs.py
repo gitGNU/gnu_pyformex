@@ -38,7 +38,7 @@ directly is 7. Higher order curves are approximated by a PolyLine.
 For the last (highest degree) Nurbs curve, also a set of 100 points along
 the curve are shown.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

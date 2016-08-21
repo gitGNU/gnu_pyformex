@@ -37,7 +37,7 @@ pyFormex is being developed at the IBiTech, Ghent University, and can be
 distributed under the GNU General Public License, version 3 or later.
 (C) 2004-2012 Benedict Verhegghe (benedict.verhegghe@ugent.be))
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 # Get the pyformex dir and put it on the head of sys.path
 # This has to be done *before* importing pyformex, so it

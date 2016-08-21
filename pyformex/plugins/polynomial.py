@@ -29,7 +29,7 @@ This module defines the class Polynomial, representing a polynomial
 in n variables.
 """
 
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 import numpy as np

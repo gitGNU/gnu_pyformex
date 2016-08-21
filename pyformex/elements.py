@@ -29,7 +29,7 @@ When interfacing with other programs, one should be aware
 that conversions may be necessary. Conversions to/from external programs
 should be done by the interface modules.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 from pyformex.coords import Coords

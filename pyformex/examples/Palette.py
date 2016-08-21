@@ -26,7 +26,7 @@
 This example displays all the colors in the default palette on a grid
 of (ncolors+1) x (ncolors-1) squares.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 _status = 'checked'
 _level = 'beginner'

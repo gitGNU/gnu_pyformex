@@ -27,7 +27,7 @@
 This example illustrates the use of the NurbsCurve class from the nurbs
 plugin.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

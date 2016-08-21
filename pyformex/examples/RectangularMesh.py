@@ -28,7 +28,7 @@ This example illustrates the use of the mesh_ext.rectangular function
 and the use of seeds in generating Meshes.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

@@ -25,7 +25,7 @@
 """Nurbs menu
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 from pyformex.gui import menu
 from pyformex.plugins import geometry_menu as gm

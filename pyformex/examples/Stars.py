@@ -29,7 +29,7 @@ applied on the geometry and the stars are place with random position and
 orientation in a confined space. Finally, the stars are drawn with random
 RGB colors.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 _status = 'checked'

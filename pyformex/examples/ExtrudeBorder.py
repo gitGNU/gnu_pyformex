@@ -29,7 +29,7 @@ with a number(3) of planes. Each cut leads to a hole, the border of which is
 then extruded over a gioven length in the direction of the plane's positive
 normal.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

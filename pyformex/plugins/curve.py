@@ -29,7 +29,7 @@ one-dimensional geometry in pyFormex. These may be straight lines, polylines,
 higher order curves and collections thereof. In general, the curves are 3D,
 but special cases may be created for handling plane curves.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 import pyformex as pf

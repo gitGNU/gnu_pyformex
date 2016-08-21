@@ -28,7 +28,7 @@ Formex structures representing simple geometric shapes.
 You need to import this module in your scripts to have access to its
 contents.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 from pyformex.formex import *

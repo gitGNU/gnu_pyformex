@@ -47,7 +47,7 @@ Several parts can be drawn on request of the user:
 - randompoints: a set of randomly distributed points on the surface.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

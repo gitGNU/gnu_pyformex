@@ -26,7 +26,7 @@
 
 Shows how to draw with textures and how to set a background image.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 _status = 'checked'
 _level = 'normal'

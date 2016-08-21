@@ -28,7 +28,7 @@ OpenGL rendering and the pyFormex GUI to image files. There are even
 provisions for automatic saving to a series of files and creating
 a movie from these images.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 import pyformex as pf

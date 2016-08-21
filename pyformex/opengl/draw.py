@@ -28,7 +28,7 @@ rendering capabilities of pyFormex. The full contents of this module
 is available to scripts running in the pyFormex GUI without the need
 to import it.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 import pyformex as pf

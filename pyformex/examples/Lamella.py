@@ -27,7 +27,7 @@ The lamella dome is a framed dome that has no meridional nor horizontal bars,
 but only diagonal bars spiraling downwards from the top ring to the bottom
 ring.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

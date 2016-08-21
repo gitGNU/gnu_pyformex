@@ -26,7 +26,7 @@
 Subdivide a cylindrical mesh in different (radial) layers.
 To every layer a different property is assigned.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 _status = 'checked'
 _level = 'normal'

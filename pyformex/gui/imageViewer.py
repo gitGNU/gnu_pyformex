@@ -26,7 +26,7 @@
 
 Part of this code was borrowed from the TrollTech Qt examples.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 caption = "pyFormex Image Viewer"

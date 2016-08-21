@@ -24,7 +24,7 @@
 """Camera handling menu.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 from pyformex.gui import draw, toolbar
 from pyformex.gui.guifunc import viewport_function

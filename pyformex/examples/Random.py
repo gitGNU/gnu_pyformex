@@ -41,7 +41,7 @@ so on. Because the loop parameter is set True, the list of points is wrapped
 around when its end is reached, and the number of multiplex elements is thus
 always equal to the number of points.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

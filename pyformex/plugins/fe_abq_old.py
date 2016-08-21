@@ -45,7 +45,7 @@ Then there are higher level functions that read data from the property module
 and write them to the Abaqus input file and some data classes to organize all
 the data involved with the finite element model.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 from pyformex.plugins.properties import *

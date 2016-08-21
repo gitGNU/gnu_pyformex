@@ -27,7 +27,7 @@ Interface with Abaqus/Calculix FE input files (.inp).
 
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 #
 # DEVS: Try to do this without importing from pyformex

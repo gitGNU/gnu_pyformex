@@ -25,7 +25,7 @@
 
 This is a wrapper around the standard Python :class:`subprocess.Popen` class
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import time
 import subprocess

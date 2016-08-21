@@ -29,7 +29,7 @@ tetgen program
 tetgen is a quality tetrahedral mesh generator and a 3D Delaunay triangulator.
 See http://tetgen.org
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 from pyformex import software

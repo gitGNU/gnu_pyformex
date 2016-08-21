@@ -34,7 +34,7 @@ handles import and export of the dxf model. The tools are mostly interactive.
 While they are intende mostly to be imported in other applications, a plugin
 menu is provided for standard tasks.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 from pyformex.gui import menu
 from pyformex.plugins import dxf, geometry_menu

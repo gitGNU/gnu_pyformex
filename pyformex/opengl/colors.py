@@ -49,7 +49,7 @@ RGB values in 0..1 range and luminance.
    lightgrey = (0.8, 0.8, 0.8) -> 0.604
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 import pyformex.arraytools as at

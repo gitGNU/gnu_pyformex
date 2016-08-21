@@ -27,7 +27,7 @@ Find the intersection points of a set lines with a TriSurface.
 This example teaches how to recognize the intersection points 
 with a specific line.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

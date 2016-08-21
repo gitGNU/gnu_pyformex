@@ -26,7 +26,7 @@
 This modules implements specialized classes and functions for building
 the pyFormex GUI menu system.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import pyformex as pf
 from pyformex import (

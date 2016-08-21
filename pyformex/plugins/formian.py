@@ -67,7 +67,7 @@ No change ::
   ref(i,j)|F  -> F.reflect(i-1,j)
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 from pyformex.formex import Formex

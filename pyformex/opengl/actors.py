@@ -26,7 +26,7 @@
 This module defines all OpenGL Actors that are directly available to the users.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 from pyformex import arraytools as at
 from pyformex.opengl.drawable import Actor

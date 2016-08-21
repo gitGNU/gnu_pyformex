@@ -28,7 +28,7 @@ pyFormex GUI. The user can apply them to change the GUI or to add
 interactive widgets to his scripts. Of course he can also use all the
 Qt widgets directly.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 import os

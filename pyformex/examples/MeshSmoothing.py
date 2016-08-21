@@ -34,7 +34,7 @@ The user can choose the element type (quadrilateral, triangular, hexahedral
 or tetrahedral), the number of elements in the regular grid, the amount of
 noise to be added, and the number of smoothing iterations
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

@@ -31,7 +31,7 @@ The result shows:
 :red: the projection on a sphere
 :blue: the projection on a cylinder
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

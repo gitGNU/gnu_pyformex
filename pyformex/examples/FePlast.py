@@ -29,7 +29,7 @@ steel plate, how to add material properties, boundary conditions and loads,
 and how to export the resulting model as an input file for Abaqus(tm) or
 Calculix.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 _status = 'checked'

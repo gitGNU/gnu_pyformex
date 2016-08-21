@@ -27,7 +27,7 @@ A triangulated surface is a surface consisting solely of triangles.
 Any surface in space, no matter how complex, can be approximated with
 a triangulated surface.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import pyformex as pf
 from pyformex import fileread, filewrite, geomtools, inertia, utils

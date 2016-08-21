@@ -29,7 +29,7 @@ You need to import this module in your scripts to have access to its
 contents.
 """
 
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 from pyformex.arraytools import checkArray
 import numpy as np

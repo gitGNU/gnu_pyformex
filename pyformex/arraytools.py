@@ -28,7 +28,7 @@ These are general utility functions that depend only on the :mod:`numpy`
 array model.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 

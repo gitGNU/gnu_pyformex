@@ -24,7 +24,7 @@
 """Color mapping of a range of values.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 from pyformex.opengl.colors import *

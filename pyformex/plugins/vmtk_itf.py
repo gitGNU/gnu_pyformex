@@ -27,7 +27,7 @@ This module provides access to VMTK functionality from inside pyFormex.
 Documentation for VMTK can be found on http://www.vmtk.org/Main/Tutorials/
 and http://www.vmtk.org/VmtkScripts/vmtkscripts/
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 from pyformex import software,utils

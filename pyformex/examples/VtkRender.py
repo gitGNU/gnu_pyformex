@@ -26,7 +26,7 @@
 Create an interactive vtk window. Shows the correct sequence
 of commands to remove any floating widget
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

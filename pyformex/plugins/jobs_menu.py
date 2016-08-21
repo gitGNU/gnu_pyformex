@@ -24,7 +24,7 @@
 """Jobs Menu
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import pyformex as pf
 from pyformex import utils

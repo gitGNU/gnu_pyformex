@@ -34,7 +34,7 @@ resulting structure can be shown. The parameters can also be saved to a
 file. Finally, the GUi also allows to replay the whole set of saved
 structures.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

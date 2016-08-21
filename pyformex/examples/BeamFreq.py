@@ -31,7 +31,7 @@ The example BeamFreq_calix provides comparable functionality, but based on
 the external program calix.
 """
 
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

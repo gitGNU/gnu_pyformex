@@ -36,7 +36,7 @@ Example showing the use of the PolyLine concatenate method.
    parameter. Notice how the concatenation has selected the closest point
    for the concatenation. (Last row)
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

@@ -27,7 +27,7 @@
 The :mod:`nurbs` module defines functions and classes to manipulate
 NURBS curves and surface in pyFormex.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 from pyformex import arraytools as at

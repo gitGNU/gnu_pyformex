@@ -30,7 +30,7 @@ Documentation for VTK can be found on http://www.vtk.org/
 This module provides the basic interface to convert data structures between
 vtk and pyFormex.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 from pyformex import software,utils,warning

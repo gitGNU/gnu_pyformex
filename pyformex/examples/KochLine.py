@@ -34,7 +34,7 @@ ways:
 
 The actual draw method is choosen randomly. Execute again to see another one.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

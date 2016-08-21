@@ -27,7 +27,7 @@
 This example is intended for testing the drawing functions for each of the
 implemented element types.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

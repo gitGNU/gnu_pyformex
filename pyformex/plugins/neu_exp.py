@@ -27,7 +27,7 @@ This module contains some functions to export
 pyFormex mesh models to Gambit neutral files.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 import sys

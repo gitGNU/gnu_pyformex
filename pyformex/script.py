@@ -28,7 +28,7 @@ in all pyFormex scripts. These functions are available in GUI and NONGUI
 applications, without the need to explicitely importing the :mod:`script`
 module.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 import pyformex as pf

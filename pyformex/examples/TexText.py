@@ -26,7 +26,7 @@
 This example illustrates some of the possibilities of text drawing
 using textures. Yuo
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 _status = 'checked'
 _level = 'normal'

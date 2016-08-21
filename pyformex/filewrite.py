@@ -32,7 +32,7 @@ The basic routines are very versatile as well as optimized (using the version
 in the pyFormex C-library) and allow to easily create new exporters for
 other formats.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 import pyformex as pf

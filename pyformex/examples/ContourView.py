@@ -26,7 +26,7 @@
 Saves the contour of an object as shown in the viewport.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

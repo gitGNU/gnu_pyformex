@@ -29,7 +29,7 @@ external functions in the compiled library lib.drawgl.
 These are low level functions that should normally not be used by
 the user.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 # There should be no other imports here than OpenGL and numpy

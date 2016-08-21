@@ -37,7 +37,7 @@ of collections of simple geometric data: points, lines, triangles, tetrahedrons.
 The prefered way to compute inertia data of a geometric model is through the
 :meth:`Geometry.inertia` methods.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 from pyformex import arraytools as at
 from pyformex.coords import Coords

@@ -25,7 +25,7 @@
 
 Example for testing the low level drawing functions
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

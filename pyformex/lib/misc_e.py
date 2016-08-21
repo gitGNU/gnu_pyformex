@@ -27,7 +27,7 @@
 The functions in this module should be exact emulations of the
 external functions in the compiled library.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 # There should be no other imports here than numpy and pyformex
 import pyformex as pf

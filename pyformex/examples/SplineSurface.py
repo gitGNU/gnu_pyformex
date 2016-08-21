@@ -48,7 +48,7 @@ consisting of quadrilaterals). The number of elements along the
 splines can be chosen. The number of elements across the splines is
 currently unused.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 from pyformex import zip
 
 _status = 'checked'

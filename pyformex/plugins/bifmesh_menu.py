@@ -28,7 +28,7 @@ a structured hexahedral mesh. These tools were developed as part of the
 PhD research by Gianluca De Santis at bioMMeda (Ghent University).
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import pyformex as pf
 from pyformex import zip,olist

@@ -26,7 +26,7 @@
 This examples shows how to use the 'fld:name' color attribute in drawing
 and how to interactively select the colors displayed on an object.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

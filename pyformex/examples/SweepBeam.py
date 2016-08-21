@@ -28,7 +28,7 @@ This example demonstrates several ways to construct 3D geometry from a
 2D section. The cross section of an H-beam is converted to a 3D beam by
 sweeping, extruding, revolving or connecting.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

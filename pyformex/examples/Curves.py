@@ -26,7 +26,7 @@
 Examples showing the use of the 'curve' plugin
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

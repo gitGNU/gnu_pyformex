@@ -28,7 +28,7 @@ While most of these functions look (and work) like set operations, their
 result differs from using Python builtin Sets in that they preserve the
 order of the items in the lists.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 def lrange(*args):

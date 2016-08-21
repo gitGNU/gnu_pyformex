@@ -27,7 +27,7 @@
 The Mesh methods in this module are deprecated and will likely be removed in
 a future version of pyFormex. Their use is highly discouraged.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 from pyformex.mesh import *

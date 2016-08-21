@@ -26,7 +26,7 @@
 Interface with Calculix FE result files (.dat).
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 from pyformex.plugins.fe_post import FeResult

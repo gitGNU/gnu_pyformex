@@ -33,7 +33,7 @@ Finally all the octants of the octree which include at least one point are
 shown.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

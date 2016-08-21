@@ -31,7 +31,7 @@ The point is extruded in the x-direction, resulting in a line.
 The line is further extruded in y-direction to yield a quadratic surface.
 A final extrusion in the z-direction delivers a quadratic volume.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

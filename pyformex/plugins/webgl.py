@@ -32,7 +32,7 @@ possibly also some geometry data files. The HTML file is loaded in the
 browser and starts the Javascript program, responsible for rendering the
 WebGL scene.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import pyformex as pf
 from pyformex import utils

@@ -31,7 +31,7 @@ Make sure you have version 1.5-a8 or higher.
 
 See example BeamFreq fro a version that does not require calix.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 _status = 'checked'

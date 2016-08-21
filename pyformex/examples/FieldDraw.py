@@ -26,7 +26,7 @@
 
 This example demonstrates how to use field variables and how to render them.
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 _status = 'checked'
 _level = 'advanced'

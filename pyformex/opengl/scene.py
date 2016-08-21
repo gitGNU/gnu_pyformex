@@ -24,7 +24,7 @@
 """This implements an OpenGL drawing widget for painting 3D scenes.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 from pyformex import arraytools as at
 from pyformex import coords

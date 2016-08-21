@@ -29,7 +29,7 @@ trisurface.intersectSurfaceWithLines as a method to render a 2D image
 onto a 3D surface.
 
 """
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 _status = 'checked'
 _level = 'normal'
