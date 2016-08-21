@@ -31,6 +31,7 @@ the current OpenGL framework in pyFormex.
 (C) 2013 Benedict Verhegghe and the pyFormex project.
 
 """
+from __future__ import print_function
 
 import numpy as np
 import pyformex.arraytools as at

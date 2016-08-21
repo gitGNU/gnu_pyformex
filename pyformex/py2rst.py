@@ -34,18 +34,10 @@ discussion of the operation of this code.
 
 Usage:  py2rst.py PYTHONFILE [> outputfile.tex]
 """
+from __future__ import print_function
 import sys
 
 _debug = False
-
-## # set path to the pyformex modules
-## parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-## pyformexdir = os.path.join(parent,'pyformex')
-## for d in [ 'lib', 'gui', 'opengl', 'plugins' ]: # this order is important!
-##     sys.path.insert(0,os.path.join(pyformexdir,d))
-## sys.path.insert(0,pyformexdir)
-## sys.path.insert(0,os.path.dirname(pyformexdir))
-
 
 from pyformex.utils import underlineHeader
 
