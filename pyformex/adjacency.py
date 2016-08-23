@@ -28,10 +28,11 @@ This module defines a specialized array class for representing adjacency
 of items of a single type. This is e.g. used in mesh models, to store
 the adjacent elements.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
-from pyformex.arraytools import *
+from pyformex import arraytools as at
+import numpy as np
 
 ############### Utility functions ##############
 
@@ -55,10 +56,10 @@ def sortAdjacency(adj):
 
     Example:
 
-      >>> a = array([[ 0,  2,  1, -1],
-      ...            [-1,  3,  1, -1],
-      ...            [ 3, -1,  0,  1],
-      ...            [-1, -1, -1, -1]])
+      >>> a = np.array([[ 0,  2,  1, -1],
+      ...               [-1,  3,  1, -1],
+      ...               [ 3, -1,  0,  1],
+      ...               [-1, -1, -1, -1]])
       >>> sortAdjacency(a)
       array([[ 0,  1,  2],
              [-1,  1,  3],
@@ -99,12 +100,12 @@ def reduceAdjacency(adj):
 
     Example:
 
-      >>> a = array([[ 0,  0,  0,  1,  2,  5],
-      ...            [-1,  0,  1, -1,  1,  3],
-      ...            [-1, -1,  0, -1, -1,  2],
-      ...            [-1, -1,  1, -1, -1,  3],
-      ...            [-1, -1, -1, -1, -1, -1],
-      ...            [-1, -1,  0, -1, -1,  5]])
+      >>> a = np.array([[ 0,  0,  0,  1,  2,  5],
+      ...               [-1,  0,  1, -1,  1,  3],
+      ...               [-1, -1,  0, -1, -1,  2],
+      ...               [-1, -1,  1, -1, -1,  3],
+      ...               [-1, -1, -1, -1, -1, -1],
+      ...               [-1, -1,  0, -1, -1,  5]])
       >>> reduceAdjacency(a)
       array([[ 1,  2,  5],
              [-1,  0,  3],
@@ -114,11 +115,11 @@ def reduceAdjacency(adj):
              [-1, -1,  0]])
 
     """
-    adj = checkArray(adj, ndim=2)
+    adj = at.checkArray(adj, ndim=2)
     n = adj.shape[0]
-    adj[adj == arange(n).reshape(n, -1)] = -1 # remove the item i
+    adj[adj == np.arange(n).reshape(n, -1)] = -1 # remove the item i
     adj = sortAdjacency(adj)
-    adj[where(adj[:, :-1] == adj[:, 1:])] = -1 #remove duplicate items
+    adj[np.where(adj[:, :-1] == adj[:, 1:])] = -1 #remove duplicate items
     adj = sortAdjacency(adj)
     return adj
 
@@ -130,7 +131,7 @@ def reduceAdjacency(adj):
 ####################
 #
 
-class Adjacency(ndarray):
+class Adjacency(np.ndarray):
     """A class for storing and handling adjacency tables.
 
     An adjacency table defines a neighbouring relation between elements of
@@ -212,7 +213,7 @@ class Adjacency(ndarray):
         """Create a new Adjacency table."""
 
         # Turn the data into an array, and copy if requested
-        ar = array(data, dtype=dtyp, copy=copy)
+        ar = np.array(data, dtype=dtyp, copy=copy)
         if ar.ndim < 2:
             if ncon > 0:
                 ar = ar.reshape(-1, ncon)
@@ -224,7 +225,7 @@ class Adjacency(ndarray):
 
         # Make sure dtype is an int type
         if ar.dtype.kind != 'i':
-            ar = ar.astype(Int)
+            ar = ar.astype(at.Int)
 
         # Check values
         if ar.size > 0:
@@ -320,7 +321,7 @@ class Adjacency(ndarray):
 
         """
         p = [ [[i, j] for j in k if j >= 0] for i, k in enumerate(self[:-1]) if max(k) >= 0]
-        p = row_stack(p)
+        p = np.row_stack(p)
         return p[p[:, 1] > p[:, 0]]
 
 
@@ -337,11 +338,11 @@ class Adjacency(ndarray):
         """
         if adj.nelems() != self.nelems():
             raise ValueError("`adj` should have same number of rows as `self`")
-        adj = concatenate([self, adj], axis=-1)
+        adj = np.concatenate([self, adj], axis=-1)
         adj = sortAdjacency(adj)
         dup = adj[:, :-1] == adj[:, 1:] # duplicate items
         adj[dup] = -1
-        adj = roll(adj, -1, axis=-1)
+        adj = np.roll(adj, -1, axis=-1)
         adj[dup] = -1
         adj = roll(adj, 1, axis=-1)
         return Adjacency(adj)
@@ -379,12 +380,12 @@ class Adjacency(ndarray):
         [ 0  1  1  2 -1]
         [0 1 1 2 4]
         """
-        p = -ones((self.nelems()), dtype=Int)
+        p = -np.ones((self.nelems()), dtype=at.Int)
         if self.nelems() <= 0:
             return
 
         # Remember current elements front
-        elems = clip(asarray(startat), 0, self.nelems())
+        elems = np.clip(np.asarray(startat), 0, self.nelems())
         prop = 0
         while elems.size > 0:
             # Store prop value for current elems
@@ -394,14 +395,14 @@ class Adjacency(ndarray):
             prop += frontinc
 
             # Determine adjacent elements
-            elems = unique(asarray(self[elems]))
+            elems = np.unique(np.asarray(self[elems]))
             elems = elems[elems >= 0]
             elems = elems[p[elems] < 0 ]
             if elems.size > 0:
                 continue
 
             # No more elements in this part: start a new one
-            elems = where(p<0)[0]
+            elems = np.where(p<0)[0]
             if elems.size > 0:
                 # Start a new part
                 elems = elems[[0]]
@@ -486,9 +487,9 @@ class Adjacency(ndarray):
 
 
         """
-        elems = unique(asarray(self[startat]))
+        elems = np.unique(np.asarray(self[startat]))
         if not add:
-            elems = setdiff1d(elems, asarray(startat))
+            elems = np.setdiff1d(elems, np.asarray(startat))
         elems = elems[elems >= 0]
         return elems
 

@@ -36,7 +36,7 @@ transformation methods of this class.
 While the user will mostly use the higher level classes, he might occasionally
 find good reason to use the :class:`Coords` class directly as well.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from pyformex import zip
 from pyformex import utils
@@ -1280,7 +1280,7 @@ class Coords(ndarray):
         rc = r*c(phi, n)
         if k != 0:   # k should be > -1.0 !!!!
             x = sin(phi)
-            rc *= (1-k*x)/(1+k*x)
+            rc *= (1.-k*x)/(1.+k*x)
         f = column_stack([rc*c(theta, e), rc*s(theta, e), r*s(phi, n)])
         return f.reshape(self.shape)
 
@@ -1299,9 +1299,9 @@ class Coords(ndarray):
         The returned angle values are given in degrees.
         """
         v = self[..., dir].reshape((-1, 3))
-        dist = sqrt(sum(v*v, -1))
-        long = arctand2(v[:, 0], v[:, 2], angle_spec)
-        lat = where(dist <= 0.0, 0.0, arcsind(v[:, 1]/dist, angle_spec))
+        dist = sqrt(sum(v*v,-1))
+        long = arctand2(v[:,0], v[:,2], angle_spec)
+        lat = where(dist <= 0.0, 0.0, arcsind(v[:,1]/dist, angle_spec))
         f = column_stack([long, lat, dist])
         return f.reshape(self.shape)
 
@@ -1513,7 +1513,7 @@ class Coords(ndarray):
 
     def egg(self, k):
         """Maps the coordinates to an egg-shape"""
-        return (1-k*self)/(1+k*self)
+        return (1.-k*self)/(1.+k*self)
 
 
     def replace(self,i,j,other=None):

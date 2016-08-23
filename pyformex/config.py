@@ -47,7 +47,7 @@ What
    Config dictionary. The current version is limited to one level of
    sectioning.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from pyformex.mydict import Dict
 from pyformex.utils import formatDict

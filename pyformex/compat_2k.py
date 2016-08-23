@@ -31,7 +31,7 @@ Note that we can not implement this as a single module and test for
 the Python version inside that module. The differences between the
 versions might cause compilation to fail.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from future_builtins import zip
 

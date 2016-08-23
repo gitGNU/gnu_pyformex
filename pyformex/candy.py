@@ -33,7 +33,7 @@ Contents:
 :func:`Horse`: a surface model of a horse
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from pyformex.mesh import Mesh
 from pyformex.trisurface import TriSurface
