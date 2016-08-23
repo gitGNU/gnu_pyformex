@@ -32,22 +32,18 @@ from pyformex import utils, coords
 from pyformex import arraytools as at
 
 from pyformex.mydict import Dict
-
 from pyformex.odict import OrderedDict
 from pyformex.collection import Collection
-#from pyformex.attributes import Attributes
-#from pyformex.formex import Formex
 from pyformex.simple import cuboid2d
 from pyformex.opengl import decors
-from pyformex.opengl.sanitize import saneColor
-from pyformex.opengl.drawable import Actor
-from pyformex.opengl.camera import Camera
-from pyformex.opengl.renderer import Renderer
-from pyformex.opengl.scene import Scene, ItemList
 from pyformex.opengl import colors
+from .sanitize import saneColor
+from .drawable import Actor
+from .camera import Camera
+from .renderer import Renderer
+from .scene import Scene, ItemList
 
 import numpy as np
-
 
 from OpenGL import GL, GLU
 
