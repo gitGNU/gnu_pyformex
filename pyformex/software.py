@@ -29,7 +29,7 @@ and to check the versions of it.
 This module is currently experimental. It contains some old functions
 moved here from utils.py.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex.odict import OrderedDict

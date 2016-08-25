@@ -31,7 +31,7 @@ Any copyright claims made by my employer should therefore be considered void.
 
 Distributed under the GNU General Public License, version 3 or later
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import os, socket, getpass

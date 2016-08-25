@@ -28,7 +28,7 @@ This module contains some functions to perform multiprocessing inside
 pyFormex in a unified way.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf

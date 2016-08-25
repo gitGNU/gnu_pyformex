@@ -34,7 +34,7 @@ discussion of the operation of this code.
 
 Usage:  py2rst.py PYTHONFILE [> outputfile.tex]
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 import sys
 
 _debug = False

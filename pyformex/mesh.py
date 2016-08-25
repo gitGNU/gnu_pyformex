@@ -37,7 +37,7 @@ This module defines the Mesh class, which can be used to describe discrete
 geometrical models like those used in Finite Element models.
 It also contains some useful functions to create such models.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import zip, utils
@@ -2017,7 +2017,7 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         if len(div) == 1:
             div = div * nsteps
         elif len(div)!=nsteps:
-            raise ValueError("A list of div seeds must have a length equal to (len(clist)-1)/degree) = %s" % nsteps)
+            raise ValueError("A list of div seeds must have a length equal to (len(clist)-1)//degree) = %s" % nsteps)
 
         # For higher order non-lagrangian elements the procedure could be
         # optimized by first compacting the coords and elems.
@@ -2716,8 +2716,8 @@ def tri3_wts(ndiv):
 
 def tri3_els(ndiv):
     n = ndiv+1
-    els1 = [ row_stack([ array([0, 1, n-j]) + i for i in range(ndiv-j) ]) + j * n - j*(j-1)/2 for j in range(ndiv) ]
-    els2 = [ row_stack([ array([1, 1+n-j, n-j]) + i for i in range(ndiv-j-1) ]) + j * n - j*(j-1)/2 for j in range(ndiv-1) ]
+    els1 = [ row_stack([ array([0, 1, n-j]) + i for i in range(ndiv-j) ]) + j * n - j*(j-1)//2 for j in range(ndiv) ]
+    els2 = [ row_stack([ array([1, 1+n-j, n-j]) + i for i in range(ndiv-j-1) ]) + j * n - j*(j-1)//2 for j in range(ndiv-1) ]
     elems = row_stack(els1+els2)
 
     return elems

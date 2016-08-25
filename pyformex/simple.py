@@ -28,7 +28,7 @@ Formex structures representing simple geometric shapes.
 You need to import this module in your scripts to have access to its
 contents.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 from pyformex.formex import *
@@ -304,10 +304,10 @@ def sphere(ndiv=6, base='icosa', equiv='max'):
     return M
 
 
-def sphere3(nx, ny, r=1, bot=-90, top=90):
+def sphere3(nx, ny, r=1, bot=-90., top=90.):
     """Return a sphere consisting of surface triangles
 
-    A sphere with radius r is modeled by the triangles fromed by a regular
+    A sphere with radius r is modeled by the triangles formed by a regular
     grid of nx longitude circles, ny latitude circles and their diagonals.
 
     The two sets of triangles can be distinguished by their property number:
