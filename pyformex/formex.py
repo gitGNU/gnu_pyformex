@@ -28,7 +28,7 @@ representing geometry in pyFormex. The Formex class implements most
 functionality of Formex algebra in a consistent and easy to understand
 syntax.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 from pyformex.coords import *
@@ -1220,7 +1220,7 @@ maxprop  = %s
         """
         if self.nelems() % n != 0:
             raise RuntimeError("Number of elements should be integer multiple of n")
-        m = self.nelems()/n
+        m = self.nelems()//n
         if self.prop is None:
             return [ Formex(self.coords[n*i:n*(i+1)], self.eltype) for i in range(m) ]
         else:

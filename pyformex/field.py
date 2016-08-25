@@ -36,7 +36,7 @@
 This module defines the Field class, which can be used to describe
 scalar and vectorial field data over a geometrical domain.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from pyformex import utils
 import pyformex.arraytools as at

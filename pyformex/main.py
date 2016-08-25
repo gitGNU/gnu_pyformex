@@ -29,7 +29,7 @@
 This module contains the main function of pyFormex, which is run by the
 startup script.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import sys, os
 import pyformex as pf
