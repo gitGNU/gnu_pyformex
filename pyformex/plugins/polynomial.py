@@ -29,7 +29,7 @@ This module defines the class Polynomial, representing a polynomial
 in n variables.
 """
 
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 import numpy as np
@@ -44,7 +44,7 @@ class Polynomial(object):
     - `exp`: (nterms,ndim) int array with the exponents of each of
       the ndim variables in the nterms terms of the polynomial.
     - `coeff`: (nterms,) float array with the coefficients of the terms.
-      If not specified, all coeeficients are set to 1.
+      If not specified, all coefficients are set to 1.
 
     Example:
 

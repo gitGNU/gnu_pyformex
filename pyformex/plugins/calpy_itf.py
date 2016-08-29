@@ -30,7 +30,7 @@ add the path of the calpy module to sys.path.
 Importing this module will automatically check the availabilty of calpy
 and set the sys.path accordingly.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf

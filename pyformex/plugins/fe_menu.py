@@ -26,7 +26,7 @@ Finite Element Plugin Menu for pyFormex.
 
 (C) 2009 Benedict Verhegghe.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex.plugins import formex_menu
@@ -134,4 +134,3 @@ if __name__ == '__draw__':
     reload_menu()
 
 # End
-

@@ -26,7 +26,7 @@
 This module allows to import and export some simple geometrical items
 in DXF format.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex.formex import *

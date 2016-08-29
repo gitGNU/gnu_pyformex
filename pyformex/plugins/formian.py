@@ -67,7 +67,7 @@ No change ::
   ref(i,j)|F  -> F.reflect(i-1,j)
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 from pyformex.formex import Formex
@@ -128,7 +128,7 @@ def ros(self, i, j, x, y, n, angle):
 
 @formex_method
 def tranic(self,*args,**kargs):
-    n = len(args)/2
+    n = len(args)//2
     d = [ i-1 for i in args[:n] ]
     return self.translatem(*list(zip(d, args[n:])))
 @formex_method
@@ -159,7 +159,7 @@ def tranax(self,a1,a2,a3,b1,b2,b3,t=None):
 
 @formex_method
 def rinic(self,*args,**kargs):
-    n = len(args)/3
+    n = len(args)//3
     F = self
     for d, m, t in zip(args[:n], args[n:2*n], args[2*n:]):
         F = F.rin(d, m, t)
@@ -176,7 +176,7 @@ def rinit(self, n1, n2, t1, t2):
 
 @formex_method
 def lamic(self,*args,**kargs):
-    n = len(args)/2
+    n = len(args)//2
     F = self
     for d, p in zip(args[:n], args[n:]):
         F = F.lam(d, p)

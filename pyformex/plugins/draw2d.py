@@ -29,7 +29,7 @@ While the drawing operations themselves are in 2D, they can be performed
 on a plane with any orientation in space. The constructed geometry always
 has 3D coordinates in the global cartesian coordinate system.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 from pyformex.geomtools import triangleCircumCircle

@@ -28,7 +28,7 @@
 Determine the (inner) voronoi diagram of a triangulated surface.
 Determine approximation for the centerline.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf
@@ -47,7 +47,7 @@ def encode2(i, j, n):
 
 
 def decode2(code, n):
-    i, j = code/n, code%n
+    i, j = code//n, code%n
     return i, j
 
 
@@ -265,4 +265,3 @@ def centerline(fn):
     return nodesC, elemsC, radii
 
 # End
-

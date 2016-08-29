@@ -26,7 +26,7 @@
 Interface with Calculix FE result files (.dat).
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex.plugins.fe_post import FeResult
@@ -132,7 +132,7 @@ def addFeResult(DB, step, time, result):
         try:
             stress = result['stres']
             # CALCULIX HAS NO 2D: keep only half of GP's
-            ngp = stress.shape[1]/2
+            ngp = stress.shape[1]//2
             stress = stress[:, :ngp,:]
             print("Reduced stresses: %s" % str(stress.shape))
             mesh = Mesh(DB.nodes, DB.elems[0], eltype='quad4')
@@ -170,4 +170,3 @@ def computeAveragedNodalStresses(M, data, gprule):
     return nodata
 
 # End
-

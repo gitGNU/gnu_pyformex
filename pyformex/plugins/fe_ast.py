@@ -25,7 +25,7 @@
 """Exporting finite element models in code Aster file formats (.mail and .comm).
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 from pyformex.plugins.fe_abq import fmtData
@@ -110,7 +110,7 @@ def writeElems(fil,elems,type,name=None,eid=None,eofs=0,nofs=0):
     if nn < 5:
         fmt = 'M%d' + nn*' N%d' + '\n'
     else:
-        fl = nn/4
+        fl = nn//4
         fmt = 'M%d' + fl*(4*' N%d' + '\n')
         if nn%4 != 0:
             fmt += (nn%4)*' N%d' + '\n'

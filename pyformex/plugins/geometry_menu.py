@@ -29,7 +29,7 @@ but to be loaded into pyFormex using the plugin facility.
 The geometry menu is intended to become the major interactive geometry menu
 in pyFormex.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import (

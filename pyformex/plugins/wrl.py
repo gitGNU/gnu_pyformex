@@ -24,7 +24,7 @@
 """Wrl
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from numpy import *
@@ -42,7 +42,7 @@ def name(s):
 def position(*args):
     pass
 
-    
+
 def IndexedFaceSet(coords,faces=None):
     global _prop_
     _prop_ += 1
@@ -55,7 +55,7 @@ def IndexedFaceSet(coords,faces=None):
     if faces is None:
         return
 
-    
+
 def IndexedLineSet(coords, lines):
     coords = asarray(coords).reshape(-1, 3)
     print(coords.shape)
@@ -67,7 +67,7 @@ def IndexedLineSet(coords, lines):
     G = Formex(coords[lines], _prop_)
     export({_name_:G})
     draw(G)
-   
+
 
 
 

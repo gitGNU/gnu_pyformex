@@ -26,7 +26,7 @@
 This is a pyFormex plugin. It is not intended to be executed as a script,
 but to be loaded as a plugin.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import zip, utils

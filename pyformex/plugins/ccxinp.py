@@ -27,7 +27,7 @@ Interface with Abaqus/Calculix FE input files (.inp).
 
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 #
 # DEVS: Try to do this without importing from pyformex
@@ -37,7 +37,6 @@ import re
 import numpy as np
 from pyformex import utils
 from pyformex.coords import concatenate
-#from pyformex.arraytools import *
 
 re_eltypeB = re.compile("^(?P<type>B)(?P<ndim>[23])(?P<degree>\d)?(?P<mod>(OS)?H*)$")
 re_eltype = re.compile("^(?P<type>.*?)(?P<ndim>[23]D)?(?P<nplex>\d+)?(?P<mod>[HIMRSW]*)$")

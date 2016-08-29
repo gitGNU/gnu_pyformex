@@ -27,7 +27,7 @@
 
 Some extra tools to handle the camera.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf

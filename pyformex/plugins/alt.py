@@ -24,10 +24,12 @@
 """Some additional classes.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
-from numpy import *
 from pyformex.coords import Coords
+
+import numpy as np
+
 
 class BoundVectors(Coords):
     """A collection of bound vectors in a 3D Cartesian space.
@@ -46,10 +48,10 @@ class BoundVectors(Coords):
         if coords is None:
             coords = eye(2, 3, -1)
             if vectors is not None:
-                coords = resize(coords, vectors.shape[:-1]+(2, 3))
+                coords = np.resize(coords, vectors.shape[:-1]+(2, 3))
                 coords[..., 1,:] = vectors
             if origins is not None:
-                coords += origins[..., newaxis,:]
+                coords += origins[..., np.newaxis,:]
         elif coords.shape[-2:] != (2, 3):
             raise ValueError("Expected shape (2,3) for last two array axes.")
         return Coords.__new__(clas, coords)

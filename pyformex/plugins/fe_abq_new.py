@@ -45,7 +45,7 @@ Then there are higher level functions that read data from the property module
 and write them to the Abaqus input file and some data classes to organize all
 the data involved with the finite element model.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 from pyformex.plugins.properties import *
@@ -1212,7 +1212,7 @@ def fmtOrientation(prop):
     - a: a first point
     - b: a second point
     """
-    out = '' 
+    out = ''
     for p in prop:
         cmd = ''
         cmd += "ORIENTATION, NAME=%s" % (p.name)
@@ -1227,7 +1227,7 @@ def fmtOrientation(prop):
         else:
             data=p.data
         out += fmtKeyword(cmd,options=p.options, data=data, extra=p.extra)
-        
+
     return out
 
 

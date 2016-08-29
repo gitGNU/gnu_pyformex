@@ -25,12 +25,14 @@
 """Isoparametric transformations
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
-from pyformex.coords import *
-from pyformex.plugins.polynomial import *
+from pyformex import arraytools as at
+from pyformex.coords import Coords
+from .polynomial import Polynomial
 
+import numpy as np
 
 #
 # This should probably be moved to polynomial
@@ -45,7 +47,7 @@ def evaluate(atoms,x,y=0,z=0):
 
     Returns a matrix with `nvalues` rows and `natoms` colums.
     """
-    aa = zeros((len(x), len(atoms)), Float)
+    aa = np.zeros((len(x), len(atoms)), at.Float)
     for k, a in enumerate(atoms):
         aa[:, k] = eval(a)
     return aa
@@ -76,7 +78,7 @@ def exponents(n,layout='lag'):
       specifying n=(3,2) uses a grid of 3 points in x-direction and 2 points
       in y-direction.
     - triangular: requires that all values in n are equal. For ndim=2, the
-      number of points is n*(n+1)/2.
+      number of points is n*(n+1)//2.
     - border: this is like the lagrangian grid with all internal points
       removed. For ndim=2, we have npoints = 2 * sum(n) - 4. For ndim=3 we
       have npoints = 2 * sum(nx*ny+ny*nz+nz*nx) - 4 * sum(n) + 8.
@@ -87,7 +89,7 @@ def exponents(n,layout='lag'):
       in 3D.
 
     """
-    n = checkArray(n, (-1,), 'i')
+    n = at.checkArray(n, (-1,), 'i')
     ndim = n.shape[0]
     if ndim < 1 or ndim > 3:
         raise RuntimeError("Expected a 1..3 length tuple")
@@ -99,7 +101,7 @@ def exponents(n,layout='lag'):
 
 
     # First create the full lagrangian set
-    exp = indices(n+1).reshape(ndim, -1).transpose()
+    exp = np.indices(n+1).reshape(ndim, -1).transpose()
 
     if layout != 'lag':
         if layout == 'tri':
@@ -112,19 +114,19 @@ def exponents(n,layout='lag'):
             if len(n) > 2:
                 #print(exp.sum(axis=-1))
                 #print(n[0] + len(n) - 1)
-                np = 8 + 12*(n[0] - 1) # minimal number of points
+                npts = 8 + 12*(n[0] - 1) # minimal number of points
                 sdeg = n[0] + 1
                 ok = exp.sum(axis=-1) <= sdeg
-                if ok.sum() < np:
-                    #print("Need at least %s" % np)
+                if ok.sum() < npts:
+                    #print("Need at least %s" % npts)
                     sdeg += 1
                     ok = exp.sum(axis=-1) <= sdeg
                     ok1 = (exp == n[0]).sum(axis=-1) <= 1
                     ok = ok*ok1
             else:
-                np = 4 + 4*(n[0] - 1) # minimal number of points
+                npts = 4 + 4*(n[0] - 1) # minimal number of points
                 ok = exp.sum(axis=-1) <= n[0] + 1
-            if ok.sum() < np:
+            if ok.sum() < npts:
                 raise ValueError("No solution for eltype %s %s" % (layout, n))
         else:
             raise RuntimeError("Unknown layout %s" % layout)
@@ -216,7 +218,7 @@ class Isopar(object):
         coords = coords.view().reshape(-1, 3)
         oldcoords = oldcoords.view().reshape(-1, 3)
         aa = poly.evalAtoms(oldcoords[:, :poly.ndim])
-        ab = linalg.solve(aa, coords)
+        ab = np.linalg.solve(aa, coords)
         self.eltype = eltype
         self.trf = ab
 
@@ -235,7 +237,7 @@ class Isopar(object):
         poly = Isopar.isodata[self.eltype]
         ndim = poly.ndim
         aa = poly.evalAtoms(X.reshape(-1, 3)[:, :ndim])
-        xx = dot(aa, self.trf).reshape(X.shape)
+        xx = np.dot(aa, self.trf).reshape(X.shape)
         if ndim < 3:
             xx[..., ndim:] += X[..., ndim:]
         return X.__class__(xx)

@@ -29,7 +29,7 @@ one-dimensional geometry in pyFormex. These may be straight lines, polylines,
 higher order curves and collections thereof. In general, the curves are 3D,
 but special cases may be created for handling plane curves.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 import pyformex as pf
@@ -236,12 +236,12 @@ class Curve(Geometry):
 
             # Extend at start
             if nstart > 0:
-                u = arange(-nstart, 0) * extend[0] / nstart
+                u = arange(-nstart, 0) * extend[0] / float(nstart)
                 parts.insert(0, self.sub_points(u, 0))
 
             # Extend at end
             if nend > 0:
-                u = 1. + arange(0, nend+1) * extend[1] / nend
+                u = 1. + arange(0, nend+1) * extend[1] / float(nend)
             else:
                 # Always extend at end to include last point
                 u = array([1.])
@@ -1695,12 +1695,12 @@ Most likely because 'python-scipy' is not installed on your system.""")
             X.insert(0,Coords.concatenate(points))
             # Save left part
             points = L.tolist()
-            k = j    
-            
+            k = j
+
         if j >0:
             points = self.part(0,j).tolist()[:-1]+points
         X.insert(0,Coords.concatenate(points))
-        
+
         if split:
             return [ BezierSpline(control=x, degree=self.degree, closed=False) for x in X ]
         else:
@@ -1739,7 +1739,7 @@ Most likely because 'python-scipy' is not installed on your system.""")
             return self.approx(ndiv=1).toMesh()
         else:
             coords = self.subPoints(2)
-            e1 = 2*arange(len(coords)/2)
+            e1 = 2*arange(len(coords)//2)
             elems = column_stack([e1, e1+1, e1+2])
             if self.closed:
                 elems = elems[-1][-1] = 0
@@ -2281,7 +2281,7 @@ class Spiral(Curve):
 def binomial(n, k):
     """Compute the binomial coefficient Cn,k.
 
-    This computes the binomial coefficient Cn,k = fac(n) / fac(k) / fac(n-k).
+    This computes the binomial coefficient Cn,k = fac(n) // fac(k) // fac(n-k).
 
     Example:
 
@@ -2289,7 +2289,7 @@ def binomial(n, k):
     [1, 3, 3, 1]
     """
     f = math.factorial
-    return f(n) / f(k) / f(n-k)
+    return f(n) // f(k) // f(n-k)
 
 
 _binomial_coeffs = {}

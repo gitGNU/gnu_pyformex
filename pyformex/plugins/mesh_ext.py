@@ -27,7 +27,7 @@
 The Mesh methods in this module are deprecated and will likely be removed in
 a future version of pyFormex. Their use is highly discouraged.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex.mesh import *
@@ -168,7 +168,7 @@ def scaledJacobian(self,scaled=True,blksize=100000):
     """
     ne = self.nelems()
     if blksize>0 and ne>blksize:
-        slices = splitrange(n=self.nelems(), nblk=self.nelems()/blksize)
+        slices = splitrange(n=self.nelems(), nblk=self.nelems()//blksize)
         return concatenate([self.select(arange(slices[i], slices[i+1])).scaledJacobian(scaled=scaled, blksize=-1) for i in range(len(slices)-1)])
     if self.elName()=='hex20':
         self = self.convert('hex8')

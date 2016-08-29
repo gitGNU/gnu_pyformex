@@ -28,7 +28,7 @@ arrays and vice versa.
 
 This code was based on ideas found on the PyQwt mailing list.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf
