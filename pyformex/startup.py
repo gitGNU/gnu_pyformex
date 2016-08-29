@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # $Id$
 ##
 ##  This file is part of pyFormex 1.0.2  (Thu Jun 18 15:35:31 CEST 2015)
@@ -37,14 +36,14 @@ pyFormex is being developed at the IBiTech, Ghent University, and can be
 distributed under the GNU General Public License, version 3 or later.
 (C) 2004-2012 Benedict Verhegghe (benedict.verhegghe@ugent.be))
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 # Get the pyformex dir and put it on the head of sys.path
 # This has to be done *before* importing pyformex, so it
 # can only be done here.
 
 import sys,os
-#print(sys.path)
+#print("Initial sys.path: %s" % sys.path)
 _bindir = sys.path[0]
 
 
@@ -54,8 +53,7 @@ _bindir = sys.path[0]
 
 if _bindir.endswith('pyformex'):
     sys.path[0] = os.path.dirname(_bindir)
-
-#print("Final path:",sys.path)
+#print("Final sys.path: %s" % sys.path)
 
 
 try:

@@ -67,7 +67,7 @@ Not sorting the entries in the Varray provides a further gain.
 The Varray class defined below therefore does not sort the rows
 by default, but provides the methods to sort them when needed.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import arraytools as at

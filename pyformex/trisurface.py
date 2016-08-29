@@ -27,7 +27,7 @@ A triangulated surface is a surface consisting solely of triangles.
 Any surface in space, no matter how complex, can be approximated with
 a triangulated surface.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import fileread, filewrite, geomtools, inertia, utils
@@ -1907,7 +1907,7 @@ Quality: %s .. %s
 
     def smoothLowPass(self,iterations=2,lambda_value=0.5,neighbours=1):
         """Apply a low pass smoothing to the surface."""
-        return self.smooth('lowpass', iterations/2, lambda_value, neighbours)
+        return self.smooth('lowpass', iterations//2, lambda_value, neighbours)
 
 
     def smoothLaplaceHC(self,iterations=2,lambda_value=0.5,alpha=0.,beta=0.2):
@@ -2160,7 +2160,7 @@ Quality: %s .. %s
         - `verbose`: boolean: print statistics about the surface
         """
         if min_edges is None and max_cost is None:
-            min_edges = self.nedges() / 2
+            min_edges = self.nedges() // 2
         cmd = 'gtscoarsen'
         if min_edges:
             cmd += ' -n %d' % min_edges
