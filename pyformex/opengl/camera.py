@@ -32,7 +32,7 @@ the current OpenGL framework in pyFormex.
 (C) 2013 Benedict Verhegghe and the pyFormex project.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex.opengl.matrix import Matrix4, Vector4

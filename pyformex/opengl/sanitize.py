@@ -32,7 +32,7 @@ strict attributes required by the OpenGl rendering engine.
 These functions are generally not intended for direct used by the user, but
 for use in the opengl rendering functions.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex.opengl.colors import GLcolor

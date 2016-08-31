@@ -28,7 +28,7 @@ rendering capabilities of pyFormex. The full contents of this module
 is available to scripts running in the pyFormex GUI without the need
 to import it.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf
@@ -812,7 +812,7 @@ def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False,**kargs):
         logma = 0
 
     if logma < 0:
-        multiplier = 3 * ((2 - logma) / 3 )
+        multiplier = 3 * ((2 - logma) // 3 )
     else:
         multiplier = 0
 

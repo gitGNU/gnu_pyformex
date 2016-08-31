@@ -31,7 +31,7 @@ the current OpenGL framework in pyFormex.
 (C) 2013 Benedict Verhegghe and the pyFormex project.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex.attributes import Attributes

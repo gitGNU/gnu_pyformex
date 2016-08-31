@@ -26,7 +26,7 @@
 This module contains a collection of predefined decorations that
 can be useful additions to a geometry scene rendering.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import simple

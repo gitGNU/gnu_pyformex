@@ -26,7 +26,7 @@
 This module uses textures on quads to render text on an OpenGL canvas.
 It is dependent on freetype and the Python bindings freetype-py.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import utils

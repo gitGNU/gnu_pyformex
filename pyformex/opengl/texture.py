@@ -25,7 +25,7 @@
 
 This module defines tools for texture rendering in pyFormex.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from OpenGL import GL
 import numpy as np

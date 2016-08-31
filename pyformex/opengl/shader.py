@@ -32,7 +32,7 @@ and its data onto the graphics system.
 (C) 2013 Benedict Verhegghe and the pyFormex project.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import os
 from OpenGL import GL

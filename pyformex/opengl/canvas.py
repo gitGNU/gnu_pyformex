@@ -24,7 +24,7 @@
 """This implements an OpenGL drawing widget for painting 3D scenes.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 
@@ -857,7 +857,7 @@ class Canvas(object):
         - `pos`: string of two characters. The characters define the horizontal
           (one of 'l', 'c', or 'r') and vertical (one of 't', 'c', 'b') position
           on the camera's viewport. Default is left-bottom.
-        - `siz`: float: intende size (in pixels) of the triade.
+        - `siz`: float: intended size (in pixels) of the triade.
         - `triade`: None or Geometry: defines the Geometry to be used for
           representing the global axes.
 
@@ -881,13 +881,13 @@ class Canvas(object):
             elif pos[0] =='r':
                 x0 = x + w - siz
             else:
-                x0 = x + w / 2
+                x0 = x + w // 2
             if pos[1] == 'b':
                 y0 = y + siz
             elif pos[1] == 't':
                 y0 = y + h - siz
             else:
-                y0 = y + h / 2
+                y0 = y + h // 2
             A = draw(triade.scale(siz),rendertype=-2,single=True,size=siz,x=x0,y=y0)
             self.triade = A
         elif self.triade:

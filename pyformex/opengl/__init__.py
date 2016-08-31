@@ -27,7 +27,7 @@ The opengl module contains everything related to the new OpenGL2 engine
 of pyFormex. The initialization can make changes to the other
 pyFormex modules in order to keep them working with the new engine.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 #### Set the Formex and Mesh actor method ####
 
