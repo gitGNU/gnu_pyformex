@@ -27,7 +27,7 @@ This module contains some functions to export
 pyFormex mesh models to Gambit neutral files.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import sys
@@ -86,7 +86,7 @@ def writeElems(fil, elems):
         elems = elems[:, (0, 1, 3, 2, 4, 5, 7, 6)]
         fmt = '%8d %2d %2d %8d%8d%8d%8d%8d%8d%8d\n               %8d\n'
     elif gamb_shape==6:  # tet-4
-        elems = elems[:, (0,2,3,1)] 
+        elems = elems[:, (0,2,3,1)]
         fmt = '%8d %2d %2d %8d%8d%8d%8d\n'
 
     fil.write('      ELEMENTS/CELLS 2.4.6\n')
@@ -103,7 +103,7 @@ def writeGroup(fil, elems):
     fil.write('GROUP:%11d ELEMENTS:%11d MATERIAL:%11d NFLAGS:%11d\n' % (1, shape(elems)[0], 2, 1))
     fil.write('%32s\n' %'fluid')
     fil.write('%8d\n' %0)
-    n =  shape(elems)[0]/10
+    n =  shape(elems)[0]//10
     for i in range(n):
         fil.write('%8d%8d%8d%8d%8d%8d%8d%8d%8d%8d\n' %(10*i+1, 10*i+2, 10*i+3, 10*i+4, 10*i+5, 10*i+6, 10*i+7, 10*i+8, 10*i+9, 10*i+10))
     for j in range(shape(elems)[0]-10*n):
@@ -138,23 +138,23 @@ def writeBCsets(fil, bcsets, elgeotype):
       be obtained from::
 
         bf = M.matchFaces(S)[1]
-    
-    To define other boundary types: 
+
+    To define other boundary types:
     Value - Boundary Entity Type,
-    
+
     0 UNSPECIFIED, 1 AXIS, 2 CONJUGATE, 3 CONVECTION, 4 CYCLIC,
-    5 DEAD, 6 ELEMENT_SIDE, 7 ESPECIES, 8 EXHAUST_FAN, 9 FAN, 
+    5 DEAD, 6 ELEMENT_SIDE, 7 ESPECIES, 8 EXHAUST_FAN, 9 FAN,
     10 FREE_SURFACE, 11 GAP, 12 INFLOW, 13 INLET, 14 INLET_VENT,
     15 INTAKE_FAN, 16 INTERFACE, 17 INTERIOR, 18 INTERNAL, 19 LIVE,
-    20 MASS_FLOW_INLET, 21 MELT, 22 MELT_INTERFACE, 
+    20 MASS_FLOW_INLET, 21 MELT, 22 MELT_INTERFACE,
     23 MOVING_BOUNDARY, 24 NODE, 25 OUTFLOW, 26 OUTLET,
     27 OUTLET_VENT, 28 PERIODIC, 29 PLOT, 30 POROUS, 31 POROUS_JUMP,
-    32 PRESSURE, 33 PRESSURE_FAR_FIELD, 34 PRESSURE_INFLOW, 
+    32 PRESSURE, 33 PRESSURE_FAR_FIELD, 34 PRESSURE_INFLOW,
     35 PRESSURE_INLET, 36 PRESSURE_OUTFLOW, 37 PRESSURE_OUTLET,
     38 RADIATION, 39 RADIATOR , 40 RECIRCULATION_INLET, 41 RECIRCULATION_OUTLET,
     42 SLIP, 43 SREACTION, 44 SURFACE, 45 SYMMETRY, 46 TRACTION, 47 TRAJECTORY,
-    48 VELOCITY, 49 VELOCITY_INLET, 50 VENT, 51 WALL, 52 SPRING 
-    
+    48 VELOCITY, 49 VELOCITY_INLET, 50 VENT, 51 WALL, 52 SPRING
+
     See also
     http://combust.hit.edu.cn:8080/fluent/Gambit13_help/modeling_guide/mg0b.htm#mg0b01
     for the description of the neu file syntax.
@@ -163,7 +163,7 @@ def writeBCsets(fil, bcsets, elgeotype):
         py2neuHF = asarray([3,1,0,2,4,5])#hex faces numbering conversion (pyformex to gambit neu)
     elif  elgeotype==6:
         py2neuHF = asarray([1,3,2,0])# tet faces numbering conversion (pyformex to gambit neu)
-        
+
     if bcsets is not None:
         for k in bcsets.keys():
             print ('Writing BC set : %s\n'%k)
@@ -171,7 +171,7 @@ def writeBCsets(fil, bcsets, elgeotype):
             val = bcsets[k]
             val[:, 1]=py2neuHF[val[:, 1]]
             val+=fofs#faces are counted starting from 1
-            fil.write('%32s       1%8d       0%8d\n'%(k, len(val), 6))#patchname, 0/1 is node/face,nr of faces, 0, 
+            fil.write('%32s       1%8d       0%8d\n'%(k, len(val), 6))#patchname, 0/1 is node/face,nr of faces, 0,
             #type of BC (6 = ELEMENT_SIDE : OK if you import the neu file in fluent)
             for v in val:
                 txt='%10d%5d%5d\n'%(v[0], elgeotype, v[1])#elem nr, el type (4 is hex, 6 is tet), face nr

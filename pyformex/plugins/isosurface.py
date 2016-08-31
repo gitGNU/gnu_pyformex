@@ -30,7 +30,7 @@ Some of the code is based on the example by Paul Bourke from
 http://paulbourke.net/geometry/polygonise/
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 import numpy as np

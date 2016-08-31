@@ -27,7 +27,7 @@
 The :mod:`nurbs` module defines functions and classes to manipulate
 NURBS curves and surface in pyFormex.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex import arraytools as at
@@ -440,7 +440,7 @@ def genKnotVector(nctrl,degree,blended=True,closed=False):
         if not closed:
             mul[0] = mul[-1] = degree+1
     else:
-        nparts = (nctrl-1) / degree
+        nparts = (nctrl-1) // degree
         if nparts*degree+1 != nctrl:
             raise ValueError("Discrete knot vectors can only be used if the number of control points is a multiple of the degree, plus one.")
         val = np.arange(nparts+1).astype(at.Float)
@@ -494,7 +494,7 @@ class NurbsCurve(Geometry4):
 #
 #    convenient solutions:
 #    OPEN:
-#      nparts = (ncontrol-1) / degree
+#      nparts = (ncontrol-1) // degree
 #      nintern =
 #
     def __init__(self,control,degree=None,wts=None,knots=None,closed=False,blended=True):

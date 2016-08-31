@@ -24,7 +24,7 @@
 """Lindenmayer Systems
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex.plugins import turtle
@@ -64,13 +64,13 @@ class Lima(object):
                 default=c
             product += rule.get(c, default)
         return product
-        
+
     def grow (self, ngen=1):
         for gen in range(ngen):
             self.product = self.translate(self.rule, keep=True)
             self.gen += 1
         return self.product
-    
+
 def lima(axiom,rules,level,turtlecmds,glob=None):
     """Create a list of connected points using a Lindenmayer system.
 

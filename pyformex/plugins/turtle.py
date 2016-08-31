@@ -41,7 +41,7 @@ The followin example turtle script creates a unit square::
 
   fd();ro(90);fd();ro(90);fd();ro(90);fd()
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import math
@@ -80,7 +80,7 @@ def push():
     save.append([pos, step, angle])
 
 def pop():
-    """Restore the turtle state to the last saved state.""" 
+    """Restore the turtle state to the last saved state."""
     global pos, step, angle, list, save
     pos, step, angle = save.pop(-1)
 
@@ -160,7 +160,7 @@ if __name__ == '__main__':
         l = play(txt)
         print("%s line segments" % len(l))
         print(l)
-        
+
     test("fd();ro(90);fd();ro(90);fd();ro(90);fd()")
     test("fd();ro(90);fd();ro(90);fd();ro(90);fd()")
     test("reset();fd();ro(90);fd();ro(90);fd();ro(90);fd()")
