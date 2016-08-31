@@ -26,7 +26,7 @@
 This tries to load the compiled libraries, and replaces those that failed
 to load with the (slower) Python versions.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 __all__ = [ 'misc', 'nurbs', 'accelerated' ]

@@ -24,7 +24,7 @@
 """Color mapping of a range of values.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 from pyformex.opengl.colors import *
@@ -160,7 +160,7 @@ class ColorLegend(object):
         self.cs = colorscale
         n = int(n)
         r = float(n)/2
-        m = (n+1)/2
+        m = (n+1)//2
         vals = [ (self.cs.xmin*(r-i)+self.cs.x0*i)/r for i in range(m) ]
         val2 = [ (self.cs.xmax*(r-i)+self.cs.x0*i)/r for i in range(m) ]
         val2.reverse()

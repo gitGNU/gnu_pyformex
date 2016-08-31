@@ -26,7 +26,7 @@
 Signals are treated by the normal QT4 machine. They can be emitted from
 anywhere, causing attached functions to be executed.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex.gui import QtCore
@@ -69,4 +69,3 @@ class Signals(QtCore.QObject):
 
 
 # End
-

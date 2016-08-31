@@ -35,7 +35,7 @@ This module also detects the underlying windowing system.
 Currently, the pyFormex GUI is only guaranteed on X11.
 For other systems, a warning will be printed that some things may not work.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf

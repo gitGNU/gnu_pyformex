@@ -26,7 +26,7 @@
 
 Part of this code was borrowed from the TrollTech Qt examples.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 caption = "pyFormex Image Viewer"
@@ -298,4 +298,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

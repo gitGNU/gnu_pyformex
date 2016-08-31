@@ -28,7 +28,7 @@ OpenGL rendering and the pyFormex GUI to image files. There are even
 provisions for automatic saving to a series of files and creating
 a movie from these images.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf
@@ -52,10 +52,10 @@ def imageFormats(mode='w'):
 
     image formats are lower case strings as 'png', 'gif', 'ppm', 'eps', etc.
     The available image formats are derived from the installed software.
-    
+
     Parameters:
 
-    - `mode`: 'w' or 'r', for formats that can be written or read.    
+    - `mode`: 'w' or 'r', for formats that can be written or read.
     """
     if mode == 'r':
         return image_formats_qtr

@@ -28,7 +28,7 @@ pyFormex GUI. The user can apply them to change the GUI or to add
 interactive widgets to his scripts. Of course he can also use all the
 Qt widgets directly.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 import os
@@ -1052,7 +1052,7 @@ class InputSlider(InputInteger):
 
         vmin = kargs.get('min', 0)
         vmax = kargs.get('max', 100)
-        ticks = kargs.get('ticks', (vmax-vmin)/10)
+        ticks = kargs.get('ticks', (vmax-vmin)//10)
         tracking = kargs.get('tracking',True)
 
         self.slider.setTickInterval(ticks)
@@ -1098,7 +1098,7 @@ class InputFSlider(InputFloat):
 
         vmin = kargs.get('min', 0)
         vmax = kargs.get('max', 100)
-        ticks = kargs.get('ticks', (vmax-vmin)/10)
+        ticks = kargs.get('ticks', (vmax-vmin)//10)
         tracking = kargs.get('tracking',True)
 
         self.slider.setTickInterval(ticks)

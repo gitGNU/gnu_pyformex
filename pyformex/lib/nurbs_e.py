@@ -30,7 +30,7 @@ module only contains a few of the functions in lib.nurbs_, making
 nurbs functionality in pyFormex currently only available when using
 the compiled lib.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 # There should be no other imports here but numpy

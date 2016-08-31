@@ -26,7 +26,7 @@
 This modules implements specialized classes and functions for building
 the pyFormex GUI menu system.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import (
@@ -475,7 +475,7 @@ class ActionList(object):
 
     def toolbar(self, name):
         """Create a new toolbar corresponding to the menu."""
-        # TODO: Fix this error! 
+        # TODO: Fix this error!
         tb = QtGui.QToolBar(name)
         for n, a in self.actions:
             self.toolbar.addAction(a)
