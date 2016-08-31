@@ -25,7 +25,7 @@
 
 Generic 2D plotting functions for pyFormex.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf
@@ -51,11 +51,11 @@ def showStepPlot(x,y,label='',title=None,plot2d_system=None):
 
     if plot2d_system == 'gnuplot':
         import Gnuplot
-        data = Gnuplot.Data(x, y, title=label, with_='steps') 
+        data = Gnuplot.Data(x, y, title=label, with_='steps')
         g = Gnuplot.Gnuplot(persist=1)
         g.title(title)
         g.plot(data)
-        
+
     elif plot2d_system == 'qwt':
         pass
         #from gui.Qwt5.qplt import *

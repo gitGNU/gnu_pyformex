@@ -25,7 +25,7 @@
 
 Create, measure and approximate cross section of a Formex.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf
@@ -40,7 +40,7 @@ def connectPoints(F,close=False):
     F can be a Formex or data that can be turned into a Formex (e.g. an (n,3)
     array of points). The result is a plex-2 Formex connecting the subsequent
     points of F or the first point of subsequent elements in case the plexitude
-    of F > 1.    
+    of F > 1.
     If close=True, the last point is connected back to the first to create a
     closed polyline.
     """
@@ -60,7 +60,7 @@ def centerline(F,dir,nx=2,mode=2,th=0.2):
     x1[dir] = bb[1][dir]
     n = array((0, 0, 0))
     n[dir] = nx
-    
+
     grid = simple.regularGrid(x0, x1, n).reshape((-1, 3))
 
     th *= (x1[dir]-x0[dir])/nx

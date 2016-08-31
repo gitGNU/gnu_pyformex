@@ -27,7 +27,7 @@ This module provides access to VMTK functionality from inside pyFormex.
 Documentation for VMTK can be found on http://www.vmtk.org/Main/Tutorials/
 and http://www.vmtk.org/VmtkScripts/vmtkscripts/
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 from pyformex import software,utils
@@ -124,12 +124,12 @@ def centerline(self,seedselector='pickpoint',sourcepoints=[],
             targetpoints=asarray(targetpoints).ravel()
         if seedselector in ['idlist','profileidlist']:
             fmt=' %i'
-            
+
         if seedselector in ['pointlist']:
             seedtype = 'points'
         if seedselector in ['idlist','profileidlist']:
             seedtype = 'ids'
-            
+
         cmd += ' -source%s'%seedtype
         cmd += fmt*len(sourcepoints)%tuple(sourcepoints)
         if len(targetpoints):
@@ -185,7 +185,7 @@ def distance2centerlines(S):
     --pipe vmtkdistancetocenterlines -useradius 1 -ofile %s "%(tmp,tmp1)
 
     P = utils.command(cmd)
-    
+
     if P.sta:
         print("An error occurred during the distance calculation.")
         print(P.out)
@@ -294,7 +294,7 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
         cmd += ' -entityidsarray prop'
     print("Writing temp file %s" % tmp)
     cmd += ' %s'%options
-        
+
     writeVTP(mesh=self, fn=tmp, pointdata=pointdata)
     print("Remeshing with command\n %s" % cmd)
     P = utils.command(cmd)
@@ -420,14 +420,3 @@ def install_trisurface_methods():
 install_trisurface_methods()
 
 # End
-
-
-
-
-
-
-
-
-
-
-

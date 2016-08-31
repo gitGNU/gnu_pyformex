@@ -25,7 +25,7 @@
 """Vascular Sweeping Mesher
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 from numpy import *
@@ -113,14 +113,14 @@ def cpBoundaryLayer(BS,  centr, issection0=False,  bl_rel=0.2):
     #print bisbs
     if issection0:#inside the bifurcation center the 3 half sections need to touch each others on 1 single line. Thus, because the control points on this line (the bifurcation axis) needs to be the same, these 2 special points are defined differently, but only at the first section of each branches.
         blvecn[0]=normalize(centr-BS[0])
-        midp=BS.shape[0]/2#is 12 if use 24 control points, will be 24 with 48 cp.
+        midp=BS.shape[0]//2#is 12 if use 24 control points, will be 24 with 48 cp.
         blvecn[midp]=normalize(centr-BS[midp])
     blvec=blvecn*bllength
     cpblayer=array([BS+blvec*i for i in [1., 2/3., 1/3., 0.]])
     cpblayer=swapaxes(cpblayer, 0, 1)
     #draw(Formex(cpblayer[:].reshape(-1, 3)))
     #drawNumbers(Formex(cpblayer[0]))
-    r4= concatenate( [i*3+arange(4) for i in arange(cpblayer.shape[0]/3)])
+    r4= concatenate( [i*3+arange(4) for i in arange(cpblayer.shape[0]//3)])
     r4[-1]=0
     r4= r4.reshape(-1, 4)
     return cpblayer[r4].reshape(-1, 16, 3), cpblayer[:, 0]#control points of the boundaary layer, points on the border with the inner part of the lumen
@@ -130,11 +130,11 @@ def cpQuarterLumen(lumb, centp, edgesq=0.75, diag=0.6*2**0.5, verbos=False):
     arcp=lumb.copy()
     arcsh= arcp.shape[0]-1
     xcp1, xcp3=centp+(arcp[[arcsh, 0]]-centp)*edgesq
-    xcp2=centp+(arcp[arcsh/2]-centp)*diag
+    xcp2=centp+(arcp[arcsh//2]-centp)*diag
     nc0=array([centp, xcp1, xcp2, xcp3])#new coord0
     grid16= regularGrid([0., 0., 0], [1., 1., 0.], [3, 3, 0]).reshape(-1, 3)#grid
     ncold=grid16[[0, 12, 15, 3]]#old coord
-    fx=arcsh/6
+    fx=arcsh//6
     sc=array([1./fx, 1./fx, 0.])
     grid16=Formex([grid16]).replic2(fx, fx, 1., 1.).scale(sc)[:]
     gridint= Isopar('quad4', nc0, ncold).transform(grid16)#4 internal grids
@@ -206,7 +206,7 @@ def cpOneSection(hc, oc=None,isBranchingSection=False, verbos=False ):
     """hc is a numbers of points on the boundary line of 1 almost circular section. oc is the center point of the section. It returns 3 groups of control points: for the inner part, for the transitional part and for the boundary layer of one single section"""
 
     ##if the center is not given, it is calculated from the first and the half points of the section
-    if oc is None:oc=(hc[0]+hc[hc.shape[0]/2])*0.5
+    if oc is None:oc=(hc[0]+hc[hc.shape[0]//2])*0.5
 
     ##create control points for the boundary layer of 1 full section.
     if verbos:
@@ -214,7 +214,7 @@ def cpOneSection(hc, oc=None,isBranchingSection=False, verbos=False ):
     cpbl, hlum=cpBoundaryLayer(hc,  centr=oc, issection0=isBranchingSection)
 
     ##split the inner lumen in quarters and check if the isop can be applied
-    sectype= hlum.shape[0]/24.
+    sectype= hlum.shape[0]//24.
     if sectype!=float(int(sectype)): raise ValueError("BE CAREFUL: the number of points along each circular section need to be 24*int in order to allow mapping!")
     else:
         if verbos:print("----the number of points on 1 slice is suitable for ISOP MESHING----")
@@ -301,11 +301,3 @@ def mapQuadLong(mesh_block, cpvr):
 #M= [m[0][:, m[1]].reshape(-1, 8, 3) for m in [in_mesh, tr_mesh, bl_mesh] ]
 #
 #[draw(Formex(M[i], eltype='Hex8').setProp(i)) for  i in range(3)]
-
-
-
-
-
-
-
-

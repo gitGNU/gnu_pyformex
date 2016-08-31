@@ -28,7 +28,7 @@ a structured hexahedral mesh. These tools were developed as part of the
 PhD research by Gianluca De Santis at bioMMeda (Ghent University).
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import zip,olist
@@ -507,7 +507,7 @@ def seedLongSplines (H, at,  curvedSection=True, nPushedSections=6, napproxlong=
 
     def BezierCurve(X):
         """Create a Bezier curve between 4 points"""
-        ns = (X.shape[0]-1) / 3
+        ns = (X.shape[0]-1) // 3
         ip = 3*arange(ns+1)
         P = X[ip]
         ip = 3*arange(ns)
@@ -518,17 +518,17 @@ def seedLongSplines (H, at,  curvedSection=True, nPushedSections=6, napproxlong=
     def nearestPoints2D(pt0, pt1):
         """P0 and P1 and 2D arryas. It takes the closest point of 2 arrays of points and finds the 2 closest points. It returns the 2 indices."""
         if pt0.shape[1]!=2:raise ValueError("only for 2D arras (no z)")
-        np= (pt0.reshape(-1, 1, 2)-pt1.reshape(1, -1, 2))#create a matrix!!!
-        npl=(np[:,:,  0]**2+np[:,:,  1]**2)**0.5
-        nearest= where(npl==npl.min())
+        np = (pt0.reshape(-1, 1, 2)-pt1.reshape(1, -1, 2))#create a matrix!!!
+        npl = (np[:,:,  0]**2+np[:,:,  1]**2)**0.5
+        nearest = where(npl==npl.min())
         return nearest[0][0], nearest[1][0]
 
     def cutLongSplinesWithCurvedProfile(sideA, sideB, curvA, curvB, npb):
         #create 2D cutting curved profiles given 3 points
-        ssh= sideA.shape[0]
-        hsh=int(ssh/2)#half point
-        s12=(sideA[0]+ sideB[0])*0.5
-        cutProfilePts=array([sideA[hsh], s12, s12, sideB[hsh]])
+        ssh = sideA.shape[0]
+        hsh = ssh // 2 #half point
+        s12 = (sideA[0]+ sideB[0])*0.5
+        cutProfilePts = array([sideA[hsh], s12, s12, sideB[hsh]])
 
         #[draw(BezierCurve(cutProfilePts[:, i]), alpha=1, flat=True) for i in range(1, sideA[0].shape[0]-1)]
         cutProfile2D=array([BezierCurve(cutProfilePts[:, i]).subPoints(npb)[:, :2] for i in range(1, sideA[0].shape[0]-1)])
@@ -1168,7 +1168,3 @@ if __name__ == '__draw__':
     run()
 
 # End
-
-
-
-

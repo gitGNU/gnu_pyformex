@@ -29,7 +29,7 @@ This is a plugin for pyFormex.
 
 See the Section2D example for an example of its use.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex.plugins import sectionize

@@ -26,7 +26,7 @@
 
 Surface operations plugin menu for pyFormex.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import zip, simple, timer
@@ -673,7 +673,7 @@ def colorByFront():
                 p = S.frontWalk(level=0, maxval=maxval, startat=startat)
             else:
                 p = S.frontWalk(level=1, maxval=maxval, startat=startat)
-            S.setProp(p/nwidth + firstprop)
+            S.setProp(p//nwidth + firstprop)
             print("Colored in %s parts (%s seconds)" % (S.prop.max()+1, t.seconds()))
             selection.draw()
 

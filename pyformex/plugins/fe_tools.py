@@ -29,7 +29,7 @@ You need to import this module in your scripts to have access to its
 contents.
 """
 
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from pyformex.arraytools import checkArray
 import numpy as np
@@ -375,7 +375,7 @@ def transverseShear(E,nu,c,type='generalized'):
     #~ print('strain type :log %s'%strain.log())
     #~ print('strain type :green %s'%strain.green())
     #~ print('strain type :almansi %s'%strain.almansi())
-    
+
     #~ print('stress type :cauchy %s'%stress.cauchy())
     #~ print('stress type :nominal %s'%stress.nominal())
     #~ print('stress type :pk2 %s'%stress.pk2())

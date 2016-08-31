@@ -45,7 +45,7 @@ Then there are higher level functions that read data from the property module
 and write them to the Abaqus input file and some data classes to organize all
 the data involved with the finite element model.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 from pyformex.plugins.properties import *
@@ -545,22 +545,22 @@ def fmtConnectorSection(el, setname):
 def fmtConnectorBehavior(prop):
     """ Write a connector behavior.
     Implemented: Elasticity,  Stop
-    
+
     Optional parameter:
     - `extrapolation`: extrapolation method for all subcomponents of the behavior.
                        'CONSTANT' (default) or 'LINEAR'
-    
+
     Examples:
     ---------
-    
+
     Elasticity
     ''''''''''
     elasticity = dict(component=[1,2,3,4,5,6], value=[1,1,1,1,1,1])
     P.Prop(name='connbehavior1', ConnectorBehavior='', Elasticity=elasticity, extrapolation='LINEAR')
-    
+
     Optional parameter for Elasticity dictionary:
     - `nonlinear`: use nonlinear elasticity data. Can be False (default) or True.
-    
+
     Stop:
     '''''
     stop = dict(component=[1,2,3,4,5,6],lowerlimit=[1,1,1,1,1,1], upperlimit=[2, 2, 2, 2,2,2])
@@ -1104,7 +1104,7 @@ def writeSet(fil,type,name,set,ofs=1):
                 fil.write("\n")
                 fl = False
     if fl:
-        fil.write("\n")            
+        fil.write("\n")
 
 pointmass_elems = ['MASS']
 spring_elems = ['SPRINGA', ]
@@ -1268,7 +1268,7 @@ def writeSection(fil, prop):
                 out += "\n%s" % el.thickness
             out += '\n'
             fil.write(out)
-    
+
     ############
     ## POINT MASS elements
     ##########################
@@ -1276,7 +1276,7 @@ def writeSection(fil, prop):
         if el.sectiontype.upper() == 'MASS':
             if el.mass:
                 fil.write("*MASS, ELSET=%s\n%s\n" % (setname, el.mass))
-    
+
     ############
     ## UNSUPPORTED elements
     ##########################

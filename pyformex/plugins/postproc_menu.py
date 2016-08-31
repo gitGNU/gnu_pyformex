@@ -24,7 +24,7 @@
 """Postprocessing Menu
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 from pyformex import zip, utils
@@ -294,7 +294,7 @@ def showResults(nodes,elems,displ,text,val,showref=False,dscale=100.,
             logma = 0
 
         if logma < 0:
-            multiplier = 3 * ((2 - logma) / 3 )
+            multiplier = 3 * ((2 - logma) // 3 )
             #print("MULTIPLIER %s" % multiplier)
 
         CS = ColorScale('RAINBOW', vmin, vmax, vmid, 1., 1.)

@@ -32,7 +32,7 @@ have a look at http://home.tiscali.be/be052320/Unum.html and make an
 implementation based on unum. If you GPL it and send it to me, I might
 include it in this distribution.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex import utils

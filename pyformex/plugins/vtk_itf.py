@@ -30,7 +30,7 @@ Documentation for VTK can be found on http://www.vtk.org/
 This module provides the basic interface to convert data structures between
 vtk and pyFormex.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 from pyformex import software,utils,warning
@@ -1156,7 +1156,7 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
         -  method ==  `planes`  : points array-like of shape (npoints,3) and
                 normal vectors array-like of shape (npoints,3) defining the cutting planes.
         -  method ==  `surface`  : a closed convex manifold trisurface.
-        
+
     - `method`: str or None. If string allowed values are `plane`,`planes`, `sphere`,
         `box` to select the correspondent implicit functions by providing the
         `implicitdata` parameters. If None a vtkImplicitFunction must be passed directly
@@ -1167,7 +1167,7 @@ def vtkClip(self, implicitdata, method=None, insideout=False):
     Returns always a list of meshes, each one having the same element type.
     None is returned if a mesh does not exist (e.g. clipping with a box which is outside the mesh).
     The mesh density can influence the clipping results, especially with solid elements.
-    In this case the corner of the implicit function can be smoothed resulting in wrong clipping at these 
+    In this case the corner of the implicit function can be smoothed resulting in wrong clipping at these
     locations.
     """
     if method=='plane':

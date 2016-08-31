@@ -26,7 +26,7 @@
 Properties can really be just about any Python object.
 Properties can be attributed to a set of geometrical elements.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 import pyformex as pf

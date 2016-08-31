@@ -28,7 +28,7 @@ web. It is currently highly biased to downloading 3D models from archive3d.net,
 unzipping the files, and displaying the .3ds models included.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from pyformex import utils
 import urllib
