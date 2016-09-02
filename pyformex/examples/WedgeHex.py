@@ -34,13 +34,13 @@ of which some elements are degenerate (those touching the axis). The
 splitDegenerate method is then used to split the mesh in nondegenerat meshes
 of Wedge6 (magenta) and Hex8 (cyan) type.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
 _level = 'normal'
 _topics = ['mesh']
-_techniques = ['revolve', 'degenerate'] 
+_techniques = ['revolve', 'degenerate']
 
 from pyformex.gui.draw import *
 from pyformex import simple

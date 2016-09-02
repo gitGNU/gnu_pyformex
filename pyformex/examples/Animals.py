@@ -25,7 +25,7 @@
 
 Show models of animals retrieved over the web.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

@@ -25,7 +25,7 @@
 """Widgets
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -55,7 +55,7 @@ A text in ReST
 
 """))
 
-    print(ask("Answer this question with yes or no", ['Yes', 'No'])) 
+    print(ask("Answer this question with yes or no", ['Yes', 'No']))
 
 if __name__ == '__draw__':
     run()

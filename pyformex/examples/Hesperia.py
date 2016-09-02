@@ -25,7 +25,7 @@
 """Hesperia
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 _status = 'unchecked'
@@ -142,7 +142,7 @@ def createGeometry():
     # which will be the first point of the first triangle of the n-th row.
     # Draw the point to check it.
 
-    i = (n-1)*n/2
+    i = (n-1)*n//2
     P = F[i][0]
     draw(Formex([P]), marksize=10, bbox='last')
 
@@ -960,4 +960,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-

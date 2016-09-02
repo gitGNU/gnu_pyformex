@@ -34,7 +34,7 @@ to fuse a Mesh by parts and adjust the nonfused nodes.
 - Finally the Coords.adjust operation is used to give the nodes on the
   part boundaries identical coordinates.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

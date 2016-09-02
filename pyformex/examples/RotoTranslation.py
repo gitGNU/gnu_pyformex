@@ -27,7 +27,7 @@
 This example illustrates the use of transformCS() to return to an original
 reference system after a number of affine transformations.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

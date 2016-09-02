@@ -34,7 +34,7 @@ resulting structure can be shown. The parameters can also be saved to a
 file. Finally, the GUi also allows to replay the whole set of saved
 structures.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -76,7 +76,7 @@ def createGrid():
     if y_clip:
         B = B.clip(B.test('any', dir=1, min=y_clip[0]+tol*h, max=y_clip[1]-tol*h))
     export({grid_name:B})
-    
+
 
 def createSuperShape():
     """Create a super shape from global parameters"""
@@ -99,7 +99,7 @@ def drawGrid():
     wireframe()
     view('front')
     draw(B, color=grid_color)
-    
+
 
 def drawSuperShape():
     """Show the last created super shape"""
@@ -170,7 +170,7 @@ def save():
         globals().update({'grid_name': gname.next(), 'name': sname.next(),})
         if dialog:
            dialog['grid_name'].setValue(grid_name)
-           dialog['name'].setValue(name)            
+           dialog['name'].setValue(name)
 
 
 def replay():
@@ -233,8 +233,8 @@ dialog_default = 'Show'
 def timeOut():
     show()
     close()
-    
-        
+
+
 def createDialog():
     global dialog
 

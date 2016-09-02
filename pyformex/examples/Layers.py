@@ -26,7 +26,7 @@
 Subdivide a cylindrical mesh in different (radial) layers.
 To every layer a different property is assigned.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 _status = 'checked'
 _level = 'normal'
@@ -57,15 +57,15 @@ def run():
     draw(cyl,color=red)
     pause()
     clear()
-    
+
     cylbrd = cyl.getBorderMesh()
     cyledgs = cyl.getFreeEntitiesMesh(level=1)
     pcyl = splitAlongPath(cyledgs,cylbrd)
     cylbrd = cylbrd.setProp(pcyl)
-    
+
     innds = cyl.matchCoords(cylbrd.selectProp(1,compact=True))
     inelems = cyl.connectedTo(innds)
-    
+
     play = cyl.frontWalk(startat=inelems)
     cyl = cyl.setProp(play)
     draw(cyl,color='prop')

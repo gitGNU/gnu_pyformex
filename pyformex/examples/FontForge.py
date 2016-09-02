@@ -29,7 +29,7 @@ installed. On Debian GNU/Linux you can achieve this by installing the package
 'python-fontforge'.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 _status = 'checked'
 _level = 'advanced'

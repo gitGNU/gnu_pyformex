@@ -27,7 +27,7 @@
 This example shows how to create extension tubes on the borders of a
 surface techniques.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

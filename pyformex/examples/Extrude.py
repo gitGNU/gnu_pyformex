@@ -30,7 +30,7 @@ to yield a line (red). The line is extruded in y-direction, resulting in
 a rectangle (blue). Finally, an extrusion in the z-direction gives a
 cuboid (yellow).
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

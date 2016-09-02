@@ -24,7 +24,7 @@
 """TrussBridge
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -46,7 +46,7 @@ Hb = 600  # Height of the bracing
 # First we half of one of the trusses. The origin is at the center of the
 # bridge
 Lm = L/N # modular length
-n = N/2  # number of modules for half bridge
+n = N//2  # number of modules for half bridge
 b = B/2
 
 def run():
@@ -76,8 +76,8 @@ def run():
     braces.setProp(2)
 
     # Wind bracing
-    nodes1 = nodes.select([2*i for i in range(n/2+1)]).translate([0, 0, -Bi])
-    nodes2 = nodes.select([2*i+1 for i in range(n/2)]).translate([0, 0, -Bi]).reflect(2)
+    nodes1 = nodes.select([2*i for i in range(n//2+1)]).translate([0, 0, -Bi])
+    nodes2 = nodes.select([2*i+1 for i in range(n//2)]).translate([0, 0, -Bi]).reflect(2)
     draw(nodes1+nodes2)
     wind_bracing = connect([nodes1, nodes2]) + connect([nodes2, nodes1], bias=[0, 1])
     wind_bracing.setProp(5)
@@ -96,7 +96,7 @@ def run():
 
     clear()
     draw(bridge)
-    
+
 if __name__ == '__draw__':
     run()
 # End

@@ -67,7 +67,7 @@ Currently there can only be one texture in a scene.
 
 """
 
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 _status = 'checked'
 _level = 'beginner'

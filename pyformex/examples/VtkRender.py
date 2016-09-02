@@ -26,7 +26,7 @@
 Create an interactive vtk window. Shows the correct sequence
 of commands to remove any floating widget
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -38,7 +38,7 @@ from pyformex.gui.draw import *
 
 def renderVTK(object,color=[0.,0.,0.],bkg=[1.,1.,1.]):
     """Display an objet in an interactive vtk render window.
-    
+
     Parameters:
 
       - `object`: any object convertable to vtkPolyData
@@ -47,7 +47,7 @@ def renderVTK(object,color=[0.,0.,0.],bkg=[1.,1.,1.]):
     from vtk import vtkActor,vtkPolyDataMapper,vtkRenderer,vtkRenderWindow,vtkRenderWindowInteractor
     from pyformex.plugins.vtk_itf import convert2VPD,SetInput,Update
     from pyformex.arraytools import checkArray
-    
+
     vpd = convert2VPD(object)
     pause()
     color=checkArray(color,shape=(3,),kind='f')
@@ -55,37 +55,37 @@ def renderVTK(object,color=[0.,0.,0.],bkg=[1.,1.,1.]):
     mapper = vtkPolyDataMapper()
     mapper = SetInput(mapper,vpd)
     mapper = Update(mapper)
-    
+
     # creating the actor
     actor = vtkActor()
     actor.SetMapper(mapper)
     actor.GetProperty().SetColor(color)
     actor.Modified()
-     
+
     # creating the renderer
     ren = vtkRenderer()
-    ren.SetBackground(bkg) 
+    ren.SetBackground(bkg)
     ren.AddActor(actor)
     ren.ResetCamera()
     ren.GetActiveCamera().SetParallelProjection(1)
-    
+
     #creating the render window
     renWin = vtkRenderWindow()
-    renWin.SetOffScreenRendering(0) 
+    renWin.SetOffScreenRendering(0)
     renWin.AddRenderer(ren)
-    
+
     #creating the interactor
     iren = vtkRenderWindowInteractor()
     iren.SetRenderWindow(renWin)
     iren.Initialize()
     renWin.Render()  # this update the object in the renderer
-    iren.Start()   
-    
+    iren.Start()
+
     # closing the window
     renWin.Finalize()
     iren.TerminateApp()
     del renWin, iren
-    
+
 def run():
     S = TriSurface.read(getcfg('datadir')+'/horse.off')
     renderVTK(S,color=[0.1,0.4,0.2],bkg=[0,0,0])
@@ -93,4 +93,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-

@@ -24,7 +24,7 @@
 """Parabolic Tower
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -38,7 +38,7 @@ h = 25.   # height of tower
 h1 = 18.  # height at neck of tower
 r = 10.   # radius at base of tower
 r1 = 5.   # radius at neck of tower
-m = 10    # number of sides at the base   
+m = 10    # number of sides at the base
 n = 8     # number of levels
 a = (r-r1)/h1**2; b = -2*a*h1; c = r; d = h/n
 g = lambda i: a*(d*i)**2 + b*d*i + c

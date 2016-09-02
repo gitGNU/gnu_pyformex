@@ -39,7 +39,7 @@ The application shows two viewports. In the left viewport element per
 element interpolation is shown. The right viewport shows the result of the
 nodal averaging.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

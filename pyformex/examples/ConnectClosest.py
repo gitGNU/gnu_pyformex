@@ -26,7 +26,7 @@
 
 This example connects each point in a set with the closest other point.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

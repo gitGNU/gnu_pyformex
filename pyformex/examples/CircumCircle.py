@@ -24,7 +24,7 @@
 """CircumCircle
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 _status = 'checked'
@@ -86,4 +86,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-

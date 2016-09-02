@@ -30,7 +30,7 @@ surface and the animation of the results.
 A model of a horse is repeatedly cut by a plane and the cut-off parts
 are rotated and translated.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -101,7 +101,7 @@ def run():
 
     seterr(**old)
 
-    x = pf.canvas.width()/2
+    x = pf.canvas.width()//2
     y = pf.canvas.height() - 40
     T = drawText("No animals got hurt during the making of this movie!", (x, y), size=18, gravity='C')
     for i in range(10):

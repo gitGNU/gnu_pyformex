@@ -29,7 +29,7 @@ applied on the geometry and the stars are place with random position and
 orientation in a confined space. Finally, the stars are drawn with random
 RGB colors.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 _status = 'checked'
@@ -58,7 +58,7 @@ def star(n,noise=0.,prop=0):
         n = 3
     if n % 2 == 0:
         n += 1
-    f = Formex([[[0, 1]]]).rosette(n, (n/2)*360./n).view()
+    f = Formex([[[0, 1]]]).rosette(n, (n//2)*360./n).view()
     if noise != 0.:
         f = f + noise * random.random(f.shape)
     P = Formex(concatenate([f, f[:1]]))

@@ -28,7 +28,7 @@ This example demonstrates several ways to construct 3D geometry from a
 2D section. The cross section of an H-beam is converted to a 3D beam by
 sweeping, extruding, revolving or connecting.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -59,11 +59,11 @@ def run():
     er = 6  #number of elements in the circular segment
 
     Body = simple.rectangle(etb, ehb, tw/2., h/2.-tf-r)
-    Flange1 =  simple.rectangle(er/2, etf-etb, tw/2.+r, tf-tw/2.).translate([0., h/2.-(tf-tw/2.), 0.])
+    Flange1 =  simple.rectangle(er//2, etf-etb, tw/2.+r, tf-tw/2.).translate([0., h/2.-(tf-tw/2.), 0.])
     Flange2 =  simple.rectangle(ewf, etf-etb, b/2.-r-tw/2., tf-tw/2.).translate([tw/2.+r, h/2.-(tf-tw/2.), 0.])
     Flange3 =  simple.rectangle(ewf, etb, b/2.-r-tw/2., tw/2.).translate([tw/2.+r, h/2.-tf, 0.])
-    c1a = simple.line([0, h/2-tf-r, 0], [0, h/2-tf+tw/2, 0], er/2)
-    c1b = simple.line([0, h/2-tf+tw/2, 0], [tw/2+r, h/2-tf+tw/2, 0], er/2)
+    c1a = simple.line([0, h/2-tf-r, 0], [0, h/2-tf+tw/2, 0], er//2)
+    c1b = simple.line([0, h/2-tf+tw/2, 0], [tw/2+r, h/2-tf+tw/2, 0], er//2)
     c1 = c1a + c1b
     c2 = simple.circle(90./er, 0., 90.).reflect(0).scale(r).translate([tw/2+r, h/2-tf-r, 0])
     Filled = simple.connectCurves(c2, c1, etb)

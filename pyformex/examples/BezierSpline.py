@@ -31,7 +31,7 @@ The image shows open (left) and closed (right) BezierSpline curves of
 degrees 1(red), 2(magenta) and 3(blue).
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 _status = 'checked'

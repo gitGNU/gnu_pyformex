@@ -27,7 +27,7 @@ level = 'normal'
 topics = ['geometry']
 techniques = ['dialog', 'persistence', 'color']
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 _status = 'checked'

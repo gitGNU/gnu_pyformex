@@ -24,7 +24,7 @@
 """X-shaped truss
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -44,23 +44,23 @@ class X_truss(object):
     This yields four possible layouts (bars are connected at o symbols):
 
                    with interior verticals      without interior verticals
-                     o-----o-----o--               o-----o-----o--           
-                     |\   /|\   /|\                |\   / \   / \   
-        diagonals    | \ / | \ / | \               | \ /   \ /   \  
-        connected    |  o  |  o  |                 |  o     o       
-                     | / \ | / \ | /               | / \   / \   /  
-                     |/   \|/   \|/                |/   \ /   \ /   
-                     o-----o-----o--               o-----o-----o--  
-   
-                     o-----o-----o--               o-----o-----o--           
-                     |\   /|\   /|\                |\   / \   / \   
-        diagonals    | \ / | \ / | \               | \ /   \ /   \  
-           not       |  X  |  X  |                 |  X     X       
-        connected    | / \ | / \ | /               | / \   / \   /  
-                     |/   \|/   \|/                |/   \ /   \ /   
-                     o-----o-----o--               o-----o-----o--  
+                     o-----o-----o--               o-----o-----o--
+                     |\   /|\   /|\                |\   / \   / \
+        diagonals    | \ / | \ / | \               | \ /   \ /   \
+        connected    |  o  |  o  |                 |  o     o
+                     | / \ | / \ | /               | / \   / \   /
+                     |/   \|/   \|/                |/   \ /   \ /
+                     o-----o-----o--               o-----o-----o--
+
+                     o-----o-----o--               o-----o-----o--
+                     |\   /|\   /|\                |\   / \   / \
+        diagonals    | \ / | \ / | \               | \ /   \ /   \
+           not       |  X  |  X  |                 |  X     X
+        connected    | / \ | / \ | /               | / \   / \   /
+                     |/   \|/   \|/                |/   \ /   \ /
+                     o-----o-----o--               o-----o-----o--
     """
-    
+
     def __init__(self,n_mod,mod_length,height,diagonals_connected=True,interior_verticals=True):
         """Creates an X-shaped truss.
 

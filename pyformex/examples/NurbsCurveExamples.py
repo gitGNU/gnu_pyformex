@@ -24,10 +24,10 @@
 
 """NurbsCurveExamples
 
-A collection of NurbsCurve exmaples taken from the Nurbs book.
+A collection of NurbsCurve examples taken from the Nurbs book.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

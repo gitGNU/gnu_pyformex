@@ -25,7 +25,7 @@
 
 Torsing a horse is like horsing a torse.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -83,4 +83,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-

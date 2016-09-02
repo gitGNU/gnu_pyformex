@@ -31,7 +31,7 @@ a dialog to allow the user to interactively change the rendering of the
 objects. Attributes that can be changed include color, opacity, visibility,
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

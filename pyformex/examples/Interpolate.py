@@ -30,7 +30,7 @@ Then new lines are created by interpolating between the two.
 Next, an interpolation is created with the element order swapped.
 Finally, the lines are subdivided in smaller segments.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -53,7 +53,7 @@ def run():
     n = 10
     v = 1./n * arange(n+1)
     p = arange(n)
-    
+
     pause()
     c = interpolate(a, b, v)
     c.setProp(p)

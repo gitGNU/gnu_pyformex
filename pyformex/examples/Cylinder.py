@@ -28,7 +28,7 @@ This example illustrates the use of simple.sector() and simple.cylinder()
 to create a parametric cylindrical surface.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

@@ -26,7 +26,7 @@
 This example displays all the colors in the default palette on a grid
 of (ncolors+1) x (ncolors-1) squares.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 _status = 'checked'
 _level = 'beginner'
@@ -40,7 +40,7 @@ def run():
     flat()
     palette = pf.canvas.settings.colormap
     ncolors = len(palette)
-    F = Formex('4:0123').replic2(ncolors/2, 2).setProp(arange(ncolors))
+    F = Formex('4:0123').replic2(ncolors//2, 2).setProp(arange(ncolors))
     G = Formex('4:0123').replic2(ncolors+1, ncolors-1).setProp(arange(ncolors))
     draw(align([F, G], '|00', offset=[1., 0., 0.]))
 

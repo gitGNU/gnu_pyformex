@@ -29,7 +29,7 @@ Create an icon file from a pyFormex model rendering.
 
 This application was used to create some of the toolbar icons for pyFormex
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

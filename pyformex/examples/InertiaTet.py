@@ -24,7 +24,7 @@
 """Inertia
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -83,4 +83,3 @@ if __name__ == '__draw__':
     run()
 
 # End
-

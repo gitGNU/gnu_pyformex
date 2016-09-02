@@ -27,7 +27,7 @@ The lamella dome is a framed dome that has no meridional nor horizontal bars,
 but only diagonal bars spiraling downwards from the top ring to the bottom
 ring.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -52,7 +52,7 @@ def run():
         f2 = e2.replic2(nx, ny+1, 2, 2)
     else:
         f2 = e2.replic2(nx, 2, 2, 2*ny)
-    g = (f1+f2).translate([0, a, 1]).spherical(scale=[180/nx, t/(2*ny+a), rd], colat=True)
+    g = (f1+f2).translate([0, a, 1]).spherical(scale=[180./nx, t/(2*ny+a), rd], colat=True)
     draw(e1+e2)
 
     draw(f1+f2)

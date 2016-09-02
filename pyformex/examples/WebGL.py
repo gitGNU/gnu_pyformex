@@ -32,7 +32,7 @@ and transparency, and exports an equivalent WebGL model in the current
 working directory. Point your WebGL capable browser to the created
 'scene1.html' file to view the WebGL model.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

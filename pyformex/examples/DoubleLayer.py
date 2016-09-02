@@ -26,7 +26,7 @@
 Shows a spatial frame structure consisting of two layers of horizontal
 bars (in red and green) connected by diagonals (blue).
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -57,4 +57,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-

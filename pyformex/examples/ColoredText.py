@@ -42,7 +42,7 @@ During the display of the first half of the set of texts,
 the previous text is removed after each new one is shown.
 During the second half, all texts remain on the canvas.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -78,7 +78,7 @@ def run():
         TB = drawText(T[t[i]], a[i], font=fonts[f[i]], size=s, color=list(colors[i]))
         sleep(0.5)
         breakpt()
-        if i < n/2:
+        if i < n//2:
             undecorate(TA)
         TA = TB
 

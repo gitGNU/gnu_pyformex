@@ -38,7 +38,7 @@ directly is 7. Higher order curves are approximated by a PolyLine.
 For the last (highest degree) Nurbs curve, also a set of 100 points along
 the curve are shown.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -70,7 +70,7 @@ custom = ''
 
 
 def run():
-    
+
     res = askItems([
         dict(name='pattern', value=pattern, choices=predefined),
         dict(name='custom', value=custom),
@@ -115,8 +115,7 @@ def run():
     u = arange(n+1)*1.0/n
     x = N.pointsAt(u)
     draw(x)
-    
+
 if __name__ == '__draw__':
     run()
 # End
-

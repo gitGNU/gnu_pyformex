@@ -25,7 +25,7 @@
 
 Example for testing the low level drawing functions
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -36,7 +36,7 @@ _techniques = ['widgets', 'dialog', 'random', 'color']
 from pyformex.gui.draw import *
 
 from numpy.random import rand
-    
+
 setDrawOptions({'clear':True, 'bbox':'auto'})
 linewidth(2) # The linewidth option is not working nyet
 
@@ -76,7 +76,7 @@ def select_geom(geom, nplex, eltype):
         return F
     else:
         return F.toMesh()
-    
+
 
 def select_color(F, color):
     """Create a set of colors for object F"""
@@ -147,7 +147,7 @@ def run():
     dialog.timeout = timeOut
     dialog.show()
     scriptLock(__file__)
-        
+
 if __name__ == '__draw__':
     run()
 # End

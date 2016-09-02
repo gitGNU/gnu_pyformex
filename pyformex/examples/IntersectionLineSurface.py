@@ -24,10 +24,10 @@
 """IntersectionLineSurface
 
 Find the intersection points of a set lines with a TriSurface.
-This example teaches how to recognize the intersection points 
+This example teaches how to recognize the intersection points
 with a specific line.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -41,37 +41,37 @@ from pyformex.simple import sphere, regularGrid
 
 
 def run():
-    
+
     clear()
     transparent()
 
     nquad = 1
     nsphere = 5
-    
+
     S = sphere(nsphere)
-    
+
     #Creating the points to define the intersecting lines
     R = regularGrid([0., 0., 0.],[0., 1., 1.],[1, nquad, nquad])
     L0 = Coords(R.reshape(-1, 3)).trl([-2., -1./2, -1./2]).fuse()[0]
     L1 = L0.trl([4., 0., 0.])
 
     P,X = S.intersectionWithLines(q=L0,q2=L1,method='line',  atol=1e-5)
-    
+
     # Retrieving the index of the points and the correspending lines and hit triangles
     id_pts = X[:,0]
     id_intersected_line = X[:,1]
     id_hit_triangle = X[:,2]
-    
+
     hitsxline = inverseIndex(id_intersected_line.reshape(-1, 1))
     Nhitsxline = (hitsxline>-1).sum(axis=1)
 
     ptsok = id_pts[hitsxline[where(hitsxline>-1)]]
     hittriangles = id_hit_triangle[hitsxline[where(hitsxline>-1)]]
-    
-    
+
+
     colors = ['red','green','blue','cyan']
     [draw(Formex([[p0,p1]]) , color=c,linewidth=2,alpha=0.7) for p0,p1,c in zip(L0,L1,colors)]
-    
+
     id=0
     for icolor,nhits in enumerate(Nhitsxline):
         for i in range(nhits):

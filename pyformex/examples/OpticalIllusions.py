@@ -25,7 +25,7 @@
 """Optical Illusions
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 _status = 'checked'
@@ -252,20 +252,28 @@ def MotionInducedBlindness():
     Cool huh?
     """
     resetview('black')
-    res = askItems([('Number of static points', 10), ('Background', None, 'radio', {'choices':['Tiles', 'Structured points', 'Random points']}), ('Rotations', 2), ('Rotation angle', 2), ('Number of random points', 300)])
-    if not res: return
-    nr, a, rot, back, n = res['Number of random points'], res['Rotation angle'], res['Rotations'], res['Background'], res['Number of static points']
+    res = askItems([('Number of static points', 10), ('Background', None, 'radio', {'choices':['Tiles', 'Structured points', 'Random points']}), ('Revolutions', 2), ('Resolution', 180), ('Number of random points', 300)])
+    if not res:
+        return
+    nr, res, rot, back, n = res['Number of random points'], res['Resolution'], res['Revolutions'], res['Background'], res['Number of static points']
     draw(shape('star').scale(0.4), color=red, linewidth=2)
     points = Formex([[0, -10, 0]]).rosette(n, 360./n)
     draw(points, color=random.rand(3), marksize=10)
     col=random.rand(3)
-    if back=='Tiles': F = shape('plus').replic2(11, 11, 3, 3).translate([-15, -15, 0])
-    elif back=='Structured points': F = Formex([[0, 0, 0]]).replic2(30, 30, 1).translate([-15, -15, 0])
-    else: F = Formex(random.rand((nr, 3))).scale([30, 30, 0]).translate([-15, -15, 0])
-    for i in range(rot*360/a):
+    if back=='Tiles':
+        F = shape('plus').replic2(11, 11, 3, 3).translate([-15, -15, 0])
+    elif back=='Structured points':
+        F = Formex([[0, 0, 0]]).replic2(30, 30, 1).translate([-15, -15, 0])
+    else:
+        F = Formex(random.rand((nr, 3))).scale([30, 30, 0]).translate([-15, -15, 0])
+    # TODO: fix this example to get an integer value here
+    # perhaps use # of revolutions and # of steps per revolution
+    a = 360. / res
+    for i in range(rot*res):
         F = F.rotate(a)
         dr = draw(F, color=col, linewidth=2, bbox=[[-10, -10, 0], [10, 10, 0]])
-        if i>0: undraw(DR)
+        if i>0:
+            undraw(DR)
         DR = dr
 
 

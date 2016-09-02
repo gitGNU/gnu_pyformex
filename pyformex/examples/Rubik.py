@@ -63,7 +63,7 @@ for the displayed cube by pressing the **Permutations** button.
 This number is not stored, it is calculated each time. It's a nice example
 of how easily Python can handle huge numbers.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -187,14 +187,14 @@ def perm(n=2):
     even = (n%2==0)
     if even:
         if n<3:
-            return fac(8)*3**7/24
+            return fac(8)*3**7//24
         else:
-            return fac(8)*3**7*(fac(24)/fac(4)**6)**((n-2)/2)**2*fac(24)**((n-2)/2)/24
+            return fac(8)*3**7*(fac(24)//fac(4)**6)**((n-2)//2)**2*fac(24)**((n-2)//2)/24
     else:
         if n<4:
-            return fac(8)*3**7*fac(12)/2*2**11
+            return fac(8)*3**7*fac(12)//2*2**11
         else:
-            return fac(8)*3**7*(fac(24)/fac(4)**6)**(((n-3)/2)**2+(n-3)/2)*fac(12)/2*2**11*fac(24)**((n-3)/2)
+            return fac(8)*3**7*(fac(24)//fac(4)**6)**(((n-3)//2)**2+(n-3)//2)*fac(12)//2*2**11*fac(24)**((n-3)//2)
 
 def fac(x):
     """Return the factorial of x"""

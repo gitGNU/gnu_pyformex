@@ -24,7 +24,7 @@
 """Double Layer Flat Space Truss Roof
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -47,8 +47,8 @@ def createRoof():
     colht = 560  # Column height
     m = 2        # Column multiplicity: should be an integer divisor of nx and ny
     coldx = m * dx # column distance (should be a multiple of dx)
-    ncx = nx/m + 1  # number of columns in x-direction
-    ncy = ny/m + 1  # and in y-direction
+    ncx = nx//m + 1  # number of columns in x-direction
+    ncy = ny//m + 1  # and in y-direction
 
 
     bot = (Formex("1").replic2(nx, ny+1, 1, 1) + Formex("2").replic2(nx+1, ny, 1, 1)).scale(dx)

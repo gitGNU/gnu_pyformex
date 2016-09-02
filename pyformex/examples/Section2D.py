@@ -27,7 +27,7 @@
 Computing geometrical properties of plane sections.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -68,7 +68,7 @@ def close_loop_example():
     if len(conn) > 1:
         print("This curve is not a closed circumference")
         return None
-    
+
     sorted = conn[0]
     print("Sorted elements:", sorted)
 

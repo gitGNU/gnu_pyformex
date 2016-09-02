@@ -26,7 +26,7 @@
 """Hyparcap
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -65,7 +65,7 @@ def run():
     vlakblad2=vlakblad.translate([-c, -c, 0])
     j=vlakblad2.map(lambda x, y, z:[x, y, k1*x*y])
     #overige bladen genereren
-    hyparcap=j.translate([c, c, 0]).rosette(m, 360/m, 2, [0., 0., 0.])
+    hyparcap=j.translate([c, c, 0]).rosette(m, 360./m, 2, [0., 0., 0.])
     draw(hyparcap)
 
 

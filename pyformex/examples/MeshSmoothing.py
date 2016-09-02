@@ -34,7 +34,7 @@ The user can choose the element type (quadrilateral, triangular, hexahedral
 or tetrahedral), the number of elements in the regular grid, the amount of
 noise to be added, and the number of smoothing iterations
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -56,7 +56,7 @@ def createMesh(eltype, n):
     eltype should be one of 'quad4','tri3','hex8','tet4'.
     """
     if eltype == 'tet4':   # Tet conversions produces many elements, reduce n
-        n /= 2
+        n //= 2
     M = Formex('4:0123').rep([n, n]).toMesh()
     if eltype == 'tri3':
         M = M.convert('tri3')

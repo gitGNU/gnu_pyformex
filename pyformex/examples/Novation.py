@@ -24,7 +24,7 @@
 """Novation
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -42,7 +42,7 @@ def run():
     res = askItems([
         _I('baseGeom', itemtype='radio', choices=basechoices, text='Type of surface element'),
         _I('nbumps', 3, text='Number of bumps'),
-        _I('rendermode', choices=renderchoices, text='Render mode'),
+        _I('rendermode', 'smoothwire', choices=renderchoices, text='Render mode'),
         _I('transp', False, text='Transparent'),
         _I('bottom', False, text='Add a bottom plate'),
         _I('shrink', False, text='Shrink elements'),
@@ -64,7 +64,7 @@ def run():
 
     # Novation (Spots)
     s = nbumps+1
-    r = n/s
+    r = n//s
     h = 12
     a = [ [r*i, r*j, h]  for j in range(1, s) for i in range(1, s) ]
 

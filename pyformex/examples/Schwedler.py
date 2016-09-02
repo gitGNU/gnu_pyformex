@@ -34,7 +34,7 @@ This function is called creating a dome with diagonals (g).
 The 'selectProp method' is then used to create a copy without the diagonals (h).
 Both are drawn at the same time, juxtaposed by the align function.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -50,7 +50,7 @@ def schwedler():
     ny=8    # number of modules in meridional direction
     rd=100  # radius of the sphere cap
     base=50 # slope of the dome at its base (= half angle of the sphere cap)
-    top=5   # slope of the dome at its top opening (0 = no opening) 
+    top=5   # slope of the dome at its top opening (0 = no opening)
     a = ny*float(top)/(base-top)
     e1 = Formex('l:54', [1, 3]) # diagonals and meridionals
     e2 = Formex('l:1', 0)      # horizontals

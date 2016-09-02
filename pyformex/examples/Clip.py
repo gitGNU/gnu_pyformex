@@ -25,7 +25,7 @@
 """Clip
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 _status = 'checked'
 _level = 'beginner'
@@ -50,8 +50,8 @@ def run():
     # Novation (Spots)
     m = 4
     h = 0.15*n
-    r = n/m
-    s = n/r
+    r = n//m
+    s = n//r
     a = [ [r*i, r*j, h]  for j in range(1, s) for i in range(1, s) ]
 
     for p in a:

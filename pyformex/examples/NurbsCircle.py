@@ -51,7 +51,7 @@ Notice that the curve with weigths equal to sqrt(2)/2 exactly represents a
 circle.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 from pyformex import zip
 
 _status = 'checked'

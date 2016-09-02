@@ -27,7 +27,7 @@
 This example illustrates the use of the isosurface plugin to construct
 isosurface through a set of data
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 _status = 'checked'
 _level = 'beginner'

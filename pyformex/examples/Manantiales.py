@@ -26,7 +26,7 @@
 A building with a scallop dome roof, inspired by the shape of
 Los Manantiales by Felix Candela.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -66,7 +66,7 @@ def scallop(F, sx, sy, n, f, c, r):
     F = F.cylindrical([0, 1, 2]).rosette(n, a)
     return F
 
-	
+
 def projectOnXY(F):
     """Project a structure on the xy-plane.
 
@@ -81,19 +81,19 @@ def Draw(F, G):
     clear()
     draw(F, wait=False, bkcolor=black)
     draw(G, marksize=10, nolight=True, bbox=None)
-    
+
 
 
 def do_manant(narcs, radius, ypowr, celev, relev, nmod, mmod):
     """Create the manantiales dome"""
-    
+
     # Create a triangular pattern in the first quadrant, and circulize it
     F = Formex('3:012', 1).replic2(nmod, mmod, 1, 1, 0, 1, 1, -1) + Formex('3:021', 3).reverse().replic2(nmod-1, mmod-1, 1, 1, 0, 1, 1, -1).translate(0, 1)
     # We also create points on the border of the circle sector, and give them
     # the same transformations
     G = Formex([nmod*1., 0., 0.]).replic(mmod+1, 1., dir=1)
     Draw(F, G)
-    
+
     # Circulize it
     F = F.circulize1()
     G = G.circulize1()
@@ -124,7 +124,7 @@ def do_manant(narcs, radius, ypowr, celev, relev, nmod, mmod):
     S = TriSurface(dome+base+wall)
 
     # Create a reversed cone
-    
+
     # Cut surface with a cone
 
     # Create new cylindrical walls
@@ -143,7 +143,7 @@ def do_manant(narcs, radius, ypowr, celev, relev, nmod, mmod):
 def run():
     reset()
     clear()
-    
+
     # parameters
     defaults = dict(
         narcs = 8,
@@ -162,7 +162,7 @@ def run():
     print(defaults)
 
     nmod = 8      # number of modules in radial direction
-    mmod = 8      # number of modules over 1 arcade in tangential direction 
+    mmod = 8      # number of modules over 1 arcade in tangential direction
 
     res = askItems([
         _I('narcs', text='Number of arcades (>=6)'),
@@ -185,4 +185,3 @@ if __name__ == '__draw__':
     run()
 
 # End
-

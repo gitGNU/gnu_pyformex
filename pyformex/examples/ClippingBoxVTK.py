@@ -25,7 +25,7 @@
 
 Clips a mesh with sheared box using VTK.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -39,16 +39,16 @@ from pyformex.plugins.vtk_itf import vtkClip
 
 
 def run():
-    
+
     clear()
     transparent()
     smoothwire
-    
+
     nsphere = 10
     S = sphere(nsphere)
-    
+
     bbs=cuboid(*S.bbox()).toMesh().scale([0.8,0.8,1]).rot(30,1).rot(20,0).shear(2,1,0.3).toSurface()
-    
+
     clippedIn=vtkClip(S,implicitdata=bbs,method='surface',insideout=0)
     clippedOut=vtkClip(S,implicitdata=bbs,method='surface',insideout=1)
 

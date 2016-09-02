@@ -33,7 +33,7 @@ the image pixel values.
 Finally, before the result is drawn, the geometry can be transformed into some
 other shape or be projected on a another surface.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

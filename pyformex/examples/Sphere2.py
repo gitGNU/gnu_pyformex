@@ -30,7 +30,7 @@ one a triangulated surface (simple.sphere3).
 Remark that simple.sphere3 may contain degenerate triangles at the north and
 south pole.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -67,4 +67,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-

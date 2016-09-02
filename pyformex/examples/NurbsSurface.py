@@ -47,7 +47,7 @@ Several parts can be drawn on request of the user:
 - randompoints: a set of randomly distributed points on the surface.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -73,7 +73,7 @@ draw_randompoints = False
 def run():
 
     global options
-    
+
     clear()
     smooth()
 
@@ -98,7 +98,7 @@ def run():
         ]
 
     # number of isoparametric curves (-1) to draw on the surface
-    kx, ky = 10, 4  
+    kx, ky = 10, 4
 
     # number of random points
     nP = 100
@@ -113,13 +113,13 @@ def run():
         ('draw_tangents', ),
         ('draw_randompoints', ),
         ])
-    
+
     if not options:
         return
 
     globals().update(options)
     print(options)
-    
+
     ###########################
     ####   CONTROL GRID
     ###########################
@@ -151,7 +151,7 @@ def run():
 
     # define isoparametric values for the isocurves
     u = uniformParamValues(kx) # creates kx+1 u-values
-    v = uniformParamValues(ky) 
+    v = uniformParamValues(ky)
 
     # create Nurbs curves through 1-d sets of control points, in both directions
     Cu = [NurbsCurve(X[i], degree=px, knots=S.uknots) for i in range(ny)]
@@ -176,7 +176,7 @@ def run():
     # First swap the isoparametric point grids, then create curves
     PuC = CuP.swapaxes(0, 1)
     PvC = CvP.swapaxes(0, 1)
-    Vc = [NurbsCurve(PuC[i], degree=py, knots=S.vknots) for i in range(kx+1)] 
+    Vc = [NurbsCurve(PuC[i], degree=py, knots=S.vknots) for i in range(kx+1)]
     Uc = [NurbsCurve(PvC[i], degree=px, knots=S.uknots) for i in range(ky+1)]
     if draw_isocurves:
         # draw the isocurves
@@ -201,7 +201,7 @@ def run():
         V = D[0, 1]
         drawVectors(P, U, size=1, color=red, ontop=True)
         drawVectors(P, V, size=1, color=blue, ontop=True)
-    
+
 
     ###########################
     ####   RANDOM POINTS

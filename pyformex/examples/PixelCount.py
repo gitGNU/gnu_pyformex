@@ -25,7 +25,7 @@
 
 Count the pixels from a snapshot of the piformex canvas
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -49,23 +49,23 @@ def run():
     bgcolor('white')
     perspective(False)
     flat()
-    
-    #create the geometry 
+
+    #create the geometry
     F = cylinder(L=8., D=2., nt=36, nl=20, diag='u').centered()
     F = TriSurface(F).close(method='planar').fixNormals().fuse().compact().setProp(1)
     G = F.rotate(57., 0).rotate(12., 1).trl(0, 1.).trl(2, 2.).setProp(1)
 
     I=vtkClip(F,implicitdata=G,method='surface',insideout=0)
     I=Mesh.concatenate(I)
-    
-    
+
+
     hole = I.getBorderMesh()
     focus = hole.center()
 
     #set the camera focus to the center of the cut and the eye set in the z direction with distance D
     D = 4
     dir = array([1,0,0,])
-        
+
     draw(I,color=red,bkcolor=green)
     pf.canvas.camera.lookAt(focus=focus,eye=focus+dir*D)
 
@@ -79,7 +79,7 @@ def run():
     saveImage(tmpimg)
     im = QtGui.QImage(tmpimg)
     imar = qimage2numpy(im, resize=(0, 0) ,order='RGB',flip=True,indexed=None,expand=None)[0]
-    
+
     #~ Counting the number of pixels per color
     from pyformex.connectivity import Connectivity
     colorTable = Connectivity(imar.reshape(-1, 3)) # table of no. of pixels x RGB

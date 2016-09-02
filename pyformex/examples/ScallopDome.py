@@ -24,7 +24,7 @@
 """Scallop Dome
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -71,7 +71,7 @@ def run():
     # f = if 1, the dome will have sharp edges where repeated modules meet;
     #     if 2, the dome surface will be smooth over neighbouring modules.
     # c = height of the dome at the center of the dome.
-    # r = height of the arcs at the circumference of the dome. 
+    # r = height of the arcs at the circumference of the dome.
     def scallop(n, f, c, r):
         func = lambda x, y, z: [x, y, c*(1.-x*x/64.)+r*x*x/64.*4*power((1.-y)*y, f)]
         a=360./n
@@ -127,6 +127,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-
-       
-   

@@ -28,7 +28,7 @@ evenly along a curve.
 
 See also the Sweep example for a more sophisticated application of spirals.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -67,7 +67,7 @@ alpha2 = 70.
 c = 1.
 a = c*tand(phi)
 b = tand(phi) / tand(alpha2)
- 
+
 
 zf = lambda x : c * exp(b*x)
 rf = lambda x : a * exp(b*x)
@@ -101,4 +101,3 @@ def run():
 if __name__ == '__draw__':
     run()
 # End
-

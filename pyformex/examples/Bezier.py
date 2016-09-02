@@ -29,7 +29,7 @@ topics = ['geometry','curve']
 techniques = ['connect','color','solve']
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
@@ -55,7 +55,7 @@ def build_matrix(atoms, vars):
     for k, a in enumerate(atoms):
         res = eval(a, vars)
         aa[:, k] = eval(a, vars)
-    return aa   
+    return aa
 
 
 class Bezier(object):
@@ -88,7 +88,7 @@ def drawNumberedPoints(x, color):
     x = Formex(x)
     draw(x, color=color)
     drawNumbers(x, color=color)
-    
+
 def run():
     resetAll()
     n = 100
@@ -102,7 +102,7 @@ def run():
         curve = Bezier(x)
         F = Formex(curve.at(t))
         G = connect([F, F], bias=[0, 1])
-        draw(G)   
+        draw(G)
 
 if __name__ == '__draw__':
     run()

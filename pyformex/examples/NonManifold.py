@@ -26,7 +26,7 @@
 This example illustrates the detection of non-manifold nodes and edges in a
 Mesh.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

@@ -32,7 +32,7 @@ squares. The matching node numbers from the two meshes are printed out.
 Then, after a pause, the parts of both meshes that are connected to the
 common nodes are drawn.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

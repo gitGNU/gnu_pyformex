@@ -58,7 +58,7 @@ Exercises
 1. Make this script also work for the 1D case.
 
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'

@@ -31,7 +31,7 @@ installed.
 The pyFormex source repository contains a directory pyformex/extra/pyftgl
 containing a Makefile to install the libraries.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 
 _status = 'checked'
