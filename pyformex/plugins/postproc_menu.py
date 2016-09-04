@@ -27,7 +27,8 @@
 from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
-from pyformex import zip, utils
+from pyformex import zip, round
+from pyformex import utils
 from pyformex.gui import menu, QtGui, QtCore
 
 from pyformex.odict import OrderedDict
@@ -674,7 +675,7 @@ def importDB(fn=None):
         fn = askFilename(pf.cfg['workdir'], 'postproc')
     if fn:
         chdir(fn)
-        sizeM = round(os.stat(fn).st_size * 1.e-6)
+        sizeM = round(os.stat(fn).st_size * 1.e-6,0)
         if sizeM > 10.0 and ask("""
 BEWARE!!!
 

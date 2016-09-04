@@ -31,7 +31,8 @@ PhD research by Gianluca De Santis at bioMMeda (Ghent University).
 from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
-from pyformex import zip,olist
+from pyformex import zip, round
+from pyformex import olist
 
 from pyformex.plugins import (
     bifmesh as vsm,
@@ -426,7 +427,7 @@ def seeding3zones(nseeds=[10, 10],zonesizes=[0.3, 0.3]):
     #geometrical series: nextsegment = previoussegment**power
     ntransseeds= (  (log(near1/near0)) / log ( (transzone+near1)/(transzone+near0) )  ) -1.
     powertrans=(near1/near0)**(1./(ntransseeds+1.))
-    napproxseeds=int(round(ntransseeds))
+    napproxseeds=round(ntransseeds)
     xtrans= near0*array([(powertrans**i) for i in range(1, napproxseeds+1)])
     xtrans= cumsum(xtrans)
     xtrans=xtrans[:-1]*transzone/xtrans[-1]

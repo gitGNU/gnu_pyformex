@@ -31,7 +31,7 @@ implements a dynamic array of multiple canvases.
 from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
-from pyformex import zip, utils
+from pyformex import zip, round, utils
 
 from pyformex.opengl import canvas
 from pyformex.gui import (
@@ -434,9 +434,9 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         if width<=0 or height <= 0:
             wc,hc = self.getSize()
             if height > 0:
-                width = int(round(float(height)/hc*wc))
+                width = round(float(height)/hc*wc)
             elif width > 0:
-                height = int(round(float(width)/wc*hc))
+                height = round(float(width)/wc*hc)
             else:
                 width,height = wc,hc
         return width, height

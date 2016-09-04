@@ -26,7 +26,7 @@
 """
 from __future__ import absolute_import, division, print_function
 
-
+from pyformex import round
 from datetime import datetime
 
 
@@ -124,7 +124,7 @@ class Timer(object):
         e = self.read(reset)
         sec = e.days*24*3600 + e.seconds + e.microseconds / 1000000.
         if rounded:
-            sec = int(round(sec))
+            sec = round(sec)
         return sec
 
 

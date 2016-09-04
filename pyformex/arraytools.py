@@ -29,11 +29,13 @@ array model.
 
 """
 from __future__ import absolute_import, division, print_function
-from pyformex import zip
+
+from numpy import *   # TODO: REMOVE
+
+from pyformex import zip, round
 
 
 import numpy as np
-from numpy import *
 
 from itertools import combinations, permutations
 

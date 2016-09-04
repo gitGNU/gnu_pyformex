@@ -29,7 +29,7 @@ You need to import this module in your scripts to have access to its
 contents.
 """
 from __future__ import absolute_import, division, print_function
-from pyformex import zip
+from pyformex import zip, round
 
 from pyformex.formex import *
 from pyformex import arraytools as at
@@ -212,7 +212,7 @@ def circle(a1=2., a2=0., a3=360., r=None, n=None, c=None, eltype='line2'):
     """
     if a2 == 0.0:
         a2 = a1
-    ns = int(np.round(a3/a2))
+    ns = round(a3/a2)
     a1 *= pi/180.
     if eltype=='line2':
         F = Formex([[[1., 0., 0.], [cos(a1), sin(a1), 0.]]]).rosette(ns, a2, axis=2, point=[0., 0., 0.])

@@ -35,6 +35,43 @@ from __future__ import absolute_import, division, print_function
 
 from future_builtins import zip
 
+_PY2_round = __builtins__['round']
+
+
+def round(number, ndigits=None):
+    """Python3 rounding behavior in Python2.
+
+    >>> round(2.3)
+    2
+    >>> round(2.7)
+    3
+    >>> round(2.7, 0)
+    3.0
+    >>> round(1.5, 0)
+    2.0
+    >>> round(2.5, 0)
+    2.0
+    >>> round(-1.5)
+    -2
+    >>> round(-2.5)
+    -2
+    """
+    intIt = ndigits is None
+    ndigits = ndigits if ndigits is not None else 0
+
+    f = number
+    if abs(_PY2_round(f) - f) == 0.5:
+        retAmount = 2.0 * _PY2_round(f / 2.0, ndigits);
+    else:
+        retAmount = _PY2_round(f, ndigits)
+
+    if intIt:
+        return int(retAmount)
+    else:
+        return retAmount
+
+
+
 import cPickle as pickle
 
 def execFile(f,*args,**kargs):
@@ -49,5 +86,14 @@ def userInput(*args,**kargs):
 def print3(s):
     pass
 
+
+def isFile(o):
+    """Test if an object is a file"""
+    return isinstance(o,file)
+
+
+def isString(o):
+    """Test if an object is a string (ascii or unicode)"""
+    return isinstance(o,(str,unicode))
 
 # End

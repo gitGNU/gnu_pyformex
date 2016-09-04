@@ -54,7 +54,9 @@ if (sys.hexversion & 0xFFFF0000) == 0x03010000:
 
 
 zip = __builtins__['zip']
+round = __builtins__['round']
 __builtins__['unicode'] = str
+
 
 import pickle
 
@@ -69,6 +71,16 @@ def userInput(*args,**kargs):
 
 # Print a string only in Python3
 print3 = print
+
+def isFile(o):
+    """Test if an object is a file"""
+    import io
+    return isinstance(o,io.IOBase)
+
+
+def isString(o):
+    """Test if an object is a string (ascii or unicode)"""
+    return isinstance(o,(str,bytes))
 
 
 # End

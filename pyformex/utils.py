@@ -25,11 +25,11 @@
 
 """
 from __future__ import absolute_import, division, print_function
-from pyformex import zip
 
 import pyformex as pf
 from pyformex.process import Process
 # These are here to re-export them as utils functions
+from pyformex import zip, round, isFile, isString
 from pyformex.software import hasModule, checkModule, hasExternal, checkExternal
 from pyformex.odict import OrderedDict
 
@@ -235,11 +235,11 @@ def lastCommandReport():
     s += "%8s: %s\n" % ('status', P.sta)
     for p in [ 'stdin', 'stdout', 'stderr' ]:
         a = P.kargs.get(p, None)
-        name = a.name if isinstance(a, file) else ''
+        name = a.name if isFile(a) else ''
         txt = None
         if p[3:] in ['out', 'err']:
             txt = getattr(P, p[3:])
-            if txt is None and isinstance(a, file):
+            if txt is None and isFile(a):
                 try:
                     txt = open(a.name, 'r').read(2000)
                 except:
@@ -863,13 +863,13 @@ def matchAll(regexps, target):
 def listDir(path):
     """List the contents of the specified directory path.
 
-    Returns a tuple (dirs,files), where dirs is the list if subdirectories
+    Returns a tuple (dirs,files), where dirs is the list of subdirectories
     in the path, and files is the list of files. Either of the lists can be
     empty. If the path does not exist or is not accessible, two empty
     lists are returned.
     """
     try:
-        return os.walk(path).next()[1:]
+        return next(os.walk(path))[1:]
     except:
         return [],[]
 
@@ -972,12 +972,15 @@ def sourceFiles(relative=False,symlinks=True,extended=False):
     path = pf.cfg['pyformexdir']
     if relative:
         path = os.path.relpath(path)
-    files = listTree(path, listdirs=False, sorted=True, includedirs=pf.cfg['sourcedirs'], includefiles=['.*\.py$'], symlinks=symlinks)
+    files = listTree(path, listdirs=False, sorted=True,
+                     includedirs=pf.cfg['sourcedirs'],
+                     includefiles=['.*\.py$'], symlinks=symlinks)
     if extended:
         searchdirs = [ i[1] for i in pf.cfg['appdirs'] + pf.cfg['scriptdirs'] ]
         for path in set(searchdirs):
             if os.path.exists(path):
-                files += listTree(path, listdirs=False, sorted=True, includefiles=['.*\.py$'], symlinks=symlinks)
+                files += listTree(path, listdirs=False, sorted=True,
+                                  includefiles=['.*\.py$'], symlinks=symlinks)
     return files
 
 
@@ -1212,7 +1215,7 @@ def underlineHeader(s,char='-'):
 
 
 def framedText(text,padding=[0,2,0,2],border=[1,2,1,2],margin=[0,0,0,0],
-                 borderchar='####', cornerchar=None,width=None,adjust='l'):
+               borderchar='####', cornerchar=None,width=None,adjust='l'):
     """Create a text with a frame around it.
 
     - `adjust`: 'l', 'c' or 'r': makes the text lines be adjusted to the
@@ -1921,7 +1924,7 @@ def formatDict(d):
     s = ""
     if isinstance(d, dict):
         for k, v in d.items():
-            if isinstance(v, (str,unicode)):
+            if isString(v):
                 s += '%s = %r\n' % (k, v)
             else:
                 s += '%s = %s\n' % (k, v)

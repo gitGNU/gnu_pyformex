@@ -68,7 +68,7 @@ No change ::
 
 """
 from __future__ import absolute_import, division, print_function
-from pyformex import zip
+from pyformex import zip, round
 
 from pyformex.formex import Formex
 
