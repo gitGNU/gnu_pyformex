@@ -109,7 +109,7 @@ class Dict(dict):
     and end with '__'. The user should avoid such names.
     The Python dict has the following attributes not enclosed between '__',
     so these are the ones to watch out for:
-    'clear', 'copy', 'fromkeys', 'get', 'has_key', 'items', 'iteritems',
+    'clear', 'copy', 'fromkeys', 'get', 'items', 'iteritems',
     'iterkeys', 'itervalues', 'keys', 'pop', 'popitem', 'setdefault',
     'update', 'values', viewitems, viewkeys, viewvalues.
     """

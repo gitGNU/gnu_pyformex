@@ -108,10 +108,10 @@ def storeData(res):
     pf.PF['_FeEx_data_'] = res
     for i in range(9):
         k = 'P%s' % i
-        if res.has_key(k):
+        if k in res:
              P[i].xy = res[k]
     for k in [ 'nx','ny','eltype','isopar' ]:
-        if res.has_key(k):
+        if k in res:
             globals()[k] = res[k]
 
 

@@ -188,7 +188,7 @@ class FlatDB(dict):
 
     def checkKeys(self, record):
         """Check that record has the required keys."""
-        return all([record.has_key(k) for k in self.req_keys])
+        return all([k in record for k in self.req_keys])
 
 
     def checkRecord(self, record):

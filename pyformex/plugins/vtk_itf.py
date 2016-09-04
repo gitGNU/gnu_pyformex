@@ -894,7 +894,7 @@ def _vtkCutter(self,vtkif):
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata=convertFromVPD(cutter,samePlex=True)
 
     prop=None
-    if celldata.has_key('prop'):
+    if 'prop' in celldata:
         prop = celldata['prop']
 
     if verts is not None: #self was a line mesh
@@ -946,7 +946,7 @@ def _vtkClipper(self,vtkif, insideout):
     [coords, cells, polys, lines, verts], fielddata, celldata, pointdata = convertFromVPD(vpd=clipper,samePlex=False)
 
     prop = None
-    if celldata.has_key('prop'):
+    if 'prop' in celldata:
         prop = celldata['prop']
 
     m = []

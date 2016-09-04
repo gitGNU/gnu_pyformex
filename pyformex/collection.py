@@ -65,6 +65,9 @@ class Collection(object):
     -1 [7]; 2 [0 3]; 3 [88];
     >>> print(a.keys())
     [-1  2  3]
+    >>> 2 in a
+    True
+
     """
     def __init__(self,object_type=None):
         self.d = {}
@@ -160,9 +163,13 @@ class Collection(object):
             else:
                 pf.debug("Not removing from non-existing selection for actor %s" % key, pf.DEBUG.DRAW)
 
-    def has_key(self, key):
-        """Check whether the collection has an entry for the key."""
-        return key in self.d
+
+    def __contains__(self, key):
+         """Check whether the collection has an entry for the key.
+
+         This inplements the 'in' operator for a Collection.
+         """
+         return key in self.d
 
 
     def __setitem__(self, key, data):
