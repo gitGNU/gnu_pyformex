@@ -221,7 +221,7 @@ class Field(object):
         data = at.checkArray(data,shape=datashape)
 
         if fldname is None:
-            fldname = Field._autoname.next()
+            fldname = next(Field._autoname)
 
         # All data seem OK, store them
         self.geometry = geometry

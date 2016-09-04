@@ -285,7 +285,7 @@ class GeometryFile(object):
         if name is None:
             name = geom.attrib.name
         if name is None:
-            name = self.autoname.next()
+            name = next(self.autoname)
 
         try:
             writefunc(geom, name, sep)
@@ -667,7 +667,7 @@ class GeometryFile(object):
 
             # store the geometry object, and remember as last
             if name is None:
-                name = self.autoname.next()
+                name = next(self.autoname)
             self.results[name] = self.geometry = obj
 
 
@@ -890,7 +890,7 @@ class GeometryFile(object):
                     pass
 
                 if name is None:
-                    name = self.autoname.next()
+                    name = next(self.autoname)
                 self.results[name] = obj
 
             if count > 0 and len(self.results) >= count:
