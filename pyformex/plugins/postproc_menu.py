@@ -439,7 +439,7 @@ def animateScenes(scenes,count=1,sleeptime=None):
 ##         FeResult.
 ##         If a name is given, it is displayed on the status bar.
 ##         """
-##         if type(DB) == str:
+##         if isinstance(DB, str):
 ##             DB = named(DB)
 ##         if isinstance(DB,FeResult):
 ##             self.DB = DB

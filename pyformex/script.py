@@ -269,16 +269,17 @@ def autoExport(g):
             ag = [ Geometry ]
         an = []
         for a in ag:
-            if type(a) is str and a in g:
+            if isinstance(a,str) and a in g:
                 an.append(a)
-            elif type(a) == type:
+            elif isinstance(a,type):
                 try:
                     an.extend(listAll(clas=a, dic=g))
                 except:
                     pass
-        an = sorted(list(set(an)))
-        print("Autoglobals: %s" % ', '.join(an))
-        pf.PF.update([(k, g[k]) for k in an])
+        if an:
+            an = sorted(list(set(an)))
+            print("Autoglobals: %s" % ', '.join(an))
+            pf.PF.update([(k, g[k]) for k in an])
 
 
 def scriptLock(id):

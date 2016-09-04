@@ -1066,9 +1066,9 @@ def _vtkBox(p=None, trMat4x4=None):
             box.SetTransform(vtkMat4x4)
             return box
     elif p is not None:
-        if type(p)==Mesh:
+        if isinstance(p,Mesh):
             p = p.toFormex()
-        if type(p)==Formex:
+        if isinstance(p,Formex):
             p = p.points()[[1, 3, 4, 0]]
         L, r0, r1, r2, trv = trf2CS(p)
         box = vtkBox()# vtk equivalent of simple.cuboid(xmin=xmin,xmax=xmax)
