@@ -553,6 +553,19 @@ class Curve(Geometry):
         return self.approx(*args,**kargs).toFormex()
 
 
+    def toNurbs(self):
+        """Convert a curve to a NurbsCurve.
+
+        This is currently only implemented for BezierSpline and
+        PolyLine
+        """
+        from pyformex.plugins.nurbs import NurbsCurve
+        if isinstance(self,(BezierSpline, PolyLine)):
+            return NurbsCurve(self.coords, degree=self.degree, closed=self.closed, blended=False)
+        else:
+            raise ValueError("Can not convert a curve of type %s to NurbsCurve" % self.__class__.__name__)
+
+
     def setProp(self,p=None):
         """Create or destroy the property number for the Curve.
 
@@ -590,6 +603,8 @@ class PolyLine(Curve):
     for symmetry with other Curve classes. If specified, it will override
     the `coords` argument.
     """
+
+    degree = 1
 
     def __init__(self,coords=[],control=None,closed=False):
         """Initialize a PolyLine from a coordinate array."""
@@ -1524,6 +1539,7 @@ class BezierSpline(Curve):
     __repr__ = report
     __str__ = report
 
+
     def pointsOn(self):
         """Return the points on the curve.
 
@@ -1674,7 +1690,7 @@ Most likely because 'python-scipy' is not installed on your system.""")
         control points.
         If `split` is True, the behavior is that of the :func:`split` method.
         """
-        from .nurbs import splitBezierCurve
+        from pyformex.plugins.nurbs import splitBezierCurve
         # Loop in descending order to avoid recomputing parameters
         X = []
         k = self.nparts # last full part

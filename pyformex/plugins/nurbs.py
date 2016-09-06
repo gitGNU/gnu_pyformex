@@ -31,6 +31,7 @@ from __future__ import absolute_import, division, print_function
 
 
 from pyformex import arraytools as at
+from pyformex import geomtools as gt
 from pyformex.coords import Coords
 from pyformex.attributes import Attributes
 from pyformex.lib import nurbs
@@ -477,12 +478,10 @@ class NurbsCurve(Geometry4):
     - `closed`: bool: determines whether the curve is closed. Default
       False. The use of closed NurbsCurves is currently very limited.
     - `blended`: bool: determines that the curve is blended. Default is True.
-      Set blended==False to define a nonblended curve. This requires
-      A nonblended curve is a chain of independent curves (Bezier curves if the
-      weights
-      are all ones). The number of control points should be a multiple of the
-      degree, plus one. This parameter is only used
-      See also :meth:`decompose`.
+      Set blended==False to define a nonblended curve.
+      A nonblended curve is a chain of independent curves, Bezier curves if the
+      weights are all ones. See also :meth:`decompose`.
+      The number of control points should be a multiple of the degree, plus one.      This parameter is only used if no knots are specified.
 
     """
 
@@ -1481,37 +1480,38 @@ def NurbsCircle(O=[0.,0.,0.],r=1.0,X=[1.,0.,0.],Y=[0.,1.,0.],ths=0.,the=360.):
 
     Returns a NurbsCurve that is a perfect circle or arc.
     """
-    from pyformex.geomtools import intersectLineWithLine
     if the < ths:
         the += 360.
-    theta = the-ths
+    theta = (the-ths)
     # Get the number of arcs
     narcs = int(np.ceil(theta/90.))
-    dtheta = theta/narcs
     n = 2*narcs   # n+1 control points
+    O,X,Y = ( at.checkArray(x,(3,),'f','i') for x in (O,X,Y) )
+    dths = ths*at.DEG
+    dtheta = theta*at.DEG/narcs
     w1 = np.cos(dtheta/2.) # base angle
-    O,X,Y = ( Coords4(at.checkArray(x,(3,),'f','i')) for x in (O,X,Y) )
     # Initialize start values
-    P0 = O + r*np.cos(ths)*X + r*np.sin(ths)*Y
+    P0 = O + r*np.cos(dths)*X + r*np.sin(dths)*Y
     T0 = -np.sin(ths)*X + np.cos(ths)*Y
     Pw = np.zeros((n+1,4),dtype=at.Float)
-    Pw[0] = P0
+    Pw[0] = Coords4(P0)
     index = 0
-    angle = ths
+    angle = ths*at.DEG
     # create narcs segments
     for i in range(1,narcs+1):
-        angle = angle+dtheta
+        angle += dtheta
         P2 = O + r*np.cos(angle)*X + r*np.sin(angle)*Y
-        Pw[index+2] = P2
+        Pw[index+2] = Coords4(P2)
         T2 = -np.sin(angle)*X + np.cos(angle)*Y
-        P1,P1b = intersectLineWithLine(P0,T0,P2,T2)
-        Pw[index+1] = w1*P1
+        P1,P1b = gt.intersectLineWithLine(P0,T0,P2,T2)
+        Pw[index+1] = Coords4(P1) * w1
+        Pw[index+1,3] = w1
         index += 2
         if i < narcs:
             P0,T0 = P2,T2
     # Load the knot vector
     j= 2*narcs+1
-    Pw = np.zeros((j+3,),dtype=at.Float)
+    U = np.zeros((j+3,),dtype=at.Float)
     for i in range(3):
         U[i] = 0.
         U[i+j] = 1.
@@ -1526,7 +1526,6 @@ def NurbsCircle(O=[0.,0.,0.],r=1.0,X=[1.,0.,0.],Y=[0.,1.,0.],ths=0.,the=360.):
         U[7] = U[8] = 0.75
 
     return NurbsCurve(control=Pw,degree=2,knots=U)
-
 
 
 def toCoords4(x):
@@ -1611,20 +1610,6 @@ def splitBezierCurve(P, u):
     return L,R
 
 
-
-def curveToNurbs(B):
-    """Convert a BezierSpline to NurbsCurve"""
-    return NurbsCurve(B.coords, degree=B.degree, closed=B.closed, blended=False)
-
-curve.BezierSpline.toNurbs = curveToNurbs
-
-def polylineToNurbs(B):
-    """Convert a PolyLine to NurbsCurve"""
-    return NurbsCurve(B.coords, degree=1, closed=B.closed, blended=False)
-
-curve.PolyLine.toNurbs = polylineToNurbs
-
-
 def frenet(d1,d2,d3=None):
     """Compute Frenet vectors, curvature and torsion.
 
@@ -1645,6 +1630,8 @@ def frenet(d1,d2,d3=None):
     - `k`: curvature of the curve at `npts` points
     - `t`: (only if `d3` was specified) torsion of the curve at `npts` points
 
+    Curvature is found from  | d1 x d2 | / |d1|**3
+
     """
     l = at.length(d1)
     # What to do when l is 0? same as with k?
@@ -1660,9 +1647,10 @@ def frenet(d1,d2,d3=None):
     e2 /= k.reshape(-1, 1)
     #e3 = normalize(ddd - dotpr(ddd,e1)*e1 - dotpr(ddd,e2)*e2)
     e3 = np.cross(e1, e2)
-    m = at.dotpr(np.cross(d1, d2), e3)
+    #m = at.dotpr(np.cross(d1, d2), e3)
     #print "m",m
-    k = m / l**3
+    m = np.cross(d1,d2)
+    k = at.length(m) / l**3
     if d3 is None:
         return e1, e2, e3, k
     # compute torsion
