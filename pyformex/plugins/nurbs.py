@@ -695,14 +695,15 @@ class NurbsCurve(Geometry4):
 
 
     def derivs(self,u,d=1):
-        """Returns the points and derivatives up to d at parameter values at
+        """Returns the points and derivatives up to d at parameter values u
 
         Parameters:
 
         - `u`: either of:
 
           - int: number of points (npts) at which to evaluate the points
-            andderivatives. The points will be equally spaced in parameter space.
+            and derivatives. The points will be equally spaced in parameter
+            space.
 
           - float array (npts): parameter values at which to compute points
             and derivatives.
@@ -743,6 +744,64 @@ class NurbsCurve(Geometry4):
         else:
             pts = Coords(pts)
         return pts
+
+
+    def frenet(self,u):
+        """Compute Frenet vectors, curvature and torsion at parameter values u
+
+        Parameters:
+
+        - `u`: either of:
+
+          - int: number of points (npts) at which to evaluate the points
+            and derivatives. The points will be equally spaced in parameter
+            space.
+
+          - float array (npts): parameter values at which to compute points
+            and derivatives.
+
+        Returns a float array of shape (d+1,npts,3).
+
+        Returns a tuple of arrays at nu parameter values u:
+
+        - `T`: normalized tangent vector (nu,3)
+        - `N`: normalized normal vector (nu,3)
+        - `B`: normalized binormal vector (nu,3)
+        - `k`: curvature of the curve (nu)
+        - `t`: torsion of the curve (nu)
+
+        """
+        derivs = self.derivs(u,3)
+        return frenet(derivs[1],derivs[2],derivs[3])
+
+
+    def curvature(self,u,torsion=False):
+        """Compute Frenet vectors, curvature and torsion at parameter values u
+
+        Parameters:
+
+        - `u`: either of:
+
+          - int: number of points (npts) at which to evaluate the points
+            and derivatives. The points will be equally spaced in parameter
+            space.
+
+          - float array (npts): parameter values at which to compute points
+            and derivatives.
+
+        - `torsion`: bool. If True, also returns the torsion in the curve.
+
+        If `torsion` is False (default), returns a float array with the
+        curvature at parameter values `u`.
+        If `torsion` is True, also returns a float array with the
+        torsion at parameter values `u`.
+
+        """
+        T,N,B,k,t = self.frenet(u)
+        if torsion:
+            return k,t
+        else:
+            return k
 
 
     def knotPoints(self,multiple=False):
@@ -1567,7 +1626,7 @@ curve.PolyLine.toNurbs = polylineToNurbs
 
 
 def frenet(d1,d2,d3=None):
-    """Returns the 3 Frenet vectors and the curvature.
+    """Compute Frenet vectors, curvature and torsion.
 
     Parameters:
 

@@ -69,10 +69,9 @@ by default, but provides the methods to sort them when needed.
 """
 from __future__ import absolute_import, division, print_function
 
+import numpy as np
 import pyformex as pf
 from pyformex import arraytools as at
-import numpy as np
-import sys
 
 
 class Varray(object):
@@ -281,13 +280,13 @@ class Varray(object):
         self._row = 0
 
 
-    def replace_data(self, va):
+    def replace_data(self, var):
         """Replace the current data with data from another Varray"""
-        if not isinstance(va, Varray):
+        if not isinstance(var, Varray):
             raise ValueError("Expected a Varray as argument")
-        self.data = va.data
-        self.ind = va.ind
-        self.width = va.width
+        self.data = var.data
+        self.ind = var.ind
+        self.width = var.width
         self._row = 0
 
 
@@ -575,12 +574,12 @@ class Varray(object):
         return s
 
 
-def inverseIndex(a, sort=False, expand=False):
+def inverseIndex(ind, sort=False, expand=False):
     """Create the inverse of a 2D index array.
 
     Parameters:
 
-    - `a`: a Varray or a 2D index array. A 2D index array is a 2D integer
+    - `ind`: a Varray or a 2D index array. A 2D index array is a 2D integer
       array where only nonnegative values are significant and negative
       values are silently ignored.
       While in most cases all values in a row are unique, this is not a
@@ -603,11 +602,11 @@ def inverseIndex(a, sort=False, expand=False):
         [3]
       <BLANKLINE>
     """
-    if isinstance(a, Varray):
-        a = a.toArray()
-    a = at.checkArray(a, ndim=2, kind='i')
-    b = np.resize(np.arange(a.shape[0]), a.shape[::-1])
-    c = at.stack([a, b.transpose()]).reshape(2, -1)
+    if isinstance(ind, Varray):
+        ind = ind.toArray()
+    ind = at.checkArray(ind, ndim=2, kind='i')
+    b = np.resize(np.arange(ind.shape[0]), ind.shape[::-1])
+    c = at.stack([ind, b.transpose()]).reshape(2, -1)
     s = c[0].argsort()
     t = c[0][s]
     u = c[1][s]
@@ -616,12 +615,12 @@ def inverseIndex(a, sort=False, expand=False):
         # There were negative numbers: remove them
         u = u[v[0]:]
         v -= v[0]
-    Va = Varray(u, v)
+    va = Varray(u, v)
     if sort:
-        Va.sort()
+        va.sort()
     if expand:
-        return Va.toArray()
-    return Va
+        return va.toArray()
+    return va
 
 
 # End
