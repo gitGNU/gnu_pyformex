@@ -396,6 +396,7 @@ class Curve(Geometry):
           straight segments to form a PolyLine approximation.
         """
         X = self.pointsAt(at)
+
         PL = PolyLine(X, closed=self.closed)
         return PL.setProp(self.prop)
 
@@ -438,7 +439,8 @@ class Curve(Geometry):
             at = self.atApproximate(nseg,ndiv,equidistant,npre)
         else:
             at = self.atChordal(chordal)
-
+        if self.closed:
+            at = at[:-1]
         return self.approxAt(at)
 
 
