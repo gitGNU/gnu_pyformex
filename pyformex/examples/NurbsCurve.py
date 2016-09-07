@@ -78,7 +78,19 @@ def drawThePoints(N,n,color=None):
     draw(connect([Formex(x), Formex(x3t)]), color=red, linewidth=5)
 
 
-def drawNurbs(points,pointtype,degree,strategy,closed,blended,weighted=False,Clear=False,showpoints=False,npoints=10):
+def drawCurvature(N,ncur):
+    """Compute and draw the curvature of Nurbs N at ncur points"""
+    umin,umax = N.urange()    # Nurbs parameter range
+    u = uniformParamValues(ncur,umin,umax)   # parameter space for curvature
+    k = N.curvature(u)        # curvature
+    #print(k)
+    # Draw as field
+    mline = PolyLine(N.pointsAt(u)).toMesh()
+    mline.addField('node',k,'curv')
+    drawField(mline.getField('curv'),linewidth=10)
+
+
+def drawNurbs(points,pointtype,degree,strategy,closed,blended,weighted=False,Clear=False,showpoints=False,npoints=10,showcurv=False,ncurv=100):
     if Clear:
         clear()
 
@@ -109,6 +121,8 @@ def drawNurbs(points,pointtype,degree,strategy,closed,blended,weighted=False,Cle
     draw(N, color=red)
     if showpoints:
         drawThePoints(N, npoints, color=black)
+    if showcurv:
+        drawCurvature(N, ncurv)
 
 
 dialog = None
@@ -175,6 +189,8 @@ data_items = [
     _I('weighted', False),
     _I('showpoints', False, text='Show Frenet vectors'),
     _I('npoints', 20, text='Number of curve points'),
+    _I('showcurv', False, text='Show curvature'),
+    _I('ncurv', 100, text='Number of curvature points'),
     _I('Clear', True),
     ]
 input_enablers = [
@@ -185,6 +201,7 @@ input_enablers = [
     ('closed', False, 'blended'),
 #    ('blended',True,'closed'),
     ('showpoints', True, 'npoints'),
+    ('showcurv', True, 'ncurv'),
     ]
 
 
