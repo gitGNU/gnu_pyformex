@@ -399,7 +399,7 @@ def vmtkDistancePointsToSegments(X, L, atol=1.e-4):
     which are then used by vmtkDistanceOfSurface.
     """
     SX = TriSurface(X, arange(X.shape[0]).reshape(-1, 1)*ones(3, dtype=int).reshape(1, -1))
-    from geomtools import anyPerpendicularVector
+    from pyformex.geomtools import anyPerpendicularVector
     Lf = L.coords[L.elems]
     L0, L1 = Lf[:, 0], Lf[:, 1]
     perp = anyPerpendicularVector(L1-L0)

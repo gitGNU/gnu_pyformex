@@ -36,7 +36,7 @@ _techniques = ['connect', 'closest', 'regularGrid', 'addNoise']
 
 from pyformex.gui.draw import *
 
-import geomtools
+from pyformex import geomtools
 from pyformex.simple import regularGrid
 
 def run():

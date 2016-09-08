@@ -196,11 +196,11 @@ def drawCurve(curve,color,fill=None,with_border=True,with_points=True):
         else:
             # Test importing voronoi
             try:
-                from voronoi import voronoi
+                #from voronoi import voronoi
                 surface = delaunay(border.coords)
             except:
-                print(sys.path)
-                warning("DELAUNAY fill requires the voronoi module")
+                #print(sys.path)
+                warning("DELAUNAY fill is not available")
                 surface = []
         draw(surface, color=color)
         #drawNumbers(surface)

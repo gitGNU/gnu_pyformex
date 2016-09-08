@@ -17,15 +17,12 @@ dicom
 distutils
 doctest
 docutils
-elements
 email
-examples
 fontforge
 functools
 future_builtins
 gc
 gdcm
-geomtools
 gettext
 gl2ps
 glob
@@ -41,7 +38,6 @@ numpy
 operator
 os
 pickle
-plugins
 pytest
 random
 re
@@ -60,7 +56,6 @@ time
 traceback
 types
 urllib
-voronoi
 vtk
 warnings
 zipfile

@@ -42,7 +42,7 @@ from pyformex.gui.draw import *
 from pyformex.gui.image import saveIcon
 from pyformex.plugins.curve import *
 from pyformex.simple import rectangle
-from examples.Cube import cube_quad
+from pyformex.examples.Cube import cube_quad
 
 def icon_smooth():
     view('iso')

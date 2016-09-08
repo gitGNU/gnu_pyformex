@@ -273,34 +273,34 @@ def nodalAveraging(self, val, iter=1, mask=None,includeself=False):
     One avg iteration with includeself=False will give val[8] = (1.2+8.0+4.0+6.5)/4. = 4.925
     One avg iteration with includeself=True will give val[8] = (1.2+8.0+4.0+6.5+3.2)/5. = 4.580
 
-    import elements
+    # import elements
 
-    q=Mesh(elements.Quad4())
-    q=q.convert('quad4-4')
-    VAL = array([1., 2.2, 3.3, 5., 1.2, 8., 4., 6.5, 3.2,])
-    txt=['%.3f'%n for n in VAL]
-    drawMarks(q.coords.trl([0., 0.05, 0.]), txt)
-    draw(q, color='white')
-    drawNumbers(q.coords, color='blue')
+    # q=Mesh(elements.Quad4())
+    # q=q.convert('quad4-4')
+    # VAL = array([1., 2.2, 3.3, 5., 1.2, 8., 4., 6.5, 3.2,])
+    # txt=['%.3f'%n for n in VAL]
+    # drawMarks(q.coords.trl([0., 0.05, 0.]), txt)
+    # draw(q, color='white')
+    # drawNumbers(q.coords, color='blue')
 
-    q2 = q.trl([1.5, 0., 0.])
-    draw(q2, color='red')
-    from plugins import mesh_ext
-    val2=nodalAveraging(q2, VAL, iter=1, mask=None,includeself=False)
-    txt2=['%.3f'%n for n in val2]
-    drawMarks(q2.coords, txt2)
-    draw(q2, color='red')
+    # q2 = q.trl([1.5, 0., 0.])
+    # draw(q2, color='red')
+    # from plugins import mesh_ext
+    # val2=nodalAveraging(q2, VAL, iter=1, mask=None,includeself=False)
+    # txt2=['%.3f'%n for n in val2]
+    # drawMarks(q2.coords, txt2)
+    # draw(q2, color='red')
 
-    q3 = q.trl([3.0, 0., 0.])
-    draw(q3, color='green')
-    from plugins import mesh_ext
-    val3=nodalAveraging(q3, VAL, iter=1, mask=None,includeself=True)
-    txt3=['%.3f'%n for n in val3]
-    drawMarks(q3.coords, txt3)
-    draw(q3, color='red')
+    # q3 = q.trl([3.0, 0., 0.])
+    # draw(q3, color='green')
+    # from plugins import mesh_ext
+    # val3=nodalAveraging(q3, VAL, iter=1, mask=None,includeself=True)
+    # txt3=['%.3f'%n for n in val3]
+    # drawMarks(q3.coords, txt3)
+    # draw(q3, color='red')
 
-    setTriade()
-    zoomAll()
+    # setTriade()
+    # zoomAll()
     """
 
     avgval = checkArray1D(val,kind='f',size=self.ncoords())
