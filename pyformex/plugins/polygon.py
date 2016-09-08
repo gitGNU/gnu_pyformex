@@ -64,7 +64,7 @@ def projected(X, N):
 
 ##     While the Coords are 3d, only the first 2 components are used.
 
-##     Returns a TriSurface with the Delaunay trinagulation in the x-y plane.
+##     Returns a TriSurface with the Delaunay triangulation in the x-y plane.
 ##     """
 ##     from voronoi import voronoi
 ##     return TriSurface(X, voronoi(X[:, :2]).triangles)

@@ -41,7 +41,7 @@ from pyformex.odict import OrderedDict
 from pyformex.plugins.curve import BezierSpline, PolyLine
 from pyformex.simple import connectCurves
 from pyformex.trisurface import fillBorder
-from pyformex.plugins.polygon import Polygon, delaunay
+from pyformex.plugins.polygon import Polygon#, delaunay
 from pyformex.geomtools import closestPair, intersectionSWP
 from pyformex import utils
 import os, sys
@@ -239,12 +239,10 @@ def show(fontname,character,fill=None):
 
 # Initialization
 
-# Define some extra font files
-extra_fonts = OrderedDict([
-    ('blippo', "/mnt/work/local/share/fonts/blippok.ttf"),
-    ('blimpo', "/home/bene/tmp/Blimpo-Regular.ttf"),
-    ('verdana', "/var/lib/defoma/x-ttcidfont-conf.d/dirs/TrueType/Verdana.ttf"),
-    ])
+# List font files on nonstandard places
+my_fonts = [ f for f in [
+    os.path.join(pf.cfg['datadir'], 'blippok.ttf'),
+] if os.path.exists(f) ]
 
 
 fonts = []
@@ -255,14 +253,13 @@ def run():
 
     global fonts
     if not fonts:
-        fonts = utils.listAllFonts() + [
-            f for f in extra_fonts if os.path.exists(f) ]
+        fonts = my_fonts + utils.listAllFonts()
 
     fonts.sort()
     print(fonts)
 
     data = dict(
-        fontname = None,
+        fontname = fonts[0],
         character = 'S',
         fill = 'None',
         )

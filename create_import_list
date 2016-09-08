@@ -1,0 +1,2 @@
+#!/bin/sh
+pyformex --search -- -E '^ *(import|from .* import) ' | sed 's/[^:]*://;s/ *//' | sort | uniq | grep -v 'pyformex' | grep -v 'from \.' | awk '{print $2}' | sed 's/,.*//;s/\..*//' | sort | uniq
