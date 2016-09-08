@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>The Canvas &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>The Canvas &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="index.html" />
     <link rel="up" title="pyFormex user guide" href="user-guide.html" />
     <link rel="next" title="Creating Images" href="imaging.html" />
     <link rel="prev" title="Modeling Geometry with pyFormex" href="geometry.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,11 +82,11 @@
         <li class="right" >
           <a href="geometry.html" title="Modeling Geometry with pyFormex"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="user-guide.html" accesskey="U">pyFormex user guide</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="user-guide.html" accesskey="U">pyFormex user guide</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -124,17 +124,14 @@
   <p class="topless"><a href="imaging.html"
                         title="next chapter">Creating Images</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -154,7 +151,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="the-canvas">
 <span id="cha-canvas"></span><h1>The Canvas<a class="headerlink" href="#the-canvas" title="Permalink to this headline">¶</a></h1>
@@ -174,7 +171,7 @@ operations.</p>
 multiple viewports. They can be used individually for drawing different items,
 but can also be linked together to show different views of the same scene. The
 details about using multiple viewports are described in section
-<a class="reference internal" href="#sec-multiple-viewports"><em>Multiple viewports</em></a>. The remainder of this chapter will treat the
+<a class="reference internal" href="#sec-multiple-viewports"><span class="std std-ref">Multiple viewports</span></a>. The remainder of this chapter will treat the
 canvas as if it was a single viewport.</p>
 <p>distinguishes three types of items that can be drawn on the canvas: actors,
 marks and decorations. The most important class are the actors: these are 3D
@@ -205,7 +202,7 @@ or color legends on the view.</p>
 <h2>Drawing a Formex<a class="headerlink" href="#drawing-a-formex" title="Permalink to this headline">¶</a></h2>
 <p>The most important action performed on the canvas is the drawing of a Formex.
 This is accomplished with the draw() function. If you look at the reference page
-of the <tt class="xref py py-func docutils literal"><span class="pre">draw()</span></tt> function, the number of arguments looks frightening.
+of the <code class="xref py py-func docutils literal"><span class="pre">draw()</span></code> function, the number of arguments looks frightening.
 However, most of these arguments have sensible default values, making the access
 to drawing functionality easy even for beginners. To display your created Formex
 F on the screen, a simple draw(F) will suffice in many cases.</p>
@@ -235,7 +232,7 @@ direct camera to it.</p>
 <h2>Viewing the scene<a class="headerlink" href="#viewing-the-scene" title="Permalink to this headline">¶</a></h2>
 <p>Once the Formex is drawn, you can manipulate it interactively using the mouse:
 you can rotate, translate and zoom with any of the methods decribed in
-<a class="reference internal" href="gui.html#sec-mouse-interactions"><em>Mouse interactions on the canvas</em></a>. You should understand though that these methods
+<a class="reference internal" href="gui.html#sec-mouse-interactions"><span class="std std-ref">Mouse interactions on the canvas</span></a>. You should understand though that these methods
 do not change your Formex, but only how it is viewed by the observer.</p>
 <p>Our drawing board is based on OpenGL. The whole OpenGL drawing/viewing process
 can best be understood by making the comparison with the set of a movie, in
@@ -279,7 +276,7 @@ canvas widgets laid out in an array with given number of rows or columns. The
 following functions are available for manipulating the viewports.</p>
 <dl class="function">
 <dt id="layout">
-<tt class="descname">layout</tt><big>(</big><em>nvps=None</em>, <em>ncols=None</em>, <em>nrows=None</em><big>)</big><a class="headerlink" href="#layout" title="Permalink to this definition">¶</a></dt>
+<code class="descname">layout</code><span class="sig-paren">(</span><em>nvps=None</em>, <em>ncols=None</em>, <em>nrows=None</em><span class="sig-paren">)</span><a class="headerlink" href="#layout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the viewports layout. You can specify the number of viewports and the number
 of columns or rows.</p>
 <p>If a number of viewports is given, viewports will be added or removed to match
@@ -291,19 +288,19 @@ columnwise over nrows rows.</p>
 
 <dl class="function">
 <dt id="addViewport">
-<tt class="descname">addViewport</tt><big>(</big><big>)</big><a class="headerlink" href="#addViewport" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addViewport</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#addViewport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new viewport.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="removeViewport">
-<tt class="descname">removeViewport</tt><big>(</big><big>)</big><a class="headerlink" href="#removeViewport" title="Permalink to this definition">¶</a></dt>
+<code class="descname">removeViewport</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#removeViewport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the last viewport.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="linkViewport">
-<tt class="descname">linkViewport</tt><big>(</big><em>vp</em>, <em>tovp</em><big>)</big><a class="headerlink" href="#linkViewport" title="Permalink to this definition">¶</a></dt>
+<code class="descname">linkViewport</code><span class="sig-paren">(</span><em>vp</em>, <em>tovp</em><span class="sig-paren">)</span><a class="headerlink" href="#linkViewport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Link viewport vp to viewport tovp.</p>
 <p>Both vp and tovp should be numbers of viewports. The viewport vp will now show
 the same contents as the viewport tovp.</p>
@@ -311,7 +308,7 @@ the same contents as the viewport tovp.</p>
 
 <dl class="function">
 <dt>
-<tt class="descname">viewport</tt><big>(</big><em>n</em><big>)</big></dt>
+<code class="descname">viewport</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span></dt>
 <dd><p>Select the current viewport. All drawing related functions will henceforth
 operate on that viewport.</p>
 <p>This action is also implicitly called by clicking with the mouse inside a
@@ -327,7 +324,7 @@ viewport.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -342,17 +339,17 @@ viewport.</p>
         <li class="right" >
           <a href="geometry.html" title="Modeling Geometry with pyFormex"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="user-guide.html" >pyFormex user guide</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="user-guide.html" >pyFormex user guide</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

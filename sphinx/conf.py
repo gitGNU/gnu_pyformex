@@ -62,8 +62,11 @@ class MyTocTree(Directive):
     final_argument_whitespace = False
     option_spec = {
         'maxdepth': int,
+        'name': directives.unchanged,
+        'caption': directives.unchanged_required,
         'glob': directives.flag,
         'hidden': directives.flag,
+        'includehidden': directives.flag,
         'numbered': int_or_nothing,
         'numberedfrom': int,
         'titlesonly': directives.flag,
@@ -71,8 +74,11 @@ class MyTocTree(Directive):
 
     def run(self):
         env = self.state.document.settings.env
-        suffix = env.config.source_suffix
+        suffixes = env.config.source_suffix
         glob = 'glob' in self.options
+        caption = self.options.get('caption')
+        if caption:
+            self.options.setdefault('name', nodes.fully_normalize_name(caption))
 
         ret = []
         # (title, ref) pairs, where ref may be a document, or an external link,
@@ -85,7 +91,18 @@ class MyTocTree(Directive):
         for entry in self.content:
             if not entry:
                 continue
-            if not glob:
+            if glob and ('*' in entry or '?' in entry or '[' in entry):
+                patname = docname_join(env.docname, entry)
+                docnames = sorted(patfilter(all_docnames, patname))
+                for docname in docnames:
+                    all_docnames.remove(docname)  # don't include it again
+                    entries.append((None, docname))
+                    includefiles.append(docname)
+                if not docnames:
+                    ret.append(self.state.document.reporter.warning(
+                        'toctree glob pattern %r didn\'t match any documents'
+                        % entry, line=self.lineno))
+            else:
                 # look for explicit titles ("Some Title <document>")
                 m = explicit_title_re.match(entry)
                 if m:
@@ -96,8 +113,10 @@ class MyTocTree(Directive):
                     ref = docname = entry
                     title = None
                 # remove suffixes (backwards compatibility)
-                if docname.endswith(suffix):
-                    docname = docname[:-len(suffix)]
+                for suffix in suffixes:
+                    if docname.endswith(suffix):
+                        docname = docname[:-len(suffix)]
+                        break
                 # absolutize filenames
                 docname = docname_join(env.docname, docname)
                 if url_re.match(ref) or ref == 'self':
@@ -108,19 +127,9 @@ class MyTocTree(Directive):
                         'document %r' % docname, line=self.lineno))
                     env.note_reread()
                 else:
+                    all_docnames.discard(docname)
                     entries.append((title, docname))
                     includefiles.append(docname)
-            else:
-                patname = docname_join(env.docname, entry)
-                docnames = sorted(patfilter(all_docnames, patname))
-                for docname in docnames:
-                    all_docnames.remove(docname) # don't include it again
-                    entries.append((None, docname))
-                    includefiles.append(docname)
-                if not docnames:
-                    ret.append(self.state.document.reporter.warning(
-                        'toctree glob pattern %r didn\'t match any documents'
-                        % entry, line=self.lineno))
         subnode = addnodes.toctree()
         subnode['parent'] = env.docname
         # entries contains all entries (self references, external links etc.)
@@ -128,8 +137,10 @@ class MyTocTree(Directive):
         # includefiles only entries that are documents
         subnode['includefiles'] = includefiles
         subnode['maxdepth'] = self.options.get('maxdepth', -1)
+        subnode['caption'] = caption
         subnode['glob'] = glob
         subnode['hidden'] = 'hidden' in self.options
+        subnode['includehidden'] = 'includehidden' in self.options
         subnode['numbered'] = self.options.get('numbered', 0)
         subnode['numberedfrom'] = self.options.get('numberedfrom', 0)
         print("DOCNAME %s" % docname)
@@ -138,6 +149,7 @@ class MyTocTree(Directive):
         set_source_info(self, subnode)
         wrappernode = nodes.compound(classes=['toctree-wrapper'])
         wrappernode.append(subnode)
+        self.add_name(wrappernode)
         ret.append(wrappernode)
         return ret
 

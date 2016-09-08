@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>79. opengl.texture — Texture rendering. &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>79. opengl.texture — Texture rendering. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="80. olist — Some convenient shortcuts for common list operations." href="olist.html" />
     <link rel="prev" title="78. opengl.textext — Text rendering on the OpenGL canvas." href="opengl.textext.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,11 +82,11 @@
         <li class="right" >
           <a href="opengl.textext.html" title="78. opengl.textext — Text rendering on the OpenGL canvas."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -101,7 +101,7 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">79. <tt class="docutils literal"><span class="pre">opengl.texture</span></tt> &#8212; Texture rendering.</a><ul>
+<li><a class="reference internal" href="#">79. <code class="docutils literal"><span class="pre">opengl.texture</span></code> &#8212; Texture rendering.</a><ul>
 <li><a class="reference internal" href="#classes-defined-in-module-opengl-texture">79.1. Classes defined in module opengl.texture</a></li>
 <li><a class="reference internal" href="#functions-defined-in-module-opengl-texture">79.2. Functions defined in module opengl.texture</a></li>
 </ul>
@@ -111,22 +111,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="opengl.textext.html"
-                        title="previous chapter">78. <tt class="docutils literal"><span class="pre">opengl.textext</span></tt> &#8212; Text rendering on the OpenGL canvas.</a></p>
+                        title="previous chapter">78. <code class="docutils literal"><span class="pre">opengl.textext</span></code> &#8212; Text rendering on the OpenGL canvas.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="olist.html"
-                        title="next chapter">80. <tt class="docutils literal"><span class="pre">olist</span></tt> &#8212; Some convenient shortcuts for common list operations.</a></p>
+                        title="next chapter">80. <code class="docutils literal"><span class="pre">olist</span></code> &#8212; Some convenient shortcuts for common list operations.</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,16 +143,16 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-opengl.texture">
-<span id="opengl-texture-texture-rendering"></span><span id="sec-ref-opengl-texture"></span><h1>79. <a class="reference internal" href="#module-opengl.texture" title="opengl.texture: Texture rendering."><tt class="xref py py-mod docutils literal"><span class="pre">opengl.texture</span></tt></a> &#8212; Texture rendering.<a class="headerlink" href="#module-opengl.texture" title="Permalink to this headline">¶</a></h1>
+<span id="opengl-texture-texture-rendering"></span><span id="sec-ref-opengl-texture"></span><h1>79. <a class="reference internal" href="#module-opengl.texture" title="opengl.texture: Texture rendering."><code class="xref py py-mod docutils literal"><span class="pre">opengl.texture</span></code></a> &#8212; Texture rendering.<a class="headerlink" href="#module-opengl.texture" title="Permalink to this headline">¶</a></h1>
 <p>This module defines tools for texture rendering in pyFormex.</p>
 <div class="section" id="classes-defined-in-module-opengl-texture">
 <h2>79.1. Classes defined in module opengl.texture<a class="headerlink" href="#classes-defined-in-module-opengl-texture" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="opengl.texture.Texture">
-<em class="property">class </em><tt class="descclassname">opengl.texture.</tt><tt class="descname">Texture</tt><big>(</big><em>image</em>, <em>mode=1</em>, <em>format=GL_RGBA</em>, <em>texformat=GL_RGBA</em><big>)</big><a class="headerlink" href="#opengl.texture.Texture" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">opengl.texture.</code><code class="descname">Texture</code><span class="sig-paren">(</span><em>image</em>, <em>mode=1</em>, <em>format=GL_RGBA</em>, <em>texformat=GL_RGBA</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.texture.Texture" title="Permalink to this definition">¶</a></dt>
 <dd><p>An OpenGL 2D Texture.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -165,7 +162,7 @@
 </ul>
 <dl class="method">
 <dt id="opengl.texture.Texture.activate">
-<tt class="descname">activate</tt><big>(</big><em>mode=None</em>, <em>filtr=0</em><big>)</big><a class="headerlink" href="#opengl.texture.Texture.activate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">activate</code><span class="sig-paren">(</span><em>mode=None</em>, <em>filtr=0</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.texture.Texture.activate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render-time texture environment setup</p>
 </dd></dl>
 
@@ -183,7 +180,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -198,17 +195,17 @@
         <li class="right" >
           <a href="opengl.textext.html" title="78. opengl.textext — Text rendering on the OpenGL canvas."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

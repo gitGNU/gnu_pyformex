@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>59. plugins.pyformex_gts — Operations on triangulated surfaces using GTS functions. &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>59. plugins.pyformex_gts — Operations on triangulated surfaces using GTS functions. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="60. plugins.section2d — Some functions operating on 2D structures." href="plugins.section2d.html" />
     <link rel="prev" title="58. plugins.properties — General framework for attributing properties to geometrical elements." href="plugins.properties.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,11 +82,11 @@
         <li class="right" >
           <a href="plugins.properties.html" title="58. plugins.properties — General framework for attributing properties to geometrical elements."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -101,7 +101,7 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">59. <tt class="docutils literal"><span class="pre">plugins.pyformex_gts</span></tt> &#8212; Operations on triangulated surfaces using GTS functions.</a><ul>
+<li><a class="reference internal" href="#">59. <code class="docutils literal"><span class="pre">plugins.pyformex_gts</span></code> &#8212; Operations on triangulated surfaces using GTS functions.</a><ul>
 <li><a class="reference internal" href="#classes-defined-in-module-plugins-pyformex-gts">59.1. Classes defined in module plugins.pyformex_gts</a></li>
 <li><a class="reference internal" href="#functions-defined-in-module-plugins-pyformex-gts">59.2. Functions defined in module plugins.pyformex_gts</a></li>
 </ul>
@@ -111,22 +111,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.properties.html"
-                        title="previous chapter">58. <tt class="docutils literal"><span class="pre">plugins.properties</span></tt> &#8212; General framework for attributing properties to geometrical elements.</a></p>
+                        title="previous chapter">58. <code class="docutils literal"><span class="pre">plugins.properties</span></code> &#8212; General framework for attributing properties to geometrical elements.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="plugins.section2d.html"
-                        title="next chapter">60. <tt class="docutils literal"><span class="pre">plugins.section2d</span></tt> &#8212; Some functions operating on 2D structures.</a></p>
+                        title="next chapter">60. <code class="docutils literal"><span class="pre">plugins.section2d</span></code> &#8212; Some functions operating on 2D structures.</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,10 +143,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-plugins.pyformex_gts">
-<span id="plugins-pyformex-gts-operations-on-triangulated-surfaces-using-gts-functions"></span><span id="sec-ref-plugins-pyformex-gts"></span><h1>59. <a class="reference internal" href="#module-plugins.pyformex_gts" title="plugins.pyformex_gts: Operations on triangulated surfaces using GTS functions."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.pyformex_gts</span></tt></a> &#8212; Operations on triangulated surfaces using GTS functions.<a class="headerlink" href="#module-plugins.pyformex_gts" title="Permalink to this headline">¶</a></h1>
+<span id="plugins-pyformex-gts-operations-on-triangulated-surfaces-using-gts-functions"></span><span id="sec-ref-plugins-pyformex-gts"></span><h1>59. <a class="reference internal" href="#module-plugins.pyformex_gts" title="plugins.pyformex_gts: Operations on triangulated surfaces using GTS functions."><code class="xref py py-mod docutils literal"><span class="pre">plugins.pyformex_gts</span></code></a> &#8212; Operations on triangulated surfaces using GTS functions.<a class="headerlink" href="#module-plugins.pyformex_gts" title="Permalink to this headline">¶</a></h1>
 <p>This module provides access to GTS from insisde pyFormex.</p>
 <div class="section" id="classes-defined-in-module-plugins-pyformex-gts">
 <h2>59.1. Classes defined in module plugins.pyformex_gts<a class="headerlink" href="#classes-defined-in-module-plugins-pyformex-gts" title="Permalink to this headline">¶</a></h2>
@@ -158,12 +155,12 @@
 <h2>59.2. Functions defined in module plugins.pyformex_gts<a class="headerlink" href="#functions-defined-in-module-plugins-pyformex-gts" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="plugins.pyformex_gts.boolean">
-<tt class="descclassname">plugins.pyformex_gts.</tt><tt class="descname">boolean</tt><big>(</big><em>self</em>, <em>surf</em>, <em>op</em>, <em>check=False</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#plugins.pyformex_gts.boolean" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plugins.pyformex_gts.</code><code class="descname">boolean</code><span class="sig-paren">(</span><em>self</em>, <em>surf</em>, <em>op</em>, <em>check=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.pyformex_gts.boolean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a boolean operation with another surface.</p>
 <p>Boolean operations between surfaces are a basic operation in
 free surface modeling. Both surfaces should be closed orientable
 non-intersecting manifolds.
-Use the <tt class="xref py py-meth docutils literal"><span class="pre">check()</span></tt> method to find out.</p>
+Use the <code class="xref py py-meth docutils literal"><span class="pre">check()</span></code> method to find out.</p>
 <p>The boolean operations are set operations on the enclosed volumes:
 union(&#8216;+&#8217;), difference(&#8216;-&#8216;) or intersection(&#8216;*&#8217;).</p>
 <p>Parameters:</p>
@@ -182,12 +179,12 @@ if one of them is, the set of self-intersecting faces is written
 
 <dl class="function">
 <dt id="plugins.pyformex_gts.intersection">
-<tt class="descclassname">plugins.pyformex_gts.</tt><tt class="descname">intersection</tt><big>(</big><em>self</em>, <em>surf</em>, <em>check=False</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#plugins.pyformex_gts.intersection" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plugins.pyformex_gts.</code><code class="descname">intersection</code><span class="sig-paren">(</span><em>self</em>, <em>surf</em>, <em>check=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.pyformex_gts.intersection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the intersection curve of two surfaces.</p>
 <p>Boolean operations between surfaces are a basic operation in
 free surface modeling. Both surfaces should be closed orientable
 non-intersecting manifolds.
-Use the <tt class="xref py py-meth docutils literal"><span class="pre">check()</span></tt> method to find out.</p>
+Use the <code class="xref py py-meth docutils literal"><span class="pre">check()</span></code> method to find out.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>surf</cite>: a closed manifold surface</li>
@@ -201,7 +198,7 @@ if one of them is, the set of self-intersecting faces is written
 
 <dl class="function">
 <dt id="plugins.pyformex_gts.inside">
-<tt class="descclassname">plugins.pyformex_gts.</tt><tt class="descname">inside</tt><big>(</big><em>self</em>, <em>pts</em>, <em>atol='auto'</em>, <em>multi=False</em><big>)</big><a class="headerlink" href="#plugins.pyformex_gts.inside" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plugins.pyformex_gts.</code><code class="descname">inside</code><span class="sig-paren">(</span><em>self</em>, <em>pts</em>, <em>atol='auto'</em>, <em>multi=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.pyformex_gts.inside" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test which of the points pts are inside the surface.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -222,7 +219,7 @@ of points as obtained from pts.points().</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -237,17 +234,17 @@ of points as obtained from pts.points().</p>
         <li class="right" >
           <a href="plugins.properties.html" title="58. plugins.properties — General framework for attributing properties to geometrical elements."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

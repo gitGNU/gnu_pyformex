@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>20. fileread — Read geometry from file in a whole number of formats. &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>19. fileread — Read geometry from file in a whole number of formats. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="21. filewrite — Write geometry to file in a whole number of formats." href="filewrite.html" />
-    <link rel="prev" title="19. inertia — Compute inertia related quantities of geometrical models." href="inertia.html" />
+    <link rel="next" title="20. filewrite — Write geometry to file in a whole number of formats." href="filewrite.html" />
+    <link rel="prev" title="18. inertia — Compute inertia related quantities of geometrical models." href="inertia.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -77,16 +77,16 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="filewrite.html" title="21. filewrite — Write geometry to file in a whole number of formats."
+          <a href="filewrite.html" title="20. filewrite — Write geometry to file in a whole number of formats."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="inertia.html" title="19. inertia — Compute inertia related quantities of geometrical models."
+          <a href="inertia.html" title="18. inertia — Compute inertia related quantities of geometrical models."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">20. <tt class="docutils literal"><span class="pre">fileread</span></tt> &#8212; Read geometry from file in a whole number of formats.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-fileread">20.1. Classes defined in module fileread</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-fileread">20.2. Functions defined in module fileread</a></li>
+<li><a class="reference internal" href="#">19. <code class="docutils literal"><span class="pre">fileread</span></code> &#8212; Read geometry from file in a whole number of formats.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-fileread">19.1. Classes defined in module fileread</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-fileread">19.2. Functions defined in module fileread</a></li>
 </ul>
 </li>
 </ul>
@@ -111,22 +111,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="inertia.html"
-                        title="previous chapter">19. <tt class="docutils literal"><span class="pre">inertia</span></tt> &#8212; Compute inertia related quantities of geometrical models.</a></p>
+                        title="previous chapter">18. <code class="docutils literal"><span class="pre">inertia</span></code> &#8212; Compute inertia related quantities of geometrical models.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="filewrite.html"
-                        title="next chapter">21. <tt class="docutils literal"><span class="pre">filewrite</span></tt> &#8212; Write geometry to file in a whole number of formats.</a></p>
+                        title="next chapter">20. <code class="docutils literal"><span class="pre">filewrite</span></code> &#8212; Write geometry to file in a whole number of formats.</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,10 +143,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-fileread">
-<span id="fileread-read-geometry-from-file-in-a-whole-number-of-formats"></span><span id="sec-ref-fileread"></span><h1>20. <a class="reference internal" href="#module-fileread" title="fileread: Read geometry from file in a whole number of formats."><tt class="xref py py-mod docutils literal"><span class="pre">fileread</span></tt></a> &#8212; Read geometry from file in a whole number of formats.<a class="headerlink" href="#module-fileread" title="Permalink to this headline">¶</a></h1>
+<span id="fileread-read-geometry-from-file-in-a-whole-number-of-formats"></span><span id="sec-ref-fileread"></span><h1>19. <a class="reference internal" href="#module-fileread" title="fileread: Read geometry from file in a whole number of formats."><code class="xref py py-mod docutils literal"><span class="pre">fileread</span></code></a> &#8212; Read geometry from file in a whole number of formats.<a class="headerlink" href="#module-fileread" title="Permalink to this headline">¶</a></h1>
 <p>This module defines basic routines to read geometrical data
 from a file and the specialized importers to read files in a number of
 well known standardized formats.</p>
@@ -157,37 +154,37 @@ well known standardized formats.</p>
 in the pyFormex C-library) and allow to easily create new exporters for
 other formats.</p>
 <div class="section" id="classes-defined-in-module-fileread">
-<h2>20.1. Classes defined in module fileread<a class="headerlink" href="#classes-defined-in-module-fileread" title="Permalink to this headline">¶</a></h2>
+<h2>19.1. Classes defined in module fileread<a class="headerlink" href="#classes-defined-in-module-fileread" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="functions-defined-in-module-fileread">
-<h2>20.2. Functions defined in module fileread<a class="headerlink" href="#functions-defined-in-module-fileread" title="Permalink to this headline">¶</a></h2>
+<h2>19.2. Functions defined in module fileread<a class="headerlink" href="#functions-defined-in-module-fileread" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="fileread.getParams">
-<tt class="descclassname">fileread.</tt><tt class="descname">getParams</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#fileread.getParams" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">getParams</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.getParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Strip the parameters from a comment line</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fileread.readNodes">
-<tt class="descclassname">fileread.</tt><tt class="descname">readNodes</tt><big>(</big><em>fil</em><big>)</big><a class="headerlink" href="#fileread.readNodes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">readNodes</code><span class="sig-paren">(</span><em>fil</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.readNodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a set of nodes from an open mesh file</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fileread.readElems">
-<tt class="descclassname">fileread.</tt><tt class="descname">readElems</tt><big>(</big><em>fil</em>, <em>nplex</em><big>)</big><a class="headerlink" href="#fileread.readElems" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">readElems</code><span class="sig-paren">(</span><em>fil</em>, <em>nplex</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.readElems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a set of elems of plexitude nplex from an open mesh file</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fileread.readEsets">
-<tt class="descclassname">fileread.</tt><tt class="descname">readEsets</tt><big>(</big><em>fil</em><big>)</big><a class="headerlink" href="#fileread.readEsets" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">readEsets</code><span class="sig-paren">(</span><em>fil</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.readEsets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the eset data of type generate</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fileread.readMeshFile">
-<tt class="descclassname">fileread.</tt><tt class="descname">readMeshFile</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#fileread.readMeshFile" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">readMeshFile</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.readMeshFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a nodes/elems model from file.</p>
 <p>Returns a dict:</p>
 <ul class="simple">
@@ -199,19 +196,19 @@ other formats.</p>
 
 <dl class="function">
 <dt id="fileread.extractMeshes">
-<tt class="descclassname">fileread.</tt><tt class="descname">extractMeshes</tt><big>(</big><em>d</em><big>)</big><a class="headerlink" href="#fileread.extractMeshes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">extractMeshes</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.extractMeshes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract the Meshes read from a .mesh file.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fileread.convertInp">
-<tt class="descclassname">fileread.</tt><tt class="descname">convertInp</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#fileread.convertInp" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">convertInp</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.convertInp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert an Abaqus .inp to a .mesh set of files</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fileread.readInpFile">
-<tt class="descclassname">fileread.</tt><tt class="descname">readInpFile</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#fileread.readInpFile" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">readInpFile</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.readInpFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the geometry from an Abaqus/Calculix .inp file</p>
 <p>This is a replacement for the convertInp/readMeshFile combination.
 It uses the ccxinp plugin to provide a direct import of the Finite
@@ -224,7 +221,7 @@ already be read.</p>
 
 <dl class="function">
 <dt id="fileread.read_off">
-<tt class="descclassname">fileread.</tt><tt class="descname">read_off</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#fileread.read_off" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">read_off</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.read_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read an OFF surface mesh.</p>
 <p>The mesh should consist of only triangles!
 Returns a nodes,elems tuple.</p>
@@ -232,14 +229,14 @@ Returns a nodes,elems tuple.</p>
 
 <dl class="function">
 <dt id="fileread.read_gts">
-<tt class="descclassname">fileread.</tt><tt class="descname">read_gts</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#fileread.read_gts" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">read_gts</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.read_gts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a GTS surface mesh.</p>
 <p>Return a coords,edges,faces tuple.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fileread.read_stl_bin">
-<tt class="descclassname">fileread.</tt><tt class="descname">read_stl_bin</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#fileread.read_stl_bin" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">read_stl_bin</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.read_stl_bin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a binary stl.</p>
 <p>Returns a Coords with shape (ntri,4,3). The first item of each
 triangle is the normal, the other three are the vertices.</p>
@@ -247,7 +244,7 @@ triangle is the normal, the other three are the vertices.</p>
 
 <dl class="function">
 <dt id="fileread.read_gambit_neutral">
-<tt class="descclassname">fileread.</tt><tt class="descname">read_gambit_neutral</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#fileread.read_gambit_neutral" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">read_gambit_neutral</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.read_gambit_neutral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a triangular surface mesh in Gambit neutral format.</p>
 <p>The .neu file nodes are numbered from 1!
 Returns a nodes,elems tuple.</p>
@@ -255,7 +252,7 @@ Returns a nodes,elems tuple.</p>
 
 <dl class="function">
 <dt id="fileread.read_gambit_neutral_hex">
-<tt class="descclassname">fileread.</tt><tt class="descname">read_gambit_neutral_hex</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#fileread.read_gambit_neutral_hex" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fileread.</code><code class="descname">read_gambit_neutral_hex</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#fileread.read_gambit_neutral_hex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read an hexahedral mesh in Gambit neutral format.</p>
 <p>The .neu file nodes are numbered from 1!
 Returns a nodes,elems tuple.</p>
@@ -270,7 +267,7 @@ Returns a nodes,elems tuple.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -280,22 +277,22 @@ Returns a nodes,elems tuple.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="filewrite.html" title="21. filewrite — Write geometry to file in a whole number of formats."
+          <a href="filewrite.html" title="20. filewrite — Write geometry to file in a whole number of formats."
              >next</a> |</li>
         <li class="right" >
-          <a href="inertia.html" title="19. inertia — Compute inertia related quantities of geometrical models."
+          <a href="inertia.html" title="18. inertia — Compute inertia related quantities of geometrical models."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

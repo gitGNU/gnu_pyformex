@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>52. plugins.objects — Selection of objects from the global dictionary. &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>52. plugins.objects — Selection of objects from the global dictionary. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="53. plugins.partition — Partitioning tools" href="plugins.partition.html" />
     <link rel="prev" title="51. plugins.nurbs — Using NURBS in pyFormex." href="plugins.nurbs.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,11 +82,11 @@
         <li class="right" >
           <a href="plugins.nurbs.html" title="51. plugins.nurbs — Using NURBS in pyFormex."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -99,34 +99,22 @@
 
 </div>
    
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">52. <tt class="docutils literal"><span class="pre">plugins.objects</span></tt> &#8212; Selection of objects from the global dictionary.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-plugins-objects">52.1. Classes defined in module plugins.objects</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-plugins-objects">52.2. Functions defined in module plugins.objects</a></li>
-</ul>
-</li>
-</ul>
-
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.nurbs.html"
-                        title="previous chapter">51. <tt class="docutils literal"><span class="pre">plugins.nurbs</span></tt> &#8212; Using NURBS in pyFormex.</a></p>
+                        title="previous chapter">51. <code class="docutils literal"><span class="pre">plugins.nurbs</span></code> &#8212; Using NURBS in pyFormex.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="plugins.partition.html"
-                        title="next chapter">53. <tt class="docutils literal"><span class="pre">plugins.partition</span></tt> &#8212; Partitioning tools</a></p>
+                        title="next chapter">53. <code class="docutils literal"><span class="pre">plugins.partition</span></code> &#8212; Partitioning tools</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,406 +134,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
-  <div class="section" id="module-plugins.objects">
-<span id="plugins-objects-selection-of-objects-from-the-global-dictionary"></span><span id="sec-ref-plugins-objects"></span><h1>52. <a class="reference internal" href="#module-plugins.objects" title="plugins.objects: Selection of objects from the global dictionary."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.objects</span></tt></a> &#8212; Selection of objects from the global dictionary.<a class="headerlink" href="#module-plugins.objects" title="Permalink to this headline">¶</a></h1>
-<p>This is a support module for other pyFormex plugins.</p>
-<div class="section" id="classes-defined-in-module-plugins-objects">
-<h2>52.1. Classes defined in module plugins.objects<a class="headerlink" href="#classes-defined-in-module-plugins-objects" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="plugins.objects.Objects">
-<em class="property">class </em><tt class="descclassname">plugins.objects.</tt><tt class="descname">Objects</tt><big>(</big><em>clas=None</em>, <em>like=None</em>, <em>filter=None</em>, <em>namelist=[]</em><big>)</big><a class="headerlink" href="#plugins.objects.Objects" title="Permalink to this definition">¶</a></dt>
-<dd><p>A selection of objects from the pyFormex Globals().</p>
-<p>The class provides facilities to filter the global objects by their type
-and select one or more objects by their name(s). The values of these
-objects can be changed and the changes can be undone.</p>
-<dl class="method">
-<dt id="plugins.objects.Objects.object_type">
-<tt class="descname">object_type</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.Objects.object_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the type of objects in this selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.set">
-<tt class="descname">set</tt><big>(</big><em>names</em><big>)</big><a class="headerlink" href="#plugins.objects.Objects.set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the selection to a list of names.</p>
-<p>namelist can be a single object name or a list of names.
-This will also store the current values of the variables.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.append">
-<tt class="descname">append</tt><big>(</big><em>name</em>, <em>value=None</em><big>)</big><a class="headerlink" href="#plugins.objects.Objects.append" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a name,value to a selection.</p>
-<p>If no value is given, its current value is used.
-If a value is given, it is exported.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.clear">
-<tt class="descname">clear</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.Objects.clear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear the selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.listAll">
-<tt class="descname">listAll</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.Objects.listAll" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list with all selectable objects.</p>
-<p>This lists all the global names in pyformex.PF that match
-the class and/or filter (if specified).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.remember">
-<tt class="descname">remember</tt><big>(</big><em>copy=False</em><big>)</big><a class="headerlink" href="#plugins.objects.Objects.remember" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remember the current values of the variables in selection.</p>
-<p>If copy==True, the values are copied, so that the variables&#8217; current
-values can be changed inplace without affecting the remembered values.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.changeValues">
-<tt class="descname">changeValues</tt><big>(</big><em>newvalues</em><big>)</big><a class="headerlink" href="#plugins.objects.Objects.changeValues" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replace the current values of selection by new ones.</p>
-<p>The old values are stored locally, to enable undo operations.</p>
-<p>This is only needed to change the values of objects that can not
-be changed inplace!</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.undoChanges">
-<tt class="descname">undoChanges</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.Objects.undoChanges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undo the last changes of the values.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.check">
-<tt class="descname">check</tt><big>(</big><em>single=False</em>, <em>warn=True</em><big>)</big><a class="headerlink" href="#plugins.objects.Objects.check" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that we have a current selection.</p>
-<p>Returns the list of Objects corresponding to the current selection.
-If single==True, the selection should hold exactly one Object name and
-a single Object instance is returned.
-If there is no selection, or more than one in case of single==True,
-an error message is displayed and None is returned</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.odict">
-<tt class="descname">odict</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.Objects.odict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the currently selected items as a dictionary.</p>
-<p>Returns an OrderedDict with the currently selected objects in the order
-of the selection.names.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.ask">
-<tt class="descname">ask</tt><big>(</big><em>mode='multi'</em><big>)</big><a class="headerlink" href="#plugins.objects.Objects.ask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show the names of known objects and let the user select one or more.</p>
-<p>mode can be set to&#8217;single&#8217; to select a single item.
-Return a list with the selected names, possibly empty (if nothing
-was selected by the user), or None if there is nothing to choose from.
-This also sets the current selection to the selected names, unless
-the return value is None, in which case the selection remains unchanged.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.ask1">
-<tt class="descname">ask1</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.Objects.ask1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select a single object from the list.</p>
-<p>Returns the object, not its name!</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.forget">
-<tt class="descname">forget</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.Objects.forget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove the selection from the globals.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.keep">
-<tt class="descname">keep</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.Objects.keep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove everything except the selection from the globals.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.printval">
-<tt class="descname">printval</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.Objects.printval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.printbbox">
-<tt class="descname">printbbox</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.Objects.printbbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the bbox of the current selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.writeToFile">
-<tt class="descname">writeToFile</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#plugins.objects.Objects.writeToFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write objects to a geometry file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.Objects.readFromFile">
-<tt class="descname">readFromFile</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#plugins.objects.Objects.readFromFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read objects from a geometry file.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="plugins.objects.DrawableObjects">
-<em class="property">class </em><tt class="descclassname">plugins.objects.</tt><tt class="descname">DrawableObjects</tt><big>(</big><em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects" title="Permalink to this definition">¶</a></dt>
-<dd><p>A selection of drawable objects from the globals().</p>
-<p>This is a subclass of Objects. The constructor has the same arguments
-as the Objects class, plus the following:</p>
-<ul>
-<li><p class="first"><cite>annotations</cite>: a set of functions that draw annotations of the objects.
-Each function should take an object name as argument, and draw the
-requested annotation for the named object. If the object does not have
-the annotation, it should be silently ignored.
-Default annotation functions available are:</p>
-<ul class="simple">
-<li>draw_object_name</li>
-<li>draw_elem_numbers</li>
-<li>draw_nodes</li>
-<li>draw_node_numbers</li>
-<li>draw_bbox</li>
-</ul>
-<p>No annotation functions are activated by default.</p>
-</li>
-</ul>
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.ask">
-<tt class="descname">ask</tt><big>(</big><em>mode='multi'</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.ask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interactively sets the current selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.drawChanges">
-<tt class="descname">drawChanges</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.drawChanges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draws old and new version of a Formex with different colors.</p>
-<p>old and new can be a either Formex instances or names or lists thereof.
-old are drawn in yellow, new in the current color.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.undoChanges">
-<tt class="descname">undoChanges</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.undoChanges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undo the last changes of the values.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.toggleAnnotation">
-<tt class="descname">toggleAnnotation</tt><big>(</big><em>f</em>, <em>onoff=None</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.toggleAnnotation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Toggle the display of an annotation On or Off.</p>
-<p>If given, onoff is True or False.
-If no onoff is given, this works as a toggle.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.drawAnnotation">
-<tt class="descname">drawAnnotation</tt><big>(</big><em>f</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.drawAnnotation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw some annotation for the current selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.removeAnnotation">
-<tt class="descname">removeAnnotation</tt><big>(</big><em>f</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.removeAnnotation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove the annotation f.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.editAnnotations">
-<tt class="descname">editAnnotations</tt><big>(</big><em>ontop=None</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.editAnnotations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Edit the annotation properties</p>
-<p>Currently only changes the ontop attribute for all drawn
-annotations. Values: True, False or &#8216;&#8217; (toggle).
-Other values have no effect.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.hasAnnotation">
-<tt class="descname">hasAnnotation</tt><big>(</big><em>f</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.hasAnnotation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the status of annotation f</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.setProp">
-<tt class="descname">setProp</tt><big>(</big><em>prop=None</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.setProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the property of the current selection.</p>
-<p>prop should be a single integer value or None.
-If None is given, a value will be asked from the user.
-If a negative value is given, the property is removed.
-If a selected object does not have a setProp method, it is ignored.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.delProp">
-<tt class="descname">delProp</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.delProp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete the property of the current selection.</p>
-<p>This well reset the <cite>prop</cite> attribute of all selected objects
-to None.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.append">
-<tt class="descname">append</tt><big>(</big><em>name</em>, <em>value=None</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.append" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a name,value to a selection.</p>
-<p>If no value is given, its current value is used.
-If a value is given, it is exported.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.ask1">
-<tt class="descname">ask1</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.ask1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select a single object from the list.</p>
-<p>Returns the object, not its name!</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.changeValues">
-<tt class="descname">changeValues</tt><big>(</big><em>newvalues</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.changeValues" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replace the current values of selection by new ones.</p>
-<p>The old values are stored locally, to enable undo operations.</p>
-<p>This is only needed to change the values of objects that can not
-be changed inplace!</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.check">
-<tt class="descname">check</tt><big>(</big><em>single=False</em>, <em>warn=True</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.check" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that we have a current selection.</p>
-<p>Returns the list of Objects corresponding to the current selection.
-If single==True, the selection should hold exactly one Object name and
-a single Object instance is returned.
-If there is no selection, or more than one in case of single==True,
-an error message is displayed and None is returned</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.clear">
-<tt class="descname">clear</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.clear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear the selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.forget">
-<tt class="descname">forget</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.forget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove the selection from the globals.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.keep">
-<tt class="descname">keep</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.keep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove everything except the selection from the globals.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.listAll">
-<tt class="descname">listAll</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.listAll" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list with all selectable objects.</p>
-<p>This lists all the global names in pyformex.PF that match
-the class and/or filter (if specified).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.object_type">
-<tt class="descname">object_type</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.object_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the type of objects in this selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.odict">
-<tt class="descname">odict</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.odict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the currently selected items as a dictionary.</p>
-<p>Returns an OrderedDict with the currently selected objects in the order
-of the selection.names.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.printbbox">
-<tt class="descname">printbbox</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.printbbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the bbox of the current selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.printval">
-<tt class="descname">printval</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.printval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.readFromFile">
-<tt class="descname">readFromFile</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.readFromFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read objects from a geometry file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.remember">
-<tt class="descname">remember</tt><big>(</big><em>copy=False</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.remember" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remember the current values of the variables in selection.</p>
-<p>If copy==True, the values are copied, so that the variables&#8217; current
-values can be changed inplace without affecting the remembered values.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.set">
-<tt class="descname">set</tt><big>(</big><em>names</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the selection to a list of names.</p>
-<p>namelist can be a single object name or a list of names.
-This will also store the current values of the variables.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.objects.DrawableObjects.writeToFile">
-<tt class="descname">writeToFile</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#plugins.objects.DrawableObjects.writeToFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write objects to a geometry file.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="functions-defined-in-module-plugins-objects">
-<h2>52.2. Functions defined in module plugins.objects<a class="headerlink" href="#functions-defined-in-module-plugins-objects" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="plugins.objects.draw_object_name">
-<tt class="descclassname">plugins.objects.</tt><tt class="descname">draw_object_name</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#plugins.objects.draw_object_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the name of an object at its center.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.objects.draw_elem_numbers">
-<tt class="descclassname">plugins.objects.</tt><tt class="descname">draw_elem_numbers</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#plugins.objects.draw_elem_numbers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the numbers of an object&#8217;s elements.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.objects.draw_nodes">
-<tt class="descclassname">plugins.objects.</tt><tt class="descname">draw_nodes</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#plugins.objects.draw_nodes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the nodes of an object.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.objects.draw_node_numbers">
-<tt class="descclassname">plugins.objects.</tt><tt class="descname">draw_node_numbers</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#plugins.objects.draw_node_numbers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the numbers of an object&#8217;s nodes.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.objects.draw_free_edges">
-<tt class="descclassname">plugins.objects.</tt><tt class="descname">draw_free_edges</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#plugins.objects.draw_free_edges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the feature edges of an object.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.objects.draw_bbox">
-<tt class="descclassname">plugins.objects.</tt><tt class="descname">draw_bbox</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#plugins.objects.draw_bbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the bbox of an object.</p>
-</dd></dl>
-
-</div>
+  <div class="section" id="plugins-objects-selection-of-objects-from-the-global-dictionary">
+<span id="sec-ref-plugins-objects"></span><h1>52. <code class="xref py py-mod docutils literal"><span class="pre">plugins.objects</span></code> &#8212; Selection of objects from the global dictionary.<a class="headerlink" href="#plugins-objects-selection-of-objects-from-the-global-dictionary" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -554,7 +146,7 @@ This will also store the current values of the variables.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -569,17 +161,17 @@ This will also store the current values of the variables.</p>
         <li class="right" >
           <a href="plugins.nurbs.html" title="51. plugins.nurbs — Using NURBS in pyFormex."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

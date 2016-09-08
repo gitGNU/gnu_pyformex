@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>26. gui.widgets — A collection of custom widgets used in the pyFormex GUI &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>26. gui.widgets — A collection of custom widgets used in the pyFormex GUI &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="27. gui.menu — Menus for the pyFormex GUI." href="gui.menu.html" />
-    <link rel="prev" title="25. software — software.py" href="software.html" />
+    <link rel="prev" title="24. software — software.py" href="software.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -80,13 +80,13 @@
           <a href="gui.menu.html" title="27. gui.menu — Menus for the pyFormex GUI."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="software.html" title="25. software — software.py"
+          <a href="software.html" title="24. software — software.py"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -101,7 +101,7 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">26. <tt class="docutils literal"><span class="pre">gui.widgets</span></tt> &#8212; A collection of custom widgets used in the pyFormex GUI</a><ul>
+<li><a class="reference internal" href="#">26. <code class="docutils literal"><span class="pre">gui.widgets</span></code> &#8212; A collection of custom widgets used in the pyFormex GUI</a><ul>
 <li><a class="reference internal" href="#classes-defined-in-module-gui-widgets">26.1. Classes defined in module gui.widgets</a></li>
 <li><a class="reference internal" href="#functions-defined-in-module-gui-widgets">26.2. Functions defined in module gui.widgets</a></li>
 </ul>
@@ -111,22 +111,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="software.html"
-                        title="previous chapter">25. <tt class="docutils literal"><span class="pre">software</span></tt> &#8212; software.py</a></p>
+                        title="previous chapter">24. <code class="docutils literal"><span class="pre">software</span></code> &#8212; software.py</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="gui.menu.html"
-                        title="next chapter">27. <tt class="docutils literal"><span class="pre">gui.menu</span></tt> &#8212; Menus for the pyFormex GUI.</a></p>
+                        title="next chapter">27. <code class="docutils literal"><span class="pre">gui.menu</span></code> &#8212; Menus for the pyFormex GUI.</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,10 +143,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-gui.widgets">
-<span id="gui-widgets-a-collection-of-custom-widgets-used-in-the-pyformex-gui"></span><span id="sec-ref-gui-widgets"></span><h1>26. <a class="reference internal" href="#module-gui.widgets" title="gui.widgets: A collection of custom widgets used in the pyFormex GUI"><tt class="xref py py-mod docutils literal"><span class="pre">gui.widgets</span></tt></a> &#8212; A collection of custom widgets used in the pyFormex GUI<a class="headerlink" href="#module-gui.widgets" title="Permalink to this headline">¶</a></h1>
+<span id="gui-widgets-a-collection-of-custom-widgets-used-in-the-pyformex-gui"></span><span id="sec-ref-gui-widgets"></span><h1>26. <a class="reference internal" href="#module-gui.widgets" title="gui.widgets: A collection of custom widgets used in the pyFormex GUI"><code class="xref py py-mod docutils literal"><span class="pre">gui.widgets</span></code></a> &#8212; A collection of custom widgets used in the pyFormex GUI<a class="headerlink" href="#module-gui.widgets" title="Permalink to this headline">¶</a></h1>
 <p>The widgets in this module were primarily created in function of the
 pyFormex GUI. The user can apply them to change the GUI or to add
 interactive widgets to his scripts. Of course he can also use all the
@@ -158,7 +155,7 @@ Qt widgets directly.</p>
 <h2>26.1. Classes defined in module gui.widgets<a class="headerlink" href="#classes-defined-in-module-gui-widgets" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gui.widgets.InputItem">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputItem</tt><big>(</big><em>name</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputItem" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputItem</code><span class="sig-paren">(</span><em>name</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputItem" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single input item.</p>
 <p>This is the base class for widgets holding a single input item.
 A single input item is any item that is treated as a unit and
@@ -217,11 +214,11 @@ If the string contains an &#8216;r&#8217;, a spacer in inserted after the input 
 If the string contains a &#8216;c&#8217;, a spacer in inserted between the label and
 the input filed.</li>
 </ul>
-<p>Subclasses should have an <tt class="docutils literal"><span class="pre">__init__()</span></tt> method which first constructs
+<p>Subclasses should have an <code class="docutils literal"><span class="pre">__init__()</span></code> method which first constructs
 a proper widget for the input field, and stores it in the attribute
-<tt class="docutils literal"><span class="pre">self.input</span></tt>. Then the baseclass should be properly initialized, passing
+<code class="docutils literal"><span class="pre">self.input</span></code>. Then the baseclass should be properly initialized, passing
 any optional parameters:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">SomeInputWidget</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">SomeInputWidget</span><span class="p">()</span>
 <span class="n">InputItem</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -229,43 +226,43 @@ any optional parameters:</p>
 the InputItem base class:</p>
 <ul class="simple">
 <li>text(): if the subclass calls the superclass __init__() method with
-a value <tt class="docutils literal"><span class="pre">text=''</span></tt>. This method should return the value of the
+a value <code class="docutils literal"><span class="pre">text=''</span></code>. This method should return the value of the
 displayed text.</li>
 <li>value(): if the value of the input field is not given by
-<tt class="docutils literal"><span class="pre">self.input.text()</span></tt>, i.e. in most cases. This method should
+<code class="docutils literal"><span class="pre">self.input.text()</span></code>, i.e. in most cases. This method should
 return the value of the input field.</li>
 <li>setValue(val): always, unless the field is readonly. This method should
 change the value of the input widget to the specified value.</li>
 </ul>
-<p>Subclasses are allowed to NOT have a <tt class="docutils literal"><span class="pre">self.input</span></tt> attribute, IFF they
+<p>Subclasses are allowed to NOT have a <code class="docutils literal"><span class="pre">self.input</span></code> attribute, IFF they
 redefine both the value() and the setValue() methods.</p>
 <p>Subclasses can set validators on the input, like:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">setValidator</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIntValidator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">))</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">setValidator</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIntValidator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Subclasses can define a show() method e.g. to select the data in the
 input field on display of the dialog.</p>
 <dl class="method">
 <dt id="gui.widgets.InputItem.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputItem.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputItem.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputItem.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputItem.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputItem.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputItem.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputItem.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputItem.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputItem.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputItem.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputItem.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
@@ -273,32 +270,32 @@ input field on display of the dialog.</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputInfo">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputInfo</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputInfo" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputInfo</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>An unchangeable input field with a label in front.</p>
 <p>It is just like an InputString, but the text can not be edited.
 The value should be a simple string without newlines.</p>
 <p>There are no specific options.</p>
 <dl class="method">
 <dt id="gui.widgets.InputInfo.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputInfo.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInfo.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputInfo.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputInfo.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInfo.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputInfo.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputInfo.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInfo.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputInfo.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputInfo.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInfo.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -306,32 +303,32 @@ The value should be a simple string without newlines.</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputLabel">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputLabel</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputLabel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputLabel</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputLabel" title="Permalink to this definition">¶</a></dt>
 <dd><p>An unchangeable information field.</p>
 <p>The value is displayed as a string, but may contain more complex texts.</p>
 <p>By default, the text format will be guessed to be either plain text,
 ReStructuredText ot html. Specify plain=True to display in plain text.</p>
 <dl class="method">
 <dt id="gui.widgets.InputLabel.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputLabel.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputLabel.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputLabel.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputLabel.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputLabel.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputLabel.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputLabel.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputLabel.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputLabel.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputLabel.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputLabel.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
@@ -339,7 +336,7 @@ ReStructuredText ot html. Specify plain=True to display in plain text.</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputString">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputString</tt><big>(</big><em>name</em>, <em>value</em>, <em>max=None</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputString" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputString</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>max=None</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputString" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string input field with a label in front.</p>
 <p>If the type of value is not a string, the input string
 will be eval&#8217;ed before returning.</p>
@@ -349,31 +346,31 @@ will be eval&#8217;ed before returning.</p>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputString.show">
-<tt class="descname">show</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#gui.widgets.InputString.show" title="Permalink to this definition">¶</a></dt>
+<code class="descname">show</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputString.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select all text on first display.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputString.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputString.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputString.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputString.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputString.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputString.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputString.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputString.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputString.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputString.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputString.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputString.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -381,7 +378,7 @@ will be eval&#8217;ed before returning.</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputText">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputText</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputText" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputText</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputText" title="Permalink to this definition">¶</a></dt>
 <dd><p>A scrollable text input field with a label in front.</p>
 <p>By default, the text format will be guessed to be either plain text,
 ReStructuredText ot html.</p>
@@ -390,31 +387,31 @@ ReStructuredText ot html.</p>
 before returning.</p>
 <dl class="method">
 <dt id="gui.widgets.InputText.show">
-<tt class="descname">show</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#gui.widgets.InputText.show" title="Permalink to this definition">¶</a></dt>
+<code class="descname">show</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputText.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select all text on first display.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputText.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputText.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputText.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputText.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputText.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputText.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputText.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputText.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputText.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputText.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputText.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputText.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -422,7 +419,7 @@ before returning.</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputBool">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputBool</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputBool" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputBool</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputBool" title="Permalink to this definition">¶</a></dt>
 <dd><p>A boolean input item.</p>
 <p>Creates a new checkbox for the input of a boolean value.</p>
 <p>Displays the name next to a checkbox, which will initially be set
@@ -438,25 +435,25 @@ be retrieved.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputBool.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputBool.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputBool.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputBool.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputBool.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputBool.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputBool.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputBool.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputBool.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputBool.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputBool.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputBool.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
@@ -464,7 +461,7 @@ be retrieved.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputList">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputList</tt><big>(</big><em>name</em>, <em>default=[]</em>, <em>choices=[]</em>, <em>sort=False</em>, <em>single=False</em>, <em>check=False</em>, <em>fast_sel=False</em>, <em>maxh=-1</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputList" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputList</code><span class="sig-paren">(</span><em>name</em>, <em>default=[]</em>, <em>choices=[]</em>, <em>sort=False</em>, <em>single=False</em>, <em>check=False</em>, <em>fast_sel=False</em>, <em>maxh=-1</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputList" title="Permalink to this definition">¶</a></dt>
 <dd><p>A list selection InputItem.</p>
 <p>A list selection is a widget allowing the selection of zero, one or more
 items from a list.</p>
@@ -484,49 +481,49 @@ widget the required height to show all items</p>
 are returned. This option sets single==False.</p>
 <dl class="method">
 <dt id="gui.widgets.InputList.setSelected">
-<tt class="descname">setSelected</tt><big>(</big><em>selected</em>, <em>flag=True</em><big>)</big><a class="headerlink" href="#gui.widgets.InputList.setSelected" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setSelected</code><span class="sig-paren">(</span><em>selected</em>, <em>flag=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputList.setSelected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mark the specified items as selected or not.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputList.setChecked">
-<tt class="descname">setChecked</tt><big>(</big><em>selected</em>, <em>flag=True</em><big>)</big><a class="headerlink" href="#gui.widgets.InputList.setChecked" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setChecked</code><span class="sig-paren">(</span><em>selected</em>, <em>flag=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputList.setChecked" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mark the specified items as checked or not.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputList.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputList.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputList.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputList.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputList.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputList.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputList.setAll">
-<tt class="descname">setAll</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputList.setAll" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setAll</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputList.setAll" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mark all items as selected/checked.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputList.setNone">
-<tt class="descname">setNone</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputList.setNone" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setNone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputList.setNone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mark all items as not selected/checked.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputList.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputList.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputList.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputList.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputList.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputList.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -534,7 +531,7 @@ are returned. This option sets single==False.</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputCombo">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputCombo</tt><big>(</big><em>name</em>, <em>value</em>, <em>choices=[]</em>, <em>onselect=None</em>, <em>func=None</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputCombo" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputCombo</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>choices=[]</em>, <em>onselect=None</em>, <em>func=None</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputCombo" title="Permalink to this definition">¶</a></dt>
 <dd><p>A combobox InputItem.</p>
 <p>A combobox is a widget allowing the selection of an item from a drop
 down list.</p>
@@ -548,32 +545,32 @@ whenever the current selection changes. The function is passed the
 selected option string</p>
 <dl class="method">
 <dt id="gui.widgets.InputCombo.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputCombo.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputCombo.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputCombo.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputCombo.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputCombo.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s current value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputCombo.setChoices">
-<tt class="descname">setChoices</tt><big>(</big><em>choices</em><big>)</big><a class="headerlink" href="#gui.widgets.InputCombo.setChoices" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setChoices</code><span class="sig-paren">(</span><em>choices</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputCombo.setChoices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s choices.</p>
 <p>This also sets the current value to the first in the list.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputCombo.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputCombo.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputCombo.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputCombo.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputCombo.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputCombo.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -581,7 +578,7 @@ selected option string</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputRadio">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputRadio</tt><big>(</big><em>name</em>, <em>value</em>, <em>choices=[]</em>, <em>direction='h'</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputRadio" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputRadio</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>choices=[]</em>, <em>direction='h'</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputRadio" title="Permalink to this definition">¶</a></dt>
 <dd><p>A radiobuttons InputItem.</p>
 <p>Radio buttons are a set of buttons used to select a value from a list.</p>
 <p>choices is a list/tuple of possible values.
@@ -593,25 +590,25 @@ of which the default will initially be pressed.
 If direction == &#8216;v&#8217;, the options are in a vbox.</p>
 <dl class="method">
 <dt id="gui.widgets.InputRadio.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputRadio.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputRadio.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputRadio.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputRadio.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputRadio.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputRadio.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputRadio.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputRadio.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputRadio.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputRadio.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputRadio.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -619,7 +616,7 @@ If direction == &#8216;v&#8217;, the options are in a vbox.</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputPush">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputPush</tt><big>(</big><em>name</em>, <em>value=None</em>, <em>choices=[]</em>, <em>direction='h'</em>, <em>count=0</em>, <em>icon=None</em>, <em>iconsonly=False</em>, <em>func=None</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputPush" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputPush</code><span class="sig-paren">(</span><em>name</em>, <em>value=None</em>, <em>choices=[]</em>, <em>direction='h'</em>, <em>count=0</em>, <em>icon=None</em>, <em>iconsonly=False</em>, <em>func=None</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPush" title="Permalink to this definition">¶</a></dt>
 <dd><p>A pushbuttons InputItem.</p>
 <p>Creates pushbuttons for the selection of a value from a list.</p>
 <p>choices is a list/tuple of possible values.
@@ -639,43 +636,43 @@ unchanged. If no function is specified, the value can not be changed.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputPush.setText">
-<tt class="descname">setText</tt><big>(</big><em>text</em>, <em>index=0</em><big>)</big><a class="headerlink" href="#gui.widgets.InputPush.setText" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setText</code><span class="sig-paren">(</span><em>text</em>, <em>index=0</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPush.setText" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the text on button index.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputPush.setIcon">
-<tt class="descname">setIcon</tt><big>(</big><em>icon</em>, <em>index=0</em><big>)</big><a class="headerlink" href="#gui.widgets.InputPush.setIcon" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setIcon</code><span class="sig-paren">(</span><em>icon</em>, <em>index=0</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPush.setIcon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the icon on button index.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputPush.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputPush.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPush.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputPush.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputPush.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPush.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputPush.doFunc">
-<tt class="descname">doFunc</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputPush.doFunc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">doFunc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPush.doFunc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value by calling the button&#8217;s func</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputPush.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputPush.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPush.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputPush.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputPush.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPush.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -683,7 +680,7 @@ unchanged. If no function is specified, the value can not be changed.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputInteger">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputInteger</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputInteger" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputInteger</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInteger" title="Permalink to this definition">¶</a></dt>
 <dd><p>An integer input item.</p>
 <p>Options:</p>
 <ul class="simple">
@@ -691,31 +688,31 @@ unchanged. If no function is specified, the value can not be changed.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputInteger.show">
-<tt class="descname">show</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputInteger.show" title="Permalink to this definition">¶</a></dt>
+<code class="descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInteger.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select all text on first display.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputInteger.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputInteger.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInteger.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputInteger.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputInteger.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInteger.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputInteger.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputInteger.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInteger.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputInteger.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputInteger.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputInteger.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -723,35 +720,35 @@ unchanged. If no function is specified, the value can not be changed.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputFloat">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputFloat</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFloat" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputFloat</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFloat" title="Permalink to this definition">¶</a></dt>
 <dd><p>A float input item.</p>
 <dl class="method">
 <dt id="gui.widgets.InputFloat.show">
-<tt class="descname">show</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFloat.show" title="Permalink to this definition">¶</a></dt>
+<code class="descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFloat.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select all text on first display.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFloat.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFloat.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFloat.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFloat.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFloat.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFloat.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFloat.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFloat.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFloat.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFloat.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFloat.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFloat.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -759,7 +756,7 @@ unchanged. If no function is specified, the value can not be changed.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputTable">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputTable</tt><big>(</big><em>name</em>, <em>value</em>, <em>chead=None</em>, <em>rhead=None</em>, <em>celltype=None</em>, <em>rowtype=None</em>, <em>coltype=None</em>, <em>edit=True</em>, <em>resize=None</em>, <em>autowidth=True</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputTable" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputTable</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>chead=None</em>, <em>rhead=None</em>, <em>celltype=None</em>, <em>rowtype=None</em>, <em>coltype=None</em>, <em>edit=True</em>, <em>resize=None</em>, <em>autowidth=True</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputTable" title="Permalink to this definition">¶</a></dt>
 <dd><p>An input item for tabular data.</p>
 <ul>
 <li><p class="first"><cite>value</cite>: a 2-D array of items, with <cite>nrow</cite> rows and <cite>ncol</cite> columns.</p>
@@ -778,25 +775,25 @@ may be passed</p>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputTable.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputTable.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputTable.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputTable.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputTable.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputTable.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputTable.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputTable.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputTable.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputTable.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputTable.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputTable.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -804,7 +801,7 @@ may be passed</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputSlider">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputSlider</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputSlider" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputSlider</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputSlider" title="Permalink to this definition">¶</a></dt>
 <dd><p>An integer input item using a slider.</p>
 <p>Options:</p>
 <ul class="simple">
@@ -820,31 +817,31 @@ when the user releases the slider.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputSlider.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputSlider.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputSlider.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputSlider.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputSlider.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputSlider.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputSlider.show">
-<tt class="descname">show</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputSlider.show" title="Permalink to this definition">¶</a></dt>
+<code class="descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputSlider.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select all text on first display.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputSlider.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputSlider.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputSlider.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputSlider.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputSlider.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputSlider.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
@@ -852,7 +849,7 @@ when the user releases the slider.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputFSlider">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputFSlider</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFSlider" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputFSlider</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFSlider" title="Permalink to this definition">¶</a></dt>
 <dd><p>A float input item using a slider.</p>
 <p>Options:</p>
 <ul class="simple">
@@ -869,31 +866,31 @@ when the user releases the slider.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputFSlider.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFSlider.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFSlider.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFSlider.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFSlider.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFSlider.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFSlider.show">
-<tt class="descname">show</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFSlider.show" title="Permalink to this definition">¶</a></dt>
+<code class="descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFSlider.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select all text on first display.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFSlider.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFSlider.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFSlider.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFSlider.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFSlider.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFSlider.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
@@ -901,30 +898,30 @@ when the user releases the slider.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputPoint">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputPoint</tt><big>(</big><em>name</em>, <em>value</em>, <em>ndim=3</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputPoint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputPoint</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>ndim=3</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>A 2D/3D point/vector input item.</p>
 <p>The default gives fields x, y and z. With ndim=2, only x and y.</p>
 <dl class="method">
 <dt id="gui.widgets.InputPoint.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputPoint.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPoint.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputPoint.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputPoint.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPoint.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputPoint.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputPoint.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPoint.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputPoint.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputPoint.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputPoint.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -932,29 +929,29 @@ when the user releases the slider.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputIVector">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputIVector</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputIVector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputIVector</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputIVector" title="Permalink to this definition">¶</a></dt>
 <dd><p>A vector of int values.</p>
 <dl class="method">
 <dt id="gui.widgets.InputIVector.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputIVector.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputIVector.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputIVector.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputIVector.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputIVector.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputIVector.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputIVector.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputIVector.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputIVector.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputIVector.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputIVector.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -962,7 +959,7 @@ when the user releases the slider.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputButton">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputButton</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputButton" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputButton</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputButton" title="Permalink to this definition">¶</a></dt>
 <dd><p>A button input item.</p>
 <p>The button input field is a button displaying the current value.
 Clicking on the button executes a function responsible for changing
@@ -977,31 +974,31 @@ unchanged. If no function is specified, the value can not be changed.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputButton.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputButton.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputButton.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputButton.doFunc">
-<tt class="descname">doFunc</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputButton.doFunc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">doFunc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputButton.doFunc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value by calling the button&#8217;s func</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputButton.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputButton.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputButton.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputButton.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputButton.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputButton.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputButton.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputButton.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputButton.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -1009,7 +1006,7 @@ unchanged. If no function is specified, the value can not be changed.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputFilename">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputFilename</tt><big>(</big><em>name</em>, <em>value</em>, <em>filter='*'</em>, <em>exist=False</em>, <em>preview=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputFilename</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>filter='*'</em>, <em>exist=False</em>, <em>preview=None</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>A filename input item.</p>
 <p>This is a button input field displaying a file name.
 Clicking on the button pops up a file dialog.</p>
@@ -1019,44 +1016,44 @@ Clicking on the button pops up a file dialog.</p>
 See askFilename.</li>
 <li><cite>exist</cite>: boolean. Specifies whether the file should exist,
 or a new one can be created (default).</li>
-<li><cite>preview</cite>: an <a class="reference internal" href="#gui.widgets.ImageView" title="gui.widgets.ImageView"><tt class="xref py py-class docutils literal"><span class="pre">ImageView</span></tt></a> widget, or another widget having
+<li><cite>preview</cite>: an <a class="reference internal" href="#gui.widgets.ImageView" title="gui.widgets.ImageView"><code class="xref py py-class docutils literal"><span class="pre">ImageView</span></code></a> widget, or another widget having
 a <cite>showImage</cite> method. This can be used with image files to show a
 preview of the selected file. In most cases the preview widget is
 inserted in a dialog directly below the <cite>InputFilename</cite> field.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputFilename.changeFilename">
-<tt class="descname">changeFilename</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.changeFilename" title="Permalink to this definition">¶</a></dt>
+<code class="descname">changeFilename</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFilename.changeFilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pop up a FileDialog to change the filename</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFilename.doFunc">
-<tt class="descname">doFunc</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.doFunc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">doFunc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFilename.doFunc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value by calling the button&#8217;s func</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFilename.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFilename.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFilename.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFilename.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFilename.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFilename.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFilename.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFilename.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFilename.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
@@ -1064,7 +1061,7 @@ inserted in a dialog directly below the <cite>InputFilename</cite> field.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputColor">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputColor</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputColor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputColor</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputColor" title="Permalink to this definition">¶</a></dt>
 <dd><p>A color input item.
 Creates a new color input field with a label in front.</p>
 <p>The color input field is a button displaying the current color.
@@ -1079,25 +1076,25 @@ be retrieved.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputColor.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputColor.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputColor.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputColor.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#gui.widgets.InputColor.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputColor.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputColor.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputColor.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputColor.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputColor.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputColor.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputColor.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -1105,29 +1102,29 @@ be retrieved.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputFont">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputFont</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFont" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputFont</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFont" title="Permalink to this definition">¶</a></dt>
 <dd><p>An input item to select a font.</p>
 <dl class="method">
 <dt id="gui.widgets.InputFont.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFont.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFont.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFont.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFont.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFont.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFont.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFont.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFont.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFont.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFont.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFont.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -1135,25 +1132,25 @@ be retrieved.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputFile">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputFile</tt><big>(</big><em>name</em>, <em>value</em>, <em>pattern='*'</em>, <em>exist=False</em>, <em>multi=False</em>, <em>dir=False</em>, <em>compr=False</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputFile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputFile</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>pattern='*'</em>, <em>exist=False</em>, <em>multi=False</em>, <em>dir=False</em>, <em>compr=False</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>An input item to select a file.</p>
 <p>The following arguments are passed to the FileDialog widget:
 value,pattern,exist,multi,dir,compr.</p>
 <dl class="method">
 <dt id="gui.widgets.InputFile.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFile.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFile.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFile.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFile.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFile.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputFile.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputFile.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputFile.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text of the InputItem.</p>
 </dd></dl>
 
@@ -1161,7 +1158,7 @@ value,pattern,exist,multi,dir,compr.</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputWidget">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputWidget</tt><big>(</big><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputWidget</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>An input item containing any other widget.</p>
 <p>The widget should have:</p>
 <ul class="simple">
@@ -1174,25 +1171,25 @@ specified in the dict.</li>
 <p>The return value of this item is an OrderedDict.</p>
 <dl class="method">
 <dt id="gui.widgets.InputWidget.text">
-<tt class="descname">text</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputWidget.text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputWidget.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the displayed text.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputWidget.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputWidget.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputWidget.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputWidget.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputWidget.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputWidget.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputWidget.name">
-<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputWidget.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputWidget.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of the InputItem.</p>
 </dd></dl>
 
@@ -1200,7 +1197,7 @@ specified in the dict.</li>
 
 <dl class="class">
 <dt id="gui.widgets.InputForm">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputForm</tt><a class="headerlink" href="#gui.widgets.InputForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputForm</code><a class="headerlink" href="#gui.widgets.InputForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>An input form.</p>
 <p>The input form is a layout box in which the items are layed out
 vertically. The layout can also contain any number of tab widgets
@@ -1209,7 +1206,7 @@ in which items can be layed out using tab pages.</p>
 
 <dl class="class">
 <dt id="gui.widgets.ScrollForm">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">ScrollForm</tt><a class="headerlink" href="#gui.widgets.ScrollForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">ScrollForm</code><a class="headerlink" href="#gui.widgets.ScrollForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>An scrolling input form.</p>
 <p>The input form is a layout box in which the items are layed out
 vertically. The layout can also contain any number of tab widgets
@@ -1218,17 +1215,17 @@ in which items can be layed out using tab pages.</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputGroup">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputGroup</tt><big>(</big><em>name</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputGroup" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputGroup</code><span class="sig-paren">(</span><em>name</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>A boxed group of InputItems.</p>
 <dl class="method">
 <dt id="gui.widgets.InputGroup.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputGroup.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputGroup.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the widget&#8217;s value.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputGroup.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#gui.widgets.InputGroup.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputGroup.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the widget&#8217;s value.</p>
 </dd></dl>
 
@@ -1236,13 +1233,13 @@ in which items can be layed out using tab pages.</p>
 
 <dl class="class">
 <dt id="gui.widgets.InputTab">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputTab</tt><big>(</big><em>name</em>, <em>tab</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.InputTab" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputTab</code><span class="sig-paren">(</span><em>name</em>, <em>tab</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputTab" title="Permalink to this definition">¶</a></dt>
 <dd><p>A tab page in an input form.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="gui.widgets.InputDialog">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">InputDialog</tt><big>(</big><em>items</em>, <em>caption=None</em>, <em>parent=None</em>, <em>flags=None</em>, <em>actions=None</em>, <em>default=None</em>, <em>store=None</em>, <em>prefix=''</em>, <em>autoprefix=False</em>, <em>flat=None</em>, <em>modal=None</em>, <em>enablers=[]</em>, <em>scroll=False</em>, <em>size=None</em>, <em>align_right=False</em><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">InputDialog</code><span class="sig-paren">(</span><em>items</em>, <em>caption=None</em>, <em>parent=None</em>, <em>flags=None</em>, <em>actions=None</em>, <em>default=None</em>, <em>store=None</em>, <em>prefix=''</em>, <em>autoprefix=False</em>, <em>flat=None</em>, <em>modal=None</em>, <em>enablers=[]</em>, <em>scroll=False</em>, <em>size=None</em>, <em>align_right=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dialog widget to interactively set the value of one or more items.</p>
 <p>Overview</p>
 <p>The pyFormex user has full access to the Qt4 framework on which the
@@ -1301,7 +1298,7 @@ combo or group. Also, any input field should only have one enabler!</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.InputDialog.add_items">
-<tt class="descname">add_items</tt><big>(</big><em>items</em>, <em>form</em>, <em>prefix=''</em><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog.add_items" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_items</code><span class="sig-paren">(</span><em>items</em>, <em>form</em>, <em>prefix=''</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog.add_items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add input items to form.</p>
 <p>items is a list of input item data
 layout is the widget layout where the input widgets will be added</p>
@@ -1309,37 +1306,37 @@ layout is the widget layout where the input widgets will be added</p>
 
 <dl class="method">
 <dt id="gui.widgets.InputDialog.add_tab">
-<tt class="descname">add_tab</tt><big>(</big><em>form</em>, <em>prefix</em>, <em>name</em>, <em>items</em>, <em>**extra</em><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog.add_tab" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_tab</code><span class="sig-paren">(</span><em>form</em>, <em>prefix</em>, <em>name</em>, <em>items</em>, <em>**extra</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog.add_tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a Tab page of input items.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputDialog.add_group">
-<tt class="descname">add_group</tt><big>(</big><em>form</em>, <em>prefix</em>, <em>name</em>, <em>items</em>, <em>**extra</em><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog.add_group" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_group</code><span class="sig-paren">(</span><em>form</em>, <em>prefix</em>, <em>name</em>, <em>items</em>, <em>**extra</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog.add_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a group of input items.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputDialog.add_input">
-<tt class="descname">add_input</tt><big>(</big><em>form</em>, <em>prefix</em>, <em>**item</em><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog.add_input" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_input</code><span class="sig-paren">(</span><em>form</em>, <em>prefix</em>, <em>**item</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog.add_input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a single input item to the form.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputDialog.timeout">
-<tt class="descname">timeout</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog.timeout" title="Permalink to this definition">¶</a></dt>
+<code class="descname">timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog.timeout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hide the dialog and set the result code to TIMEOUT</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputDialog.timedOut">
-<tt class="descname">timedOut</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog.timedOut" title="Permalink to this definition">¶</a></dt>
+<code class="descname">timedOut</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog.timedOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if the result code was set to TIMEOUT</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.InputDialog.show">
-<tt class="descname">show</tt><big>(</big><em>timeout=None</em>, <em>timeoutfunc=None</em>, <em>modal=False</em><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog.show" title="Permalink to this definition">¶</a></dt>
+<code class="descname">show</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>timeoutfunc=None</em>, <em>modal=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the dialog.</p>
 <p>For a non-modal dialog, the user has to call this function to
 display the dialog.
@@ -1349,7 +1346,7 @@ For a modal dialog, this is implicitely executed by getResults().</p>
 
 <dl class="method">
 <dt id="gui.widgets.InputDialog.acceptData">
-<tt class="descname">acceptData</tt><big>(</big><em>result=PySide.QtGui.QDialog.DialogCode.Accepted</em><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog.acceptData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">acceptData</code><span class="sig-paren">(</span><em>result=PySide.QtGui.QDialog.DialogCode.Accepted</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog.acceptData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the dialog&#8217;s return value from the field values.</p>
 <p>This function is connected to the &#8216;accepted()&#8217; signal.
 Modal dialogs should normally not need to call it.
@@ -1360,7 +1357,7 @@ would close the dialog).</p>
 
 <dl class="method">
 <dt id="gui.widgets.InputDialog.updateData">
-<tt class="descname">updateData</tt><big>(</big><em>d</em><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog.updateData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">updateData</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog.updateData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update a dialog from the data in given dictionary.</p>
 <p>d is a dictionary where the keys are field names in the dialog.
 The values will be set in the corresponding input items.</p>
@@ -1368,7 +1365,7 @@ The values will be set in the corresponding input items.</p>
 
 <dl class="method">
 <dt id="gui.widgets.InputDialog.getResults">
-<tt class="descname">getResults</tt><big>(</big><em>timeout=None</em><big>)</big><a class="headerlink" href="#gui.widgets.InputDialog.getResults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getResults</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.InputDialog.getResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the results from the input dialog.</p>
 <p>This fuction is used to present a modal dialog to the user (i.e. a
 dialog that must be ended before the user can continue with the
@@ -1391,13 +1388,13 @@ Its value will be one of ACCEPTED, REJECTED ot TIMEOUT.</p>
 
 <dl class="class">
 <dt id="gui.widgets.ListWidget">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">ListWidget</tt><big>(</big><em>maxh=0</em><big>)</big><a class="headerlink" href="#gui.widgets.ListWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">ListWidget</code><span class="sig-paren">(</span><em>maxh=0</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>A customized QListWidget with ability to compute its required size.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="gui.widgets.TableModel">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">TableModel</tt><big>(</big><em>data</em>, <em>chead=None</em>, <em>rhead=None</em>, <em>celltype=None</em>, <em>rowtype=None</em>, <em>coltype=None</em>, <em>edit=True</em>, <em>resize=None</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">TableModel</code><span class="sig-paren">(</span><em>data</em>, <em>chead=None</em>, <em>rhead=None</em>, <em>celltype=None</em>, <em>rowtype=None</em>, <em>coltype=None</em>, <em>edit=True</em>, <em>resize=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>A model representing a two-dimensional array of items.</p>
 <ul class="simple">
 <li><cite>data</cite>: any tabular data organized in a fixed number of rows and colums.
@@ -1431,7 +1428,7 @@ If <cite>rowtype</cite> is specified, the number of rows can not be changed.</li
 </ul>
 <dl class="method">
 <dt id="gui.widgets.TableModel.makeEditable">
-<tt class="descname">makeEditable</tt><big>(</big><em>edit=True</em>, <em>resize=None</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.makeEditable" title="Permalink to this definition">¶</a></dt>
+<code class="descname">makeEditable</code><span class="sig-paren">(</span><em>edit=True</em>, <em>resize=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.makeEditable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make the table editable or not.</p>
 <ul class="simple">
 <li><cite>edit</cite>: bool: makes the items in the table editable or not.</li>
@@ -1442,62 +1439,62 @@ it is set equal to the <cite>edit</cite>.</li>
 
 <dl class="method">
 <dt id="gui.widgets.TableModel.rowCount">
-<tt class="descname">rowCount</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.rowCount" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rowCount</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.rowCount" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return number of rows in the table</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.TableModel.columnCount">
-<tt class="descname">columnCount</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.columnCount" title="Permalink to this definition">¶</a></dt>
+<code class="descname">columnCount</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.columnCount" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return number of columns in the table</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.TableModel.data">
-<tt class="descname">data</tt><big>(</big><em>index</em>, <em>role</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.data" title="Permalink to this definition">¶</a></dt>
+<code class="descname">data</code><span class="sig-paren">(</span><em>index</em>, <em>role</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the data at the specified index</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.TableModel.cellType">
-<tt class="descname">cellType</tt><big>(</big><em>r</em>, <em>c</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.cellType" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cellType</code><span class="sig-paren">(</span><em>r</em>, <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.cellType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the type of the item at the specified position</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.TableModel.setCellData">
-<tt class="descname">setCellData</tt><big>(</big><em>r</em>, <em>c</em>, <em>value</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.setCellData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setCellData</code><span class="sig-paren">(</span><em>r</em>, <em>c</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.setCellData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value of an individual table element.</p>
 <p>This changes the stored data, not the interface.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.TableModel.setData">
-<tt class="descname">setData</tt><big>(</big><em>index</em>, <em>value</em>, <em>role=PySide.QtCore.Qt.ItemDataRole.EditRole</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.setData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setData</code><span class="sig-paren">(</span><em>index</em>, <em>value</em>, <em>role=PySide.QtCore.Qt.ItemDataRole.EditRole</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.setData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value of an individual table element.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.TableModel.headerData">
-<tt class="descname">headerData</tt><big>(</big><em>col</em>, <em>orientation</em>, <em>role</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.headerData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">headerData</code><span class="sig-paren">(</span><em>col</em>, <em>orientation</em>, <em>role</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.headerData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the header data for the sepcified row or column</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.TableModel.insertRows">
-<tt class="descname">insertRows</tt><big>(</big><em>row=None</em>, <em>count=None</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.insertRows" title="Permalink to this definition">¶</a></dt>
+<code class="descname">insertRows</code><span class="sig-paren">(</span><em>row=None</em>, <em>count=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.insertRows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert row(s) in table</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.TableModel.removeRows">
-<tt class="descname">removeRows</tt><big>(</big><em>row=None</em>, <em>count=None</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.removeRows" title="Permalink to this definition">¶</a></dt>
+<code class="descname">removeRows</code><span class="sig-paren">(</span><em>row=None</em>, <em>count=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.removeRows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove row(s) from table</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.TableModel.flags">
-<tt class="descname">flags</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#gui.widgets.TableModel.flags" title="Permalink to this definition">¶</a></dt>
+<code class="descname">flags</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TableModel.flags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the TableModel flags.</p>
 </dd></dl>
 
@@ -1505,7 +1502,7 @@ it is set equal to the <cite>edit</cite>.</li>
 
 <dl class="class">
 <dt id="gui.widgets.ArrayModel">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">ArrayModel</tt><big>(</big><em>data</em>, <em>chead=None</em>, <em>rhead=None</em>, <em>edit=True</em><big>)</big><a class="headerlink" href="#gui.widgets.ArrayModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">ArrayModel</code><span class="sig-paren">(</span><em>data</em>, <em>chead=None</em>, <em>rhead=None</em>, <em>edit=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ArrayModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>A model representing a two-dimensional numpy array.</p>
 <ul class="simple">
 <li><cite>data</cite>: a numpy array with two dimensions.</li>
@@ -1516,7 +1513,7 @@ the data readonly.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.ArrayModel.makeEditable">
-<tt class="descname">makeEditable</tt><big>(</big><em>edit=True</em><big>)</big><a class="headerlink" href="#gui.widgets.ArrayModel.makeEditable" title="Permalink to this definition">¶</a></dt>
+<code class="descname">makeEditable</code><span class="sig-paren">(</span><em>edit=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ArrayModel.makeEditable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make the table editable or not.</p>
 <ul class="simple">
 <li><cite>edit</cite>: bool: makes the items in the table editable or not.</li>
@@ -1525,37 +1522,37 @@ the data readonly.</li>
 
 <dl class="method">
 <dt id="gui.widgets.ArrayModel.rowCount">
-<tt class="descname">rowCount</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#gui.widgets.ArrayModel.rowCount" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rowCount</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ArrayModel.rowCount" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return number of rows in the table</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ArrayModel.columnCount">
-<tt class="descname">columnCount</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#gui.widgets.ArrayModel.columnCount" title="Permalink to this definition">¶</a></dt>
+<code class="descname">columnCount</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ArrayModel.columnCount" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return number of columns in the table</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ArrayModel.cellType">
-<tt class="descname">cellType</tt><big>(</big><em>r</em>, <em>c</em><big>)</big><a class="headerlink" href="#gui.widgets.ArrayModel.cellType" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cellType</code><span class="sig-paren">(</span><em>r</em>, <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ArrayModel.cellType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the type of the item at the specified position</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ArrayModel.setData">
-<tt class="descname">setData</tt><big>(</big><em>index</em>, <em>value</em>, <em>role=PySide.QtCore.Qt.ItemDataRole.EditRole</em><big>)</big><a class="headerlink" href="#gui.widgets.ArrayModel.setData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setData</code><span class="sig-paren">(</span><em>index</em>, <em>value</em>, <em>role=PySide.QtCore.Qt.ItemDataRole.EditRole</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ArrayModel.setData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value of an individual table element.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ArrayModel.headerData">
-<tt class="descname">headerData</tt><big>(</big><em>col</em>, <em>orientation</em>, <em>role</em><big>)</big><a class="headerlink" href="#gui.widgets.ArrayModel.headerData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">headerData</code><span class="sig-paren">(</span><em>col</em>, <em>orientation</em>, <em>role</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ArrayModel.headerData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the header data for the sepcified row or column</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ArrayModel.flags">
-<tt class="descname">flags</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#gui.widgets.ArrayModel.flags" title="Permalink to this definition">¶</a></dt>
+<code class="descname">flags</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ArrayModel.flags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the TableModel flags.</p>
 </dd></dl>
 
@@ -1563,7 +1560,7 @@ the data readonly.</li>
 
 <dl class="class">
 <dt id="gui.widgets.Table">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">Table</tt><big>(</big><em>data</em>, <em>chead=None</em>, <em>rhead=None</em>, <em>label=None</em>, <em>celltype=None</em>, <em>rowtype=None</em>, <em>coltype=None</em>, <em>edit=True</em>, <em>resize=None</em>, <em>parent=None</em>, <em>autowidth=True</em><big>)</big><a class="headerlink" href="#gui.widgets.Table" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">Table</code><span class="sig-paren">(</span><em>data</em>, <em>chead=None</em>, <em>rhead=None</em>, <em>label=None</em>, <em>celltype=None</em>, <em>rowtype=None</em>, <em>coltype=None</em>, <em>edit=True</em>, <em>resize=None</em>, <em>parent=None</em>, <em>autowidth=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.Table" title="Permalink to this definition">¶</a></dt>
 <dd><p>A widget to show/edit a two-dimensional array of items.</p>
 <ul>
 <li><p class="first"><cite>data</cite>: a 2-D array of items, with <cite>nrow</cite> rows and <cite>ncol</cite> columns.</p>
@@ -1587,19 +1584,19 @@ TableModel or ArrayModel may be passed</p>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.Table.colWidths">
-<tt class="descname">colWidths</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.Table.colWidths" title="Permalink to this definition">¶</a></dt>
+<code class="descname">colWidths</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.Table.colWidths" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the width of the columns in the table</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.Table.rowHeights">
-<tt class="descname">rowHeights</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.Table.rowHeights" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rowHeights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.Table.rowHeights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the height of the rows in the table</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.Table.update">
-<tt class="descname">update</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.Table.update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.Table.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the table.</p>
 <p>This method should be called to update the widget when the data of
 the table have changed. If autowidth is True, this will also
@@ -1608,7 +1605,7 @@ adjust the column widths.</p>
 
 <dl class="method">
 <dt id="gui.widgets.Table.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.Table.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.Table.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the Table&#8217;s value.</p>
 </dd></dl>
 
@@ -1616,7 +1613,7 @@ adjust the column widths.</p>
 
 <dl class="class">
 <dt id="gui.widgets.FileDialog">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">FileDialog</tt><big>(</big><em>path='.'</em>, <em>pattern='*'</em>, <em>exist=False</em>, <em>multi=False</em>, <em>dir=False</em>, <em>compr=False</em>, <em>button=None</em>, <em>sidebar=None</em>, <em>caption=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.FileDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">FileDialog</code><span class="sig-paren">(</span><em>path='.'</em>, <em>pattern='*'</em>, <em>exist=False</em>, <em>multi=False</em>, <em>dir=False</em>, <em>compr=False</em>, <em>button=None</em>, <em>sidebar=None</em>, <em>caption=None</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.FileDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>A file selection dialog.</p>
 <p>The FileDialog dialog is a special purpose complex dialog widget
 that allows to interactively select a file or directory from the file
@@ -1631,10 +1628,10 @@ current directory.</p>
 glob patterns, used to limit the set of displayed filenames to those
 matching the glob. Each string can contain multiple globs, and an
 explanation string can be place in front:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="s">&#39;Image files (*.png *.jpg)&#39;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s1">&#39;Image files (*.png *.jpg)&#39;</span>
 </pre></div>
 </div>
-<p>The <cite>pattern</cite> argument is passed to the <a class="reference internal" href="utils.html#utils.fileDescription" title="utils.fileDescription"><tt class="xref py py-func docutils literal"><span class="pre">utils.fileDescription()</span></tt></a>
+<p>The <cite>pattern</cite> argument is passed to the <a class="reference internal" href="utils.html#utils.fileDescription" title="utils.fileDescription"><code class="xref py py-func docutils literal"><span class="pre">utils.fileDescription()</span></code></a>
 function, together with the <cite>compr</cite> argument, to generate the actual
 pattern set. This allows the creation of filters for common file types
 with a minimal input.</p>
@@ -1653,7 +1650,7 @@ be selected.</p>
 </li>
 <li><p class="first"><cite>compr</cite>: bool: if True, compressed files of the specified type will be
 selectable as well. This is passed together with the <cite>pattern</cite> argument
-to the <a class="reference internal" href="utils.html#utils.fileDescription" title="utils.fileDescription"><tt class="xref py py-func docutils literal"><span class="pre">utils.fileDescription()</span></tt></a> to generate the actual patterns.</p>
+to the <a class="reference internal" href="utils.html#utils.fileDescription" title="utils.fileDescription"><code class="xref py py-func docutils literal"><span class="pre">utils.fileDescription()</span></code></a> to generate the actual patterns.</p>
 </li>
 <li><p class="first"><cite>button</cite>: string: the label to be displayed on the accept button. The
 default is set to &#8216;Save&#8217; if new files are allowed or &#8216;Open&#8217; if only
@@ -1662,13 +1659,13 @@ existing files can be selected.</p>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.FileDialog.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.FileDialog.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.FileDialog.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the selected value</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.FileDialog.getResults">
-<tt class="descname">getResults</tt><big>(</big><em>timeout=None</em><big>)</big><a class="headerlink" href="#gui.widgets.FileDialog.getResults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getResults</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.FileDialog.getResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask the user to fill in the dialog.</p>
 <p>Returns a dict.
 If the user accepts the results, the dict has a single entry with
@@ -1678,7 +1675,7 @@ If the user hits CANCEL or ESC, an empty dict is returned.</p>
 
 <dl class="method">
 <dt id="gui.widgets.FileDialog.getFilename">
-<tt class="descname">getFilename</tt><big>(</big><em>timeout=None</em><big>)</big><a class="headerlink" href="#gui.widgets.FileDialog.getFilename" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getFilename</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.FileDialog.getFilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask for filename(s) by user interaction.</p>
 <p>Returns the filename(s) selected by the user if the user
 accepts the selection. This is equivalent with
@@ -1690,17 +1687,17 @@ Returns None if the user hits CANCEL or ESC.</p>
 
 <dl class="attribute">
 <dt id="gui.widgets.FileSelection">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">FileSelection</tt><a class="headerlink" href="#gui.widgets.FileSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#gui.widgets.FileDialog" title="gui.widgets.FileDialog"><tt class="xref py py-class docutils literal"><span class="pre">FileDialog</span></tt></a></p>
+<code class="descclassname">gui.widgets.</code><code class="descname">FileSelection</code><a class="headerlink" href="#gui.widgets.FileSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#gui.widgets.FileDialog" title="gui.widgets.FileDialog"><code class="xref py py-class docutils literal"><span class="pre">FileDialog</span></code></a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="gui.widgets.GeometryFileDialog">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">GeometryFileDialog</tt><big>(</big><em>path=None</em>, <em>pattern=None</em>, <em>exist=False</em>, <em>sep=' '</em>, <em>compression=4</em>, <em>access=None</em>, <em>default=None</em>, <em>convert=True</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.GeometryFileDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">GeometryFileDialog</code><span class="sig-paren">(</span><em>path=None</em>, <em>pattern=None</em>, <em>exist=False</em>, <em>sep=' '</em>, <em>compression=4</em>, <em>access=None</em>, <em>default=None</em>, <em>convert=True</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.GeometryFileDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>A file selection dialog specialized for opening pgf files.</p>
 <dl class="method">
 <dt id="gui.widgets.GeometryFileDialog.getResults">
-<tt class="descname">getResults</tt><big>(</big><em>timeout=None</em><big>)</big><a class="headerlink" href="#gui.widgets.GeometryFileDialog.getResults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getResults</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.GeometryFileDialog.getResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask the user to fill in the dialog.</p>
 <p>Returns a Dict or dict.
 If the user accepts the results, a Dict with the following entries
@@ -1710,7 +1707,7 @@ If the user hits CANCEL or ESC, an empty dict is returned.</p>
 
 <dl class="method">
 <dt id="gui.widgets.GeometryFileDialog.getFilename">
-<tt class="descname">getFilename</tt><big>(</big><em>timeout=None</em><big>)</big><a class="headerlink" href="#gui.widgets.GeometryFileDialog.getFilename" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getFilename</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.GeometryFileDialog.getFilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask for filename(s) by user interaction.</p>
 <p>Returns the filename(s) selected by the user if the user
 accepts the selection. This is equivalent with
@@ -1720,7 +1717,7 @@ Returns None if the user hits CANCEL or ESC.</p>
 
 <dl class="method">
 <dt id="gui.widgets.GeometryFileDialog.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.GeometryFileDialog.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.GeometryFileDialog.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the selected value</p>
 </dd></dl>
 
@@ -1728,17 +1725,17 @@ Returns None if the user hits CANCEL or ESC.</p>
 
 <dl class="attribute">
 <dt id="gui.widgets.GeometryFileSelection">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">GeometryFileSelection</tt><a class="headerlink" href="#gui.widgets.GeometryFileSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#gui.widgets.GeometryFileDialog" title="gui.widgets.GeometryFileDialog"><tt class="xref py py-class docutils literal"><span class="pre">GeometryFileDialog</span></tt></a></p>
+<code class="descclassname">gui.widgets.</code><code class="descname">GeometryFileSelection</code><a class="headerlink" href="#gui.widgets.GeometryFileSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#gui.widgets.GeometryFileDialog" title="gui.widgets.GeometryFileDialog"><code class="xref py py-class docutils literal"><span class="pre">GeometryFileDialog</span></code></a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="gui.widgets.ProjectSelection">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">ProjectSelection</tt><big>(</big><em>path=None</em>, <em>pattern=None</em>, <em>exist=False</em>, <em>compression=4</em>, <em>access=None</em>, <em>default=None</em>, <em>convert=True</em><big>)</big><a class="headerlink" href="#gui.widgets.ProjectSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">ProjectSelection</code><span class="sig-paren">(</span><em>path=None</em>, <em>pattern=None</em>, <em>exist=False</em>, <em>compression=4</em>, <em>access=None</em>, <em>default=None</em>, <em>convert=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ProjectSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A file selection dialog specialized for opening projects.</p>
 <dl class="method">
 <dt id="gui.widgets.ProjectSelection.getFilename">
-<tt class="descname">getFilename</tt><big>(</big><em>timeout=None</em><big>)</big><a class="headerlink" href="#gui.widgets.ProjectSelection.getFilename" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getFilename</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ProjectSelection.getFilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask for filename(s) by user interaction.</p>
 <p>Returns the filename(s) selected by the user if the user
 accepts the selection. This is equivalent with
@@ -1748,7 +1745,7 @@ Returns None if the user hits CANCEL or ESC.</p>
 
 <dl class="method">
 <dt id="gui.widgets.ProjectSelection.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.ProjectSelection.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ProjectSelection.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the selected value</p>
 </dd></dl>
 
@@ -1756,7 +1753,7 @@ Returns None if the user hits CANCEL or ESC.</p>
 
 <dl class="class">
 <dt id="gui.widgets.SaveImageDialog">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">SaveImageDialog</tt><big>(</big><em>path=None</em>, <em>pattern=None</em>, <em>exist=False</em>, <em>multi=False</em><big>)</big><a class="headerlink" href="#gui.widgets.SaveImageDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">SaveImageDialog</code><span class="sig-paren">(</span><em>path=None</em>, <em>pattern=None</em>, <em>exist=False</em>, <em>multi=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.SaveImageDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dialog for saving to an image file.</p>
 <p>The dialog contains the normal file selection widget plus some
 extra fields to set the Save Image parameters:</p>
@@ -1769,7 +1766,7 @@ saved. If unchecked, only the current OpenGL viewport is saved.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.SaveImageDialog.getFilename">
-<tt class="descname">getFilename</tt><big>(</big><em>timeout=None</em><big>)</big><a class="headerlink" href="#gui.widgets.SaveImageDialog.getFilename" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getFilename</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.SaveImageDialog.getFilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask for filename(s) by user interaction.</p>
 <p>Returns the filename(s) selected by the user if the user
 accepts the selection. This is equivalent with
@@ -1779,7 +1776,7 @@ Returns None if the user hits CANCEL or ESC.</p>
 
 <dl class="method">
 <dt id="gui.widgets.SaveImageDialog.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.SaveImageDialog.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.SaveImageDialog.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the selected value</p>
 </dd></dl>
 
@@ -1787,7 +1784,7 @@ Returns None if the user hits CANCEL or ESC.</p>
 
 <dl class="class">
 <dt id="gui.widgets.ListSelection">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">ListSelection</tt><big>(</big><em>choices</em>, <em>caption='ListSelection'</em>, <em>default=[]</em>, <em>single=False</em>, <em>check=False</em>, <em>sort=False</em>, <em>*args</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">ListSelection</code><span class="sig-paren">(</span><em>choices</em>, <em>caption='ListSelection'</em>, <em>default=[]</em>, <em>single=False</em>, <em>check=False</em>, <em>sort=False</em>, <em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dialog for selecting one or more items from a list.</p>
 <p>This is a convenient class which constructs an input dialog with a single
 input item: an InputList. It allows the user to select one or more items
@@ -1796,19 +1793,19 @@ the InputList classes. The return value is the value of the InputList,
 not the result of the InputDialog.</p>
 <dl class="method">
 <dt id="gui.widgets.ListSelection.setValue">
-<tt class="descname">setValue</tt><big>(</big><em>selected</em><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.setValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValue</code><span class="sig-paren">(</span><em>selected</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mark the specified items as selected.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.value">
-<tt class="descname">value</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the selected items.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.getResults">
-<tt class="descname">getResults</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.getResults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getResults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.getResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the modal dialog and return the list of selected values.</p>
 <p>If the user cancels the selection operation, the return value is None.
 Else, the result is always a list, possibly empty or with a single
@@ -1817,7 +1814,7 @@ value.</p>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.acceptData">
-<tt class="descname">acceptData</tt><big>(</big><em>result=PySide.QtGui.QDialog.DialogCode.Accepted</em><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.acceptData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">acceptData</code><span class="sig-paren">(</span><em>result=PySide.QtGui.QDialog.DialogCode.Accepted</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.acceptData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the dialog&#8217;s return value from the field values.</p>
 <p>This function is connected to the &#8216;accepted()&#8217; signal.
 Modal dialogs should normally not need to call it.
@@ -1828,19 +1825,19 @@ would close the dialog).</p>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.add_group">
-<tt class="descname">add_group</tt><big>(</big><em>form</em>, <em>prefix</em>, <em>name</em>, <em>items</em>, <em>**extra</em><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.add_group" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_group</code><span class="sig-paren">(</span><em>form</em>, <em>prefix</em>, <em>name</em>, <em>items</em>, <em>**extra</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.add_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a group of input items.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.add_input">
-<tt class="descname">add_input</tt><big>(</big><em>form</em>, <em>prefix</em>, <em>**item</em><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.add_input" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_input</code><span class="sig-paren">(</span><em>form</em>, <em>prefix</em>, <em>**item</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.add_input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a single input item to the form.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.add_items">
-<tt class="descname">add_items</tt><big>(</big><em>items</em>, <em>form</em>, <em>prefix=''</em><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.add_items" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_items</code><span class="sig-paren">(</span><em>items</em>, <em>form</em>, <em>prefix=''</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.add_items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add input items to form.</p>
 <p>items is a list of input item data
 layout is the widget layout where the input widgets will be added</p>
@@ -1848,13 +1845,13 @@ layout is the widget layout where the input widgets will be added</p>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.add_tab">
-<tt class="descname">add_tab</tt><big>(</big><em>form</em>, <em>prefix</em>, <em>name</em>, <em>items</em>, <em>**extra</em><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.add_tab" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_tab</code><span class="sig-paren">(</span><em>form</em>, <em>prefix</em>, <em>name</em>, <em>items</em>, <em>**extra</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.add_tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a Tab page of input items.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.show">
-<tt class="descname">show</tt><big>(</big><em>timeout=None</em>, <em>timeoutfunc=None</em>, <em>modal=False</em><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.show" title="Permalink to this definition">¶</a></dt>
+<code class="descname">show</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>timeoutfunc=None</em>, <em>modal=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the dialog.</p>
 <p>For a non-modal dialog, the user has to call this function to
 display the dialog.
@@ -1864,19 +1861,19 @@ For a modal dialog, this is implicitely executed by getResults().</p>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.timedOut">
-<tt class="descname">timedOut</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.timedOut" title="Permalink to this definition">¶</a></dt>
+<code class="descname">timedOut</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.timedOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if the result code was set to TIMEOUT</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.timeout">
-<tt class="descname">timeout</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.timeout" title="Permalink to this definition">¶</a></dt>
+<code class="descname">timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.timeout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hide the dialog and set the result code to TIMEOUT</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ListSelection.updateData">
-<tt class="descname">updateData</tt><big>(</big><em>d</em><big>)</big><a class="headerlink" href="#gui.widgets.ListSelection.updateData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">updateData</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ListSelection.updateData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update a dialog from the data in given dictionary.</p>
 <p>d is a dictionary where the keys are field names in the dialog.
 The values will be set in the corresponding input items.</p>
@@ -1886,7 +1883,7 @@ The values will be set in the corresponding input items.</p>
 
 <dl class="class">
 <dt id="gui.widgets.GenericDialog">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">GenericDialog</tt><big>(</big><em>widgets, title=None, parent=None, actions=[('OK',)], default='OK'</em><big>)</big><a class="headerlink" href="#gui.widgets.GenericDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">GenericDialog</code><span class="sig-paren">(</span><em>widgets, title=None, parent=None, actions=[('OK',)], default='OK'</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.GenericDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>A generic dialog widget.</p>
 <p>The dialog is formed by a number of widgets stacked in a vertical box
 layout. At the bottom is a horizontal button box with possible actions.</p>
@@ -1903,7 +1900,7 @@ to avoid creation of a button box.</li>
 
 <dl class="class">
 <dt id="gui.widgets.MessageBox">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">MessageBox</tt><big>(</big><em>text, format='', level='info', actions=['OK'], default=None, timeout=None, modal=None, parent=None, check=None</em><big>)</big><a class="headerlink" href="#gui.widgets.MessageBox" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">MessageBox</code><span class="sig-paren">(</span><em>text, format='', level='info', actions=['OK'], default=None, timeout=None, modal=None, parent=None, check=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.MessageBox" title="Permalink to this definition">¶</a></dt>
 <dd><p>A message box is a widget displaying a short text for the user.</p>
 <p>The message box displays a text, an optional icon depending on the level
 and a number of push buttons.</p>
@@ -1923,20 +1920,20 @@ value will suppress the icon.</li>
 created which can be used to exit the dialog and remove the message.
 By default there is a single button labeled &#8216;OK&#8217;.</li>
 </ul>
-<p>When the MessageBox is displayed with the <a class="reference internal" href="#gui.widgets.MessageBox.getResults" title="gui.widgets.MessageBox.getResults"><tt class="xref py py-meth docutils literal"><span class="pre">getResults()</span></tt></a> method,
+<p>When the MessageBox is displayed with the <a class="reference internal" href="#gui.widgets.MessageBox.getResults" title="gui.widgets.MessageBox.getResults"><code class="xref py py-meth docutils literal"><span class="pre">getResults()</span></code></a> method,
 a modal dialog is created, i.e. the user will have to click a button
 or hit the ESC key before he can continue.</p>
 <p>If you want a modeless dialog, allowing the user to continue while the
-message stays open, use the <tt class="xref py py-meth docutils literal"><span class="pre">show()</span></tt> method to display it.</p>
+message stays open, use the <code class="xref py py-meth docutils literal"><span class="pre">show()</span></code> method to display it.</p>
 <dl class="method">
 <dt id="gui.widgets.MessageBox.addCheck">
-<tt class="descname">addCheck</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#gui.widgets.MessageBox.addCheck" title="Permalink to this definition">¶</a></dt>
+<code class="descname">addCheck</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.MessageBox.addCheck" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a check field at the bottom of the layout.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.MessageBox.getResults">
-<tt class="descname">getResults</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.MessageBox.getResults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getResults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.MessageBox.getResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display the message box and wait for user to click a button.</p>
 <p>This will show the message box as a modal dialog, so that the
 user has to click a button (or hit the ESC key) before he can continue.
@@ -1948,7 +1945,7 @@ an empty string if ESC was hit.</p>
 
 <dl class="class">
 <dt id="gui.widgets.TextBox">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">TextBox</tt><big>(</big><em>text, format=None, actions=[('OK',)], modal=None, parent=None, caption=None, mono=False, timeout=None, flags=None</em><big>)</big><a class="headerlink" href="#gui.widgets.TextBox" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">TextBox</code><span class="sig-paren">(</span><em>text, format=None, actions=[('OK',)], modal=None, parent=None, caption=None, mono=False, timeout=None, flags=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.TextBox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display a text and wait for user response.</p>
 <p>Possible choices are &#8216;OK&#8217; and &#8216;CANCEL&#8217;.
 The function returns True if the OK button was clicked or &#8216;ENTER&#8217;
@@ -1957,7 +1954,7 @@ was pressed, False if the &#8216;CANCEL&#8217; button was pressed or ESC was pre
 
 <dl class="class">
 <dt id="gui.widgets.ButtonBox">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">ButtonBox</tt><big>(</big><em>name='', actions=None, default=None, parent=None, spacer=False, stretch=[-1, -1], cmargin=(2, 2, 2, 2)</em><big>)</big><a class="headerlink" href="#gui.widgets.ButtonBox" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">ButtonBox</code><span class="sig-paren">(</span><em>name='', actions=None, default=None, parent=None, spacer=False, stretch=[-1, -1], cmargin=(2, 2, 2, 2)</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ButtonBox" title="Permalink to this definition">¶</a></dt>
 <dd><p>A box with action buttons.</p>
 <ul class="simple">
 <li><cite>name</cite>: a label to be displayed in front of the button box. An empty
@@ -1974,13 +1971,13 @@ widgets.ACCEPTED or widgets.REJECTED.</li>
 </ul>
 <dl class="method">
 <dt id="gui.widgets.ButtonBox.setText">
-<tt class="descname">setText</tt><big>(</big><em>text</em>, <em>index=0</em><big>)</big><a class="headerlink" href="#gui.widgets.ButtonBox.setText" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setText</code><span class="sig-paren">(</span><em>text</em>, <em>index=0</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ButtonBox.setText" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the text on button index.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.ButtonBox.setIcon">
-<tt class="descname">setIcon</tt><big>(</big><em>icon</em>, <em>index=0</em><big>)</big><a class="headerlink" href="#gui.widgets.ButtonBox.setIcon" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setIcon</code><span class="sig-paren">(</span><em>icon</em>, <em>index=0</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ButtonBox.setIcon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the icon on button index.</p>
 </dd></dl>
 
@@ -1988,17 +1985,17 @@ widgets.ACCEPTED or widgets.REJECTED.</li>
 
 <dl class="class">
 <dt id="gui.widgets.CoordsBox">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">CoordsBox</tt><big>(</big><em>ndim=3</em>, <em>readonly=False</em>, <em>*args</em><big>)</big><a class="headerlink" href="#gui.widgets.CoordsBox" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">CoordsBox</code><span class="sig-paren">(</span><em>ndim=3</em>, <em>readonly=False</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.CoordsBox" title="Permalink to this definition">¶</a></dt>
 <dd><p>A widget displaying the coordinates of a point.</p>
 <dl class="method">
 <dt id="gui.widgets.CoordsBox.getValues">
-<tt class="descname">getValues</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.CoordsBox.getValues" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getValues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.CoordsBox.getValues" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current x,y,z values as a list of floats.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.widgets.CoordsBox.setValues">
-<tt class="descname">setValues</tt><big>(</big><em>values</em><big>)</big><a class="headerlink" href="#gui.widgets.CoordsBox.setValues" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setValues</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.CoordsBox.setValues" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the three values of the widget.</p>
 </dd></dl>
 
@@ -2006,11 +2003,11 @@ widgets.ACCEPTED or widgets.REJECTED.</li>
 
 <dl class="class">
 <dt id="gui.widgets.ImageView">
-<em class="property">class </em><tt class="descclassname">gui.widgets.</tt><tt class="descname">ImageView</tt><big>(</big><em>image=None</em>, <em>maxheight=None</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#gui.widgets.ImageView" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.widgets.</code><code class="descname">ImageView</code><span class="sig-paren">(</span><em>image=None</em>, <em>maxheight=None</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ImageView" title="Permalink to this definition">¶</a></dt>
 <dd><p>A widget displaying an image.</p>
 <dl class="method">
 <dt id="gui.widgets.ImageView.showImage">
-<tt class="descname">showImage</tt><big>(</big><em>image</em>, <em>maxheight=None</em><big>)</big><a class="headerlink" href="#gui.widgets.ImageView.showImage" title="Permalink to this definition">¶</a></dt>
+<code class="descname">showImage</code><span class="sig-paren">(</span><em>image</em>, <em>maxheight=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.ImageView.showImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show an image in the viewer.</p>
 <p>image: either a filename or an existing QImage instance. If a filename,
 it should be an image file that can be read by the QImage constructor.
@@ -2025,7 +2022,7 @@ gui.image.image_formats_qtr provides a list.</p>
 <h2>26.2. Functions defined in module gui.widgets<a class="headerlink" href="#functions-defined-in-module-gui-widgets" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="gui.widgets.pyformexIcon">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">pyformexIcon</tt><big>(</big><em>icon</em><big>)</big><a class="headerlink" href="#gui.widgets.pyformexIcon" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">pyformexIcon</code><span class="sig-paren">(</span><em>icon</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.pyformexIcon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a pyFormex icon.</p>
 <p>Returns a QIcon with an image taken from the pyFormex icons
 directory. <cite>icon</cite> is the basename of the image file (.xpm or .png).</p>
@@ -2033,14 +2030,14 @@ directory. <cite>icon</cite> is the basename of the image file (.xpm or .png).</
 
 <dl class="function">
 <dt id="gui.widgets.objSize">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">objSize</tt><big>(</big><em>object</em><big>)</big><a class="headerlink" href="#gui.widgets.objSize" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">objSize</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.objSize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the width and height of an object.</p>
 <p>Returns a tuple w,h for any object that has width and height methods.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gui.widgets.maxWinSize">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">maxWinSize</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.maxWinSize" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">maxWinSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.maxWinSize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the maximum widget size.</p>
 <p>The maximum widget size is the maximum size for a window on the screen.
 The available size may be smaller than the physical screen size (e.g.
@@ -2049,7 +2046,7 @@ it may exclude the space for docking panels).</p>
 
 <dl class="function">
 <dt id="gui.widgets.addTimeOut">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">addTimeOut</tt><big>(</big><em>widget</em>, <em>timeout=None</em>, <em>timeoutfunc=None</em><big>)</big><a class="headerlink" href="#gui.widgets.addTimeOut" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">addTimeOut</code><span class="sig-paren">(</span><em>widget</em>, <em>timeout=None</em>, <em>timeoutfunc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.addTimeOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a timeout to a widget.</p>
 <ul class="simple">
 <li><cite>timeoutfunc</cite> is a callable. If None it will be set to the widget&#8217;s
@@ -2066,31 +2063,31 @@ be called is if the widget is destructed before the timer has finished.</p>
 
 <dl class="function">
 <dt id="gui.widgets.defaultItemType">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">defaultItemType</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#gui.widgets.defaultItemType" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">defaultItemType</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.defaultItemType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess the InputItem type from the value</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gui.widgets.simpleInputItem">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">simpleInputItem</tt><big>(</big><em>name</em>, <em>value=None</em>, <em>itemtype=None</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.simpleInputItem" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">simpleInputItem</code><span class="sig-paren">(</span><em>name</em>, <em>value=None</em>, <em>itemtype=None</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.simpleInputItem" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenience function to create an InputItem dictionary</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gui.widgets.groupInputItem">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">groupInputItem</tt><big>(</big><em>name</em>, <em>items=[]</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.groupInputItem" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">groupInputItem</code><span class="sig-paren">(</span><em>name</em>, <em>items=[]</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.groupInputItem" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenience function to create an InputItem dictionary</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gui.widgets.tabInputItem">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">tabInputItem</tt><big>(</big><em>name</em>, <em>items=[]</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#gui.widgets.tabInputItem" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">tabInputItem</code><span class="sig-paren">(</span><em>name</em>, <em>items=[]</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.tabInputItem" title="Permalink to this definition">¶</a></dt>
 <dd><p>A convenience function to create an InputItem dictionary</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gui.widgets.convertInputItem">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">convertInputItem</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#gui.widgets.convertInputItem" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">convertInputItem</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.convertInputItem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert InputItem item to a dict or a widget.</p>
 <p>This function tries to convert some old style or sloppy InputItem item
 to a proper InputItem item dict.</p>
@@ -2106,7 +2103,7 @@ is tried, using the item items as arguments.</li>
 
 <dl class="function">
 <dt id="gui.widgets.inputAny">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">inputAny</tt><big>(</big><em>name</em>, <em>value</em>, <em>itemtype</em>, <em>**options</em><big>)</big><a class="headerlink" href="#gui.widgets.inputAny" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">inputAny</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>itemtype</em>, <em>**options</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.inputAny" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an InputItem of any type, depending on the arguments.</p>
 <p>Arguments: only name, value and itemtype are required</p>
 <ul class="simple">
@@ -2118,7 +2115,7 @@ is tried, using the item items as arguments.</li>
 
 <dl class="function">
 <dt id="gui.widgets.updateDialogItems">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">updateDialogItems</tt><big>(</big><em>data</em>, <em>newdata</em><big>)</big><a class="headerlink" href="#gui.widgets.updateDialogItems" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">updateDialogItems</code><span class="sig-paren">(</span><em>data</em>, <em>newdata</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.updateDialogItems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the input data fields with new data values</p>
 <ul class="simple">
 <li>data: a list of dialog items, as required by an InputDialog.</li>
@@ -2132,24 +2129,24 @@ this value is None.</p>
 
 <dl class="function">
 <dt id="gui.widgets.fileUrls">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">fileUrls</tt><big>(</big><em>files</em><big>)</big><a class="headerlink" href="#gui.widgets.fileUrls" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">fileUrls</code><span class="sig-paren">(</span><em>files</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.fileUrls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform a list of local file names to urls</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gui.widgets.selectFont">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">selectFont</tt><big>(</big><big>)</big><a class="headerlink" href="#gui.widgets.selectFont" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">selectFont</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.selectFont" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask the user to select a font.</p>
 <p>A font selection dialog widget is displayed and the user is requested
 to select a font.
-Returns a font if the user exited the dialog with the <em class="guilabel">OK</em>
+Returns a font if the user exited the dialog with the <span class="guilabel">OK</span>
 button.
-Returns None if the user clicked <em class="guilabel">CANCEL</em>.</p>
+Returns None if the user clicked <span class="guilabel">CANCEL</span>.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gui.widgets.getColor">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">getColor</tt><big>(</big><em>col=None</em>, <em>caption=None</em><big>)</big><a class="headerlink" href="#gui.widgets.getColor" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">getColor</code><span class="sig-paren">(</span><em>col=None</em>, <em>caption=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.getColor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a color selection dialog and return the selected color.</p>
 <p>col is the initial selection.
 If a valid color is selected, its string name is returned, usually as
@@ -2158,24 +2155,24 @@ a hex #RRGGBB string. If the dialog is canceled, None is returned.</p>
 
 <dl class="function">
 <dt id="gui.widgets.updateText">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">updateText</tt><big>(</big><em>widget</em>, <em>text</em>, <em>format=''</em><big>)</big><a class="headerlink" href="#gui.widgets.updateText" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">updateText</code><span class="sig-paren">(</span><em>widget</em>, <em>text</em>, <em>format=''</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.updateText" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the text of a text display widget.</p>
 <ul class="simple">
-<li><cite>widget</cite>: a widget that has the <tt class="xref py py-meth docutils literal"><span class="pre">setText()</span></tt>, <tt class="xref py py-meth docutils literal"><span class="pre">setPlainText()</span></tt>
-and <tt class="xref py py-meth docutils literal"><span class="pre">setHtml()</span></tt> methods to set the widget&#8217;s text.
-Examples are <tt class="xref py py-class docutils literal"><span class="pre">QMessageBox</span></tt> and <tt class="xref py py-class docutils literal"><span class="pre">QTextEdit</span></tt>.</li>
+<li><cite>widget</cite>: a widget that has the <code class="xref py py-meth docutils literal"><span class="pre">setText()</span></code>, <code class="xref py py-meth docutils literal"><span class="pre">setPlainText()</span></code>
+and <code class="xref py py-meth docutils literal"><span class="pre">setHtml()</span></code> methods to set the widget&#8217;s text.
+Examples are <code class="xref py py-class docutils literal"><span class="pre">QMessageBox</span></code> and <code class="xref py py-class docutils literal"><span class="pre">QTextEdit</span></code>.</li>
 <li><cite>text</cite>: a multiline string with the text to be displayed.</li>
 <li><cite>format</cite>: the format of the text. If empty, autorecognition will be
-tried. Currently available formats are: <tt class="docutils literal"><span class="pre">plain</span></tt>, <tt class="docutils literal"><span class="pre">html</span></tt> and
-<tt class="docutils literal"><span class="pre">rest</span></tt> (reStructuredText).</li>
+tried. Currently available formats are: <code class="docutils literal"><span class="pre">plain</span></code>, <code class="docutils literal"><span class="pre">html</span></code> and
+<code class="docutils literal"><span class="pre">rest</span></code> (reStructuredText).</li>
 </ul>
 <p>This function allows to display other text formats besides the
 plain text and html supported by the widget.
-Any format other than <tt class="docutils literal"><span class="pre">plain</span></tt> or <tt class="docutils literal"><span class="pre">html</span></tt> will be converted to one
+Any format other than <code class="docutils literal"><span class="pre">plain</span></code> or <code class="docutils literal"><span class="pre">html</span></code> will be converted to one
 of these before sending it to the widget. Currently, we convert the
 following formats:</p>
 <ul class="simple">
-<li><tt class="docutils literal"><span class="pre">rest</span></tt> (reStructuredText):
+<li><code class="docutils literal"><span class="pre">rest</span></code> (reStructuredText):
 If the :mod:docutils is available, <cite>rest</cite> text is converted to <cite>html</cite>,
 otherwise it will be displayed as plain text.
 A text is autorecognized as reStructuredText if its first
@@ -2187,7 +2184,7 @@ blank line, or your first paragraph could be turned into comments.</li>
 
 <dl class="function">
 <dt id="gui.widgets.addActionButtons">
-<tt class="descclassname">gui.widgets.</tt><tt class="descname">addActionButtons</tt><big>(</big><em>layout, actions=[('Cancel',), ('OK',)], default=None, parent=None</em><big>)</big><a class="headerlink" href="#gui.widgets.addActionButtons" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gui.widgets.</code><code class="descname">addActionButtons</code><span class="sig-paren">(</span><em>layout, actions=[('Cancel',), ('OK',)], default=None, parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.widgets.addActionButtons" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a set of action buttons to a layout</p>
 <p>layout is a QLayout</p>
 <p>actions is a list of tuples (name,) or (name,function).
@@ -2196,7 +2193,7 @@ If no function is specified, and name is one of &#8216;ok&#8217; or &#8216;cance
 is ignored), the button will be bound to the dialog&#8217;s &#8216;accept&#8217;
 or &#8216;reject&#8217; slot.
 If actions is None (default), it will be set to the default
-<tt class="docutils literal"><span class="pre">[('Cancel',),('OK',)]</span></tt>.</p>
+<code class="docutils literal"><span class="pre">[('Cancel',),('OK',)]</span></code>.</p>
 <p>default is the name of the action to set as the default. If no default
 is given, it is set to the LAST button.</p>
 <p>Returns a list of QPushButtons.</p>
@@ -2211,7 +2208,7 @@ is given, it is set to the LAST button.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -2224,19 +2221,19 @@ is given, it is set to the LAST button.</p>
           <a href="gui.menu.html" title="27. gui.menu — Menus for the pyFormex GUI."
              >next</a> |</li>
         <li class="right" >
-          <a href="software.html" title="25. software — software.py"
+          <a href="software.html" title="24. software — software.py"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

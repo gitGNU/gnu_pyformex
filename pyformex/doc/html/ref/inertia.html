@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>19. inertia — Compute inertia related quantities of geometrical models. &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>18. inertia — Compute inertia related quantities of geometrical models. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="20. fileread — Read geometry from file in a whole number of formats." href="fileread.html" />
-    <link rel="prev" title="18. geomtools — Basic geometrical operations." href="geomtools.html" />
+    <link rel="next" title="19. fileread — Read geometry from file in a whole number of formats." href="fileread.html" />
+    <link rel="prev" title="17. geomtools — Basic geometrical operations." href="geomtools.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -77,16 +77,16 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="fileread.html" title="20. fileread — Read geometry from file in a whole number of formats."
+          <a href="fileread.html" title="19. fileread — Read geometry from file in a whole number of formats."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="geomtools.html" title="18. geomtools — Basic geometrical operations."
+          <a href="geomtools.html" title="17. geomtools — Basic geometrical operations."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">19. <tt class="docutils literal"><span class="pre">inertia</span></tt> &#8212; Compute inertia related quantities of geometrical models.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-inertia">19.1. Classes defined in module inertia</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-inertia">19.2. Functions defined in module inertia</a></li>
+<li><a class="reference internal" href="#">18. <code class="docutils literal"><span class="pre">inertia</span></code> &#8212; Compute inertia related quantities of geometrical models.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-inertia">18.1. Classes defined in module inertia</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-inertia">18.2. Functions defined in module inertia</a></li>
 </ul>
 </li>
 </ul>
@@ -111,22 +111,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="geomtools.html"
-                        title="previous chapter">18. <tt class="docutils literal"><span class="pre">geomtools</span></tt> &#8212; Basic geometrical operations.</a></p>
+                        title="previous chapter">17. <code class="docutils literal"><span class="pre">geomtools</span></code> &#8212; Basic geometrical operations.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="fileread.html"
-                        title="next chapter">20. <tt class="docutils literal"><span class="pre">fileread</span></tt> &#8212; Read geometry from file in a whole number of formats.</a></p>
+                        title="next chapter">19. <code class="docutils literal"><span class="pre">fileread</span></code> &#8212; Read geometry from file in a whole number of formats.</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,26 +143,26 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-inertia">
-<span id="inertia-compute-inertia-related-quantities-of-geometrical-models"></span><span id="sec-ref-inertia"></span><h1>19. <a class="reference internal" href="#module-inertia" title="inertia: Compute inertia related quantities of geometrical models."><tt class="xref py py-mod docutils literal"><span class="pre">inertia</span></tt></a> &#8212; Compute inertia related quantities of geometrical models.<a class="headerlink" href="#module-inertia" title="Permalink to this headline">¶</a></h1>
+<span id="inertia-compute-inertia-related-quantities-of-geometrical-models"></span><span id="sec-ref-inertia"></span><h1>18. <a class="reference internal" href="#module-inertia" title="inertia: Compute inertia related quantities of geometrical models."><code class="xref py py-mod docutils literal"><span class="pre">inertia</span></code></a> &#8212; Compute inertia related quantities of geometrical models.<a class="headerlink" href="#module-inertia" title="Permalink to this headline">¶</a></h1>
 <p>Inertia related quantities of a geometrical model comprise: the total mass,
 the center of mass, the inertia tensor, the principal axes of inertia.</p>
 <p>This module defines some classes to store the inertia data:</p>
 <ul class="simple">
-<li><a class="reference internal" href="#inertia.Tensor" title="inertia.Tensor"><tt class="xref py py-class docutils literal"><span class="pre">Tensor</span></tt></a>: a general second order tensor</li>
-<li><a class="reference internal" href="#inertia.Inertia" title="inertia.Inertia"><tt class="xref py py-class docutils literal"><span class="pre">Inertia</span></tt></a>: a specialized second order tensor for inertia data</li>
+<li><a class="reference internal" href="#inertia.Tensor" title="inertia.Tensor"><code class="xref py py-class docutils literal"><span class="pre">Tensor</span></code></a>: a general second order tensor</li>
+<li><a class="reference internal" href="#inertia.Inertia" title="inertia.Inertia"><code class="xref py py-class docutils literal"><span class="pre">Inertia</span></code></a>: a specialized second order tensor for inertia data</li>
 </ul>
 <p>This module also provides the basic functions to compute the inertia data
 of collections of simple geometric data: points, lines, triangles, tetrahedrons.</p>
 <p>The prefered way to compute inertia data of a geometric model is through the
-<tt class="xref py py-meth docutils literal"><span class="pre">Geometry.inertia()</span></tt> methods.</p>
+<code class="xref py py-meth docutils literal"><span class="pre">Geometry.inertia()</span></code> methods.</p>
 <div class="section" id="classes-defined-in-module-inertia">
-<h2>19.1. Classes defined in module inertia<a class="headerlink" href="#classes-defined-in-module-inertia" title="Permalink to this headline">¶</a></h2>
+<h2>18.1. Classes defined in module inertia<a class="headerlink" href="#classes-defined-in-module-inertia" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="inertia.Tensor">
-<em class="property">class </em><tt class="descclassname">inertia.</tt><tt class="descname">Tensor</tt><a class="headerlink" href="#inertia.Tensor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">inertia.</code><code class="descname">Tensor</code><a class="headerlink" href="#inertia.Tensor" title="Permalink to this definition">¶</a></dt>
 <dd><p>A second order symmetric(!) shaped tensor in 3D vector space.</p>
 <p>This is a new class under design. Only use for developemnt!</p>
 <p>The Tensor class provides conversion between full matrix (3,3) shape
@@ -206,15 +203,15 @@ Again, suppose the user knows what he is doing.</li>
 </li>
 </ul>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 <span class="go">[[ 1.  6.  5.]</span>
 <span class="go"> [ 6.  2.  4.]</span>
 <span class="go"> [ 5.  4.  3.]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">contracted</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">contracted</span><span class="p">)</span>
 <span class="go">[ 1.  2.  3.  4.  5.  6.]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 <span class="go">[[ 1.  6.  5.]</span>
 <span class="go"> [ 6.  2.  4.]</span>
 <span class="go"> [ 5.  4.  3.]]</span>
@@ -222,7 +219,7 @@ Again, suppose the user knows what he is doing.</li>
 </div>
 <dl class="method">
 <dt id="inertia.Tensor.principal">
-<tt class="descname">principal</tt><big>(</big><em>sort=True</em>, <em>right_handed=True</em><big>)</big><a class="headerlink" href="#inertia.Tensor.principal" title="Permalink to this definition">¶</a></dt>
+<code class="descname">principal</code><span class="sig-paren">(</span><em>sort=True</em>, <em>right_handed=True</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.Tensor.principal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the principal values and axes of the inertia tensor.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -242,11 +239,11 @@ means that the columns of axes are the unit vectors along
 the principal directions.</li>
 </ul>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">principal</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 <span class="go">[ 11.62  -9.   -25.32]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="go">[[-0.03 -0.62 -0.78]</span>
 <span class="go"> [ 0.86  0.38 -0.33]</span>
 <span class="go"> [ 0.5  -0.69  0.53]]</span>
@@ -256,15 +253,15 @@ the principal directions.</li>
 
 <dl class="method">
 <dt id="inertia.Tensor.rotate">
-<tt class="descname">rotate</tt><big>(</big><em>rot</em><big>)</big><a class="headerlink" href="#inertia.Tensor.rotate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rotate</code><span class="sig-paren">(</span><em>rot</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.Tensor.rotate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform the tensor on coordinate system rotation.</p>
 <p>Note: for an inertia tensor, the inertia should have been
 computed around axes through the center of mass.
 See also translate.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">principal</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
 <span class="go">[[ 11.62   0.     0.  ]</span>
 <span class="go"> [ -0.    -9.    -0.  ]</span>
 <span class="go"> [  0.    -0.   -25.32]]</span>
@@ -276,7 +273,7 @@ See also translate.</p>
 
 <dl class="class">
 <dt id="inertia.Inertia">
-<em class="property">class </em><tt class="descclassname">inertia.</tt><tt class="descname">Inertia</tt><a class="headerlink" href="#inertia.Inertia" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">inertia.</code><code class="descname">Inertia</code><a class="headerlink" href="#inertia.Inertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class for storing the inertia tensor of an array of points.</p>
 <p>Parameters:</p>
 <ul>
@@ -294,23 +291,23 @@ Ixx, Iyy, Izz, Iyz, Izx, Ixy</li>
 </li>
 </ul>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.elements</span> <span class="kn">import</span> <span class="n">Tet4</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.elements</span> <span class="k">import</span> <span class="n">Tet4</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">Tet4</span><span class="o">.</span><span class="n">vertices</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="go">[[ 0.  0.  0.]</span>
 <span class="go"> [ 1.  0.  0.]</span>
 <span class="go"> [ 0.  1.  0.]</span>
 <span class="go"> [ 0.  0.  1.]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">I</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">inertia</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">I</span><span class="p">)</span>
 <span class="go">[[ 1.5   0.25  0.25]</span>
 <span class="go"> [ 0.25  1.5   0.25]</span>
 <span class="go"> [ 0.25  0.25  1.5 ]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">ctr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">ctr</span><span class="p">)</span>
 <span class="go">[ 0.25  0.25  0.25]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
 <span class="go">4.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">I</span><span class="o">.</span><span class="n">ctr</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">I</span><span class="o">.</span><span class="n">ctr</span><span class="p">))</span>
 <span class="go">[[ 2.  0.  0.]</span>
 <span class="go"> [ 0.  2.  0.]</span>
 <span class="go"> [ 0.  0.  2.]]</span>
@@ -318,7 +315,7 @@ Ixx, Iyy, Izz, Iyz, Izx, Ixy</li>
 </div>
 <dl class="method">
 <dt id="inertia.Inertia.translate">
-<tt class="descname">translate</tt><big>(</big><em>trl</em>, <em>toG=False</em><big>)</big><a class="headerlink" href="#inertia.Inertia.translate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">translate</code><span class="sig-paren">(</span><em>trl</em>, <em>toG=False</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.Inertia.translate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the inertia tensor around axes translated over vector trl.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -332,7 +329,7 @@ of mass</li>
 
 <dl class="method">
 <dt id="inertia.Inertia.translateTo">
-<tt class="descname">translateTo</tt><big>(</big><em>ref</em>, <em>toG=False</em><big>)</big><a class="headerlink" href="#inertia.Inertia.translateTo" title="Permalink to this definition">¶</a></dt>
+<code class="descname">translateTo</code><span class="sig-paren">(</span><em>ref</em>, <em>toG=False</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.Inertia.translateTo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the inertia tensor around axes translated to the reference
 point ref.</p>
 <p>Parameters:</p>
@@ -346,13 +343,13 @@ of mass</li>
 
 <dl class="method">
 <dt id="inertia.Inertia.toCS">
-<tt class="descname">toCS</tt><big>(</big><em>cs</em><big>)</big><a class="headerlink" href="#inertia.Inertia.toCS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">toCS</code><span class="sig-paren">(</span><em>cs</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.Inertia.toCS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform the coordinates to another CoordSys.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="inertia.Inertia.principal">
-<tt class="descname">principal</tt><big>(</big><em>sort=True</em>, <em>right_handed=True</em><big>)</big><a class="headerlink" href="#inertia.Inertia.principal" title="Permalink to this definition">¶</a></dt>
+<code class="descname">principal</code><span class="sig-paren">(</span><em>sort=True</em>, <em>right_handed=True</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.Inertia.principal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the principal values and axes of the inertia tensor.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -372,11 +369,11 @@ means that the columns of axes are the unit vectors along
 the principal directions.</li>
 </ul>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">principal</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 <span class="go">[ 11.62  -9.   -25.32]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="go">[[-0.03 -0.62 -0.78]</span>
 <span class="go"> [ 0.86  0.38 -0.33]</span>
 <span class="go"> [ 0.5  -0.69  0.53]]</span>
@@ -386,15 +383,15 @@ the principal directions.</li>
 
 <dl class="method">
 <dt id="inertia.Inertia.rotate">
-<tt class="descname">rotate</tt><big>(</big><em>rot</em><big>)</big><a class="headerlink" href="#inertia.Inertia.rotate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rotate</code><span class="sig-paren">(</span><em>rot</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.Inertia.rotate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform the tensor on coordinate system rotation.</p>
 <p>Note: for an inertia tensor, the inertia should have been
 computed around axes through the center of mass.
 See also translate.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">19.</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.3</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mf">6.45</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.7</span> <span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span><span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">principal</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
 <span class="go">[[ 11.62   0.     0.  ]</span>
 <span class="go"> [ -0.    -9.    -0.  ]</span>
 <span class="go"> [  0.    -0.   -25.32]]</span>
@@ -406,10 +403,10 @@ See also translate.</p>
 
 </div>
 <div class="section" id="functions-defined-in-module-inertia">
-<h2>19.2. Functions defined in module inertia<a class="headerlink" href="#functions-defined-in-module-inertia" title="Permalink to this headline">¶</a></h2>
+<h2>18.2. Functions defined in module inertia<a class="headerlink" href="#functions-defined-in-module-inertia" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="inertia.point_inertia">
-<tt class="descclassname">inertia.</tt><tt class="descname">point_inertia</tt><big>(</big><em>X</em>, <em>mass=None</em>, <em>center_only=False</em><big>)</big><a class="headerlink" href="#inertia.point_inertia" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">inertia.</code><code class="descname">point_inertia</code><span class="sig-paren">(</span><em>X</em>, <em>mass=None</em>, <em>center_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.point_inertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the total mass, center of mass and inertia tensor mass points.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -430,7 +427,7 @@ in case you do not need the inertia tensor.</p>
 
 <dl class="function">
 <dt id="inertia.surface_volume">
-<tt class="descclassname">inertia.</tt><tt class="descname">surface_volume</tt><big>(</big><em>x</em>, <em>pt=None</em><big>)</big><a class="headerlink" href="#inertia.surface_volume" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">inertia.</code><code class="descname">surface_volume</code><span class="sig-paren">(</span><em>x</em>, <em>pt=None</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.surface_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the volume inside a 3-plex Formex.</p>
 <ul class="simple">
 <li><cite>x</cite>: an (ntri,3,3) shaped float array, representing ntri triangles.</li>
@@ -447,7 +444,7 @@ the algebraic sum of all the volumes is the total volume inside the surface.</p>
 
 <dl class="function">
 <dt id="inertia.surface_volume_inertia">
-<tt class="descclassname">inertia.</tt><tt class="descname">surface_volume_inertia</tt><big>(</big><em>x</em>, <em>center_only=False</em><big>)</big><a class="headerlink" href="#inertia.surface_volume_inertia" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">inertia.</code><code class="descname">surface_volume_inertia</code><span class="sig-paren">(</span><em>x</em>, <em>center_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.surface_volume_inertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the inertia of the volume inside a 3-plex Formex.</p>
 <ul class="simple">
 <li><cite>x</cite>: an (ntri,3,3) shaped float array, representing ntri triangles.</li>
@@ -458,18 +455,18 @@ as the 4-th point for each tetrahedron.</p>
 C is the center of mass (3,) and I is the inertia tensor (6,) of the
 tetrahedral model.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.simple</span> <span class="kn">import</span> <span class="n">sphere</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.simple</span> <span class="k">import</span> <span class="n">sphere</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">sphere</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">toFormex</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">V</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">I</span> <span class="o">=</span> <span class="n">surface_volume_inertia</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">I</span><span class="p">)</span>
-<span class="go">4.04701 [-0. -0. -0.] [ 1.58  1.58  1.58  0.    0.    0.  ]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">I</span><span class="p">)</span>
+<span class="go">4.04701 [-0. -0. -0.] [ 1.58  1.58  1.58 -0.    0.    0.  ]</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="inertia.tetrahedral_volume">
-<tt class="descclassname">inertia.</tt><tt class="descname">tetrahedral_volume</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#inertia.tetrahedral_volume" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">inertia.</code><code class="descname">tetrahedral_volume</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.tetrahedral_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the volume of tetrahedrons.</p>
 <ul class="simple">
 <li><cite>x</cite>: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.</li>
@@ -482,7 +479,7 @@ normal formed by the first 3 points.</p>
 
 <dl class="function">
 <dt id="inertia.tetrahedral_inertia">
-<tt class="descclassname">inertia.</tt><tt class="descname">tetrahedral_inertia</tt><big>(</big><em>x</em>, <em>density=None</em>, <em>center_only=False</em><big>)</big><a class="headerlink" href="#inertia.tetrahedral_inertia" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">inertia.</code><code class="descname">tetrahedral_inertia</code><span class="sig-paren">(</span><em>x</em>, <em>density=None</em>, <em>center_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.tetrahedral_inertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the inertia of the volume of a 4-plex Formex.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -497,18 +494,18 @@ C is the center of mass (3,) and I is the inertia tensor (6,) of the
 tetrahedral model.</p>
 <p>Formulas for inertia were based on F. Tonon, J. Math &amp; Stat, 1(1):8-11,2005</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Coords</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="p">[</span>  <span class="mf">8.33220</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.86875</span><span class="p">,</span>  <span class="mf">0.93355</span> <span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span>  <span class="mf">0.75523</span><span class="p">,</span>   <span class="mf">5.00000</span><span class="p">,</span> <span class="mf">16.37072</span> <span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span> <span class="mf">52.61236</span><span class="p">,</span>   <span class="mf">5.00000</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.38580</span> <span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span>  <span class="mf">2.000000</span><span class="p">,</span>  <span class="mf">5.00000</span><span class="p">,</span>  <span class="mf">3.00000</span> <span class="p">],</span>
 <span class="gp">... </span>    <span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">Formex</span><span class="p">([</span><span class="n">x</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">tetrahedral_center</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tetrahedral_center</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
 <span class="go">[ 15.92   0.78   3.73]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">tetrahedral_volume</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tetrahedral_volume</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
 <span class="go">[ 1873.23]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="o">*</span><span class="n">tetrahedral_inertia</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">tetrahedral_inertia</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">coords</span><span class="p">))</span>
 <span class="go">1873.23 1873.23 [ 15.92   0.78   3.73] [  43520.32  194711.28  191168.77    4417.66  -46343.16   11996.2 ]</span>
 </pre></div>
 </div>
@@ -516,7 +513,7 @@ tetrahedral model.</p>
 
 <dl class="function">
 <dt id="inertia.tetrahedral_center">
-<tt class="descclassname">inertia.</tt><tt class="descname">tetrahedral_center</tt><big>(</big><em>x</em>, <em>density=None</em><big>)</big><a class="headerlink" href="#inertia.tetrahedral_center" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">inertia.</code><code class="descname">tetrahedral_center</code><span class="sig-paren">(</span><em>x</em>, <em>density=None</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.tetrahedral_center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the center of mass of a collection of tetrahedrons.</p>
 <ul class="simple">
 <li><cite>x</cite>: an (ntet,4,3) shaped float array, representing ntet tetrahedrons.</li>
@@ -527,7 +524,7 @@ tetrahedral model.</p>
 
 <dl class="function">
 <dt id="inertia.inertia">
-<tt class="descclassname">inertia.</tt><tt class="descname">inertia</tt><big>(</big><em>X</em>, <em>mass=None</em>, <em>center_only=False</em><big>)</big><a class="headerlink" href="#inertia.inertia" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">inertia.</code><code class="descname">inertia</code><span class="sig-paren">(</span><em>X</em>, <em>mass=None</em>, <em>center_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#inertia.inertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the total mass, center of mass and inertia tensor mass points.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -555,7 +552,7 @@ in case you do not need the inertia tensor.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -565,22 +562,22 @@ in case you do not need the inertia tensor.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="fileread.html" title="20. fileread — Read geometry from file in a whole number of formats."
+          <a href="fileread.html" title="19. fileread — Read geometry from file in a whole number of formats."
              >next</a> |</li>
         <li class="right" >
-          <a href="geomtools.html" title="18. geomtools — Basic geometrical operations."
+          <a href="geomtools.html" title="17. geomtools — Basic geometrical operations."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

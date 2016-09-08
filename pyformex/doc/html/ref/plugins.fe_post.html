@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>44. plugins.fe_post — A class for holding results from Finite Element simulations. &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>44. plugins.fe_post — A class for holding results from Finite Element simulations. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="45. plugins.flavia —" href="plugins.flavia.html" />
     <link rel="prev" title="43. plugins.fe_abq —" href="plugins.fe_abq.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,11 +82,11 @@
         <li class="right" >
           <a href="plugins.fe_abq.html" title="43. plugins.fe_abq —"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -99,34 +99,22 @@
 
 </div>
    
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">44. <tt class="docutils literal"><span class="pre">plugins.fe_post</span></tt> &#8212; A class for holding results from Finite Element simulations.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-plugins-fe-post">44.1. Classes defined in module plugins.fe_post</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-plugins-fe-post">44.2. Functions defined in module plugins.fe_post</a></li>
-</ul>
-</li>
-</ul>
-
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.fe_abq.html"
-                        title="previous chapter">43. <tt class="docutils literal"><span class="pre">plugins.fe_abq</span></tt> &#8212;</a></p>
+                        title="previous chapter">43. <code class="docutils literal"><span class="pre">plugins.fe_abq</span></code> &#8212;</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="plugins.flavia.html"
-                        title="next chapter">45. <tt class="docutils literal"><span class="pre">plugins.flavia</span></tt> &#8212;</a></p>
+                        title="next chapter">45. <code class="docutils literal"><span class="pre">plugins.flavia</span></code> &#8212;</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,178 +134,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
-  <div class="section" id="module-plugins.fe_post">
-<span id="plugins-fe-post-a-class-for-holding-results-from-finite-element-simulations"></span><span id="sec-ref-plugins-fe-post"></span><h1>44. <a class="reference internal" href="#module-plugins.fe_post" title="plugins.fe_post: A class for holding results from Finite Element simulations."><tt class="xref py py-mod docutils literal"><span class="pre">plugins.fe_post</span></tt></a> &#8212; A class for holding results from Finite Element simulations.<a class="headerlink" href="#module-plugins.fe_post" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="classes-defined-in-module-plugins-fe-post">
-<h2>44.1. Classes defined in module plugins.fe_post<a class="headerlink" href="#classes-defined-in-module-plugins-fe-post" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="plugins.fe_post.FeResult">
-<em class="property">class </em><tt class="descclassname">plugins.fe_post.</tt><tt class="descname">FeResult</tt><big>(</big><em>name='__FePost__'</em>, <em>datasize={'S': 6</em>, <em>'U': 3</em>, <em>'COORD': 3}</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finite Element Results Database.</p>
-<p>This class can hold a collection of results from a Finite Element
-simulation. While the class was designed for the post-processing
-of Abaqus (tm) results, it can be used more generally to store
-results from any program performing simulations over a mesh.</p>
-<p>pyFormex comes with an included program <cite>postabq</cite> that scans an
-Abaqus .fil output file and translates it into a pyFormex script.
-Use it as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre>postabq job.fil &gt; job.py
-</pre></div>
-</div>
-<p>Then execute the created script <cite>job.py</cite> from inside pyFormex. This
-will create an FeResult instance with all the recognized results.</p>
-<p>The structure of the FeResult class very closely follows that
-of the Abaqus results database. There are some attributes
-with general info and with the geometry (mesh) of the domain.
-The simulation results are divided in &#8216;steps&#8217; and inside each step
-in &#8216;increments&#8217;. Increments are usually connected to incremental time
-and so are often the steps, though it is up to the user to interprete
-the time. Steps could just as well be different unrelated simulations
-performed over the same geometry.</p>
-<p>In each step/increment result block, individual values can be accessed
-by result codes. The naming mostly follows the result codes in Abaqus,
-but components of vector/tensor values are number starting from 0, as
-in Python and pyFormex.</p>
-<p>Result codes:</p>
-<ul>
-<li><p class="first"><cite>U</cite>: displacement vector</p>
-</li>
-<li><p class="first"><cite>U0</cite>, <cite>U1</cite>, <cite>U2</cite> : x, y, resp. z-component of displacement</p>
-</li>
-<li><p class="first"><cite>S</cite>: stress tensor</p>
-</li>
-<li><dl class="first docutils">
-<dt><cite>S0</cite> .. <cite>S5</cite>: components of the (symmetric) stress tensor:</dt>
-<dd><p class="first last">0..2 : x, y, z normal stress
-3..5 : xy, yz, zx shear stress</p>
-</dd>
-</dl>
-</li>
-</ul>
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.Increment">
-<tt class="descname">Increment</tt><big>(</big><em>step</em>, <em>inc</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.Increment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a new step/increment to the database.</p>
-<p>This method can be used to add a new increment to an existing step,
-or to add a new step and set the initial increment, or to just select
-an existing step/inc combination.
-If the step/inc combination is new, a new empty result record is created.
-The result record of the specified step/inc becomes the current result.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.Export">
-<tt class="descname">Export</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.Export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Align on the last increment and export results</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.do_nothing">
-<tt class="descname">do_nothing</tt><big>(</big><em>*arg</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.do_nothing" title="Permalink to this definition">¶</a></dt>
-<dd><p>A do nothing function to stand in for as yet undefined functions.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.TotalEnergies">
-<tt class="descname">TotalEnergies</tt><big>(</big><em>*arg</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.TotalEnergies" title="Permalink to this definition">¶</a></dt>
-<dd><p>A do nothing function to stand in for as yet undefined functions.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.OutputRequest">
-<tt class="descname">OutputRequest</tt><big>(</big><em>*arg</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.OutputRequest" title="Permalink to this definition">¶</a></dt>
-<dd><p>A do nothing function to stand in for as yet undefined functions.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.Coordinates">
-<tt class="descname">Coordinates</tt><big>(</big><em>*arg</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.Coordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>A do nothing function to stand in for as yet undefined functions.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.Displacements">
-<tt class="descname">Displacements</tt><big>(</big><em>*arg</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.Displacements" title="Permalink to this definition">¶</a></dt>
-<dd><p>A do nothing function to stand in for as yet undefined functions.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.Unknown">
-<tt class="descname">Unknown</tt><big>(</big><em>*arg</em>, <em>**kargs</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.Unknown" title="Permalink to this definition">¶</a></dt>
-<dd><p>A do nothing function to stand in for as yet undefined functions.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.setStepInc">
-<tt class="descname">setStepInc</tt><big>(</big><em>step</em>, <em>inc=1</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.setStepInc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the database pointer to a given step,inc pair.</p>
-<p>This sets the step and inc attributes to the given values, and puts
-the corresponding results in the R attribute. If the step.inc pair does
-not exist, an empty results dict is set.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.getSteps">
-<tt class="descname">getSteps</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.getSteps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all the step keys.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.getIncs">
-<tt class="descname">getIncs</tt><big>(</big><em>step</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.getIncs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all the incs for given step.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.nextStep">
-<tt class="descname">nextStep</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.nextStep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Skips to the start of the next step.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.nextInc">
-<tt class="descname">nextInc</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.nextInc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Skips to the next increment.</p>
-<p>The next increment is either the next increment of the current step,
-or the first increment of the next step.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.prevStep">
-<tt class="descname">prevStep</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.prevStep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Skips to the start of the previous step.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.prevInc">
-<tt class="descname">prevInc</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.prevInc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Skips to the previous increment.</p>
-<p>The previous increment is either the previous increment of the current
-step, or the last increment of the previous step.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.getres">
-<tt class="descname">getres</tt><big>(</big><em>key</em>, <em>domain='nodes'</em><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.getres" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the results of the current step/inc for given key.</p>
-<p>The key may include a component to return only a single column
-of a multicolumn value.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="plugins.fe_post.FeResult.printSteps">
-<tt class="descname">printSteps</tt><big>(</big><big>)</big><a class="headerlink" href="#plugins.fe_post.FeResult.printSteps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the steps/increments/resultcodes for which we have results.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="functions-defined-in-module-plugins-fe-post">
-<h2>44.2. Functions defined in module plugins.fe_post<a class="headerlink" href="#functions-defined-in-module-plugins-fe-post" title="Permalink to this headline">¶</a></h2>
-</div>
+  <div class="section" id="plugins-fe-post-a-class-for-holding-results-from-finite-element-simulations">
+<span id="sec-ref-plugins-fe-post"></span><h1>44. <code class="xref py py-mod docutils literal"><span class="pre">plugins.fe_post</span></code> &#8212; A class for holding results from Finite Element simulations.<a class="headerlink" href="#plugins-fe-post-a-class-for-holding-results-from-finite-element-simulations" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -326,7 +146,7 @@ of a multicolumn value.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -341,17 +161,17 @@ of a multicolumn value.</p>
         <li class="right" >
           <a href="plugins.fe_abq.html" title="43. plugins.fe_abq —"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

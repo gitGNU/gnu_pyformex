@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>21. filewrite — Write geometry to file in a whole number of formats. &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>20. filewrite — Write geometry to file in a whole number of formats. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="22. coordsys — Coordinate Systems." href="coordsys.html" />
-    <link rel="prev" title="20. fileread — Read geometry from file in a whole number of formats." href="fileread.html" />
+    <link rel="next" title="21. coordsys — Coordinate Systems." href="coordsys.html" />
+    <link rel="prev" title="19. fileread — Read geometry from file in a whole number of formats." href="fileread.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -77,16 +77,16 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="coordsys.html" title="22. coordsys — Coordinate Systems."
+          <a href="coordsys.html" title="21. coordsys — Coordinate Systems."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="fileread.html" title="20. fileread — Read geometry from file in a whole number of formats."
+          <a href="fileread.html" title="19. fileread — Read geometry from file in a whole number of formats."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -99,34 +99,22 @@
 
 </div>
    
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">21. <tt class="docutils literal"><span class="pre">filewrite</span></tt> &#8212; Write geometry to file in a whole number of formats.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-filewrite">21.1. Classes defined in module filewrite</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-filewrite">21.2. Functions defined in module filewrite</a></li>
-</ul>
-</li>
-</ul>
-
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="fileread.html"
-                        title="previous chapter">20. <tt class="docutils literal"><span class="pre">fileread</span></tt> &#8212; Read geometry from file in a whole number of formats.</a></p>
+                        title="previous chapter">19. <code class="docutils literal"><span class="pre">fileread</span></code> &#8212; Read geometry from file in a whole number of formats.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="coordsys.html"
-                        title="next chapter">22. <tt class="docutils literal"><span class="pre">coordsys</span></tt> &#8212; Coordinate Systems.</a></p>
+                        title="next chapter">21. <code class="docutils literal"><span class="pre">coordsys</span></code> &#8212; Coordinate Systems.</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,158 +134,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
-  <div class="section" id="module-filewrite">
-<span id="filewrite-write-geometry-to-file-in-a-whole-number-of-formats"></span><span id="sec-ref-filewrite"></span><h1>21. <a class="reference internal" href="#module-filewrite" title="filewrite: Write geometry to file in a whole number of formats."><tt class="xref py py-mod docutils literal"><span class="pre">filewrite</span></tt></a> &#8212; Write geometry to file in a whole number of formats.<a class="headerlink" href="#module-filewrite" title="Permalink to this headline">¶</a></h1>
-<p>This module defines bothe the basic routines to write geometrical data
-to a file and the specialized exporters to write files in a number of
-well known standardized formats.</p>
-<p>The basic routines are very versatile as well as optimized (using the version
-in the pyFormex C-library) and allow to easily create new exporters for
-other formats.</p>
-<div class="section" id="classes-defined-in-module-filewrite">
-<h2>21.1. Classes defined in module filewrite<a class="headerlink" href="#classes-defined-in-module-filewrite" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="functions-defined-in-module-filewrite">
-<h2>21.2. Functions defined in module filewrite<a class="headerlink" href="#functions-defined-in-module-filewrite" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="filewrite.writeData">
-<tt class="descclassname">filewrite.</tt><tt class="descname">writeData</tt><big>(</big><em>fil</em>, <em>data</em>, <em>sep=''</em>, <em>fmt=None</em>, <em>end=''</em><big>)</big><a class="headerlink" href="#filewrite.writeData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write an array of numerical data to an open file.</p>
-<p>Parameters:</p>
-<ul>
-<li><p class="first"><cite>fil</cite>: an open file object</p>
-</li>
-<li><p class="first"><cite>data</cite>: a numerical array of int or float type</p>
-</li>
-<li><p class="first"><cite>sep</cite>: a string to be used as separator in case no <cite>fmt</cite> is specified.
-If an empty string, the data are written in binary mode. This is the
-default. For any other string, the data are written in ascii mode with
-the specified string inserted as separator between any two items, and a
-newline appended at the end.
-In both cases, the data are written using the <cite>numpy.tofile</cite>
-function.</p>
-</li>
-<li><p class="first"><cite>fmt</cite>: a format string compatible with the array data type.
-If specified, the <cite>sep</cite> argument is ignored and the data are written
-according to the specified format. This uses the pyFormex functions
-<cite>misc.tofile_int32</cite> or <cite>misc.tofile_float32</cite>, which have accelerated
-versions in the pyFormex C library. This also means that the data arrays
-will be force to type <cite>float32</cite> or <cite>int32</cite> before writing.</p>
-<p>The format string should contain a valid format converter for a
-a single data item in both Python and C. They should also contain
-the necessary spacing or separator. Examples are &#8216;%5i &#8216; for int data
-and &#8216;%f,&#8217; or &#8216;%10.3e&#8217; for float data. The array will be converted
-to a 2D array, keeping the length of the last axis. Then all elements
-will be written row by row using the specified format string, and the
-<cite>end</cite> string will be added after each row.</p>
-</li>
-<li><p class="first"><cite>end</cite>: a string to be written at the end of the data block (if no <cite>fmt</cite>)
-or at the end of each row (with <cite>fmt</cite>). The default
-value is a newline character.</p>
-</li>
-</ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="filewrite.writeIData">
-<tt class="descclassname">filewrite.</tt><tt class="descname">writeIData</tt><big>(</big><em>data</em>, <em>fil</em>, <em>fmt</em>, <em>ind=1</em><big>)</big><a class="headerlink" href="#filewrite.writeIData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write an indexed array of numerical data to an open file.</p>
-<dl class="docutils">
-<dt>ind = i: autoindex from i</dt>
-<dd>array: use these indices</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="filewrite.writeOFF">
-<tt class="descclassname">filewrite.</tt><tt class="descname">writeOFF</tt><big>(</big><em>fn</em>, <em>mesh</em><big>)</big><a class="headerlink" href="#filewrite.writeOFF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a mesh of polygons to a file in OFF format.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>fn</cite>: file name, by preference ending on &#8216;.off&#8217;</li>
-<li><cite>mesh</cite>: a Mesh</li>
-</ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="filewrite.writeOBJ">
-<tt class="descclassname">filewrite.</tt><tt class="descname">writeOBJ</tt><big>(</big><em>fn</em>, <em>mesh</em>, <em>name=None</em><big>)</big><a class="headerlink" href="#filewrite.writeOBJ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a mesh of polygons to a file in OBJ format.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>fn</cite>: file name, by preference ending on &#8216;.obj&#8217;</li>
-<li><cite>mesh</cite>: a Mesh</li>
-<li><cite>name</cite>: name of the Mesh to be written into the file. If None, and the
-Mesh has an .attrib.name, that name will be used.</li>
-</ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="filewrite.writeGTS">
-<tt class="descclassname">filewrite.</tt><tt class="descname">writeGTS</tt><big>(</big><em>fn</em>, <em>coords</em>, <em>edges</em>, <em>faces</em><big>)</big><a class="headerlink" href="#filewrite.writeGTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a mesh of triangles to a file in GTS format.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>fn</cite>: file name, by preference ending on &#8216;.gts&#8217;</li>
-<li><cite>coords</cite>: float array with shape (ncoords,3), with the coordinates of
-<cite>ncoords</cite> vertices</li>
-<li><cite>edges</cite>: int array with shape (nedges,2), with the definition of
-<cite>nedges</cite> edges in function of the vertex indices</li>
-<li><cite>faces</cite>: int array with shape (nfaces,3), with the definition of
-<cite>nfaces</cite> triangles in function of the edge indices</li>
-</ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="filewrite.writeSTL">
-<tt class="descclassname">filewrite.</tt><tt class="descname">writeSTL</tt><big>(</big><em>f</em>, <em>x</em>, <em>n=None</em>, <em>binary=False</em>, <em>color=None</em><big>)</big><a class="headerlink" href="#filewrite.writeSTL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a collection of triangles to an STL file.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>fn</cite>: file name, by preference ending with &#8216;.stl&#8217; or &#8216;.stla&#8217;</li>
-<li><cite>x</cite>: (ntriangles,3,3) shaped array with the vertices of the
-triangles</li>
-<li><cite>n</cite>: (ntriangles,3) shaped array with the normals of the
-triangles. If not specified, they will be calculated.</li>
-<li><cite>binary</cite>: if True, the output file format  will be a binary STL.
-The default is an ascii STL. Note that creation of a binary STL
-requires the extermal program &#8216;admesh&#8217;.</li>
-<li><cite>color</cite>: a single color can be passed to a binary STL and will be
-stpored in the header.</li>
-</ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="filewrite.write_stl_bin">
-<tt class="descclassname">filewrite.</tt><tt class="descname">write_stl_bin</tt><big>(</big><em>fn</em>, <em>x</em>, <em>color=None</em><big>)</big><a class="headerlink" href="#filewrite.write_stl_bin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a binary stl.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>x</cite>: (ntri,4,3) float array describin ntri triangles.
-The first item of each triangle is the normal, the other
-three are the vertices.</li>
-<li><cite>color</cite>: (4,) int array with values in the range 0..255. These are
-the red, green, blue and alpha components of the color. This is a
-single color for all the triangles, and will be stored in the header
-of the STL file.</li>
-</ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="filewrite.write_stl_asc">
-<tt class="descclassname">filewrite.</tt><tt class="descname">write_stl_asc</tt><big>(</big><em>fn</em>, <em>x</em><big>)</big><a class="headerlink" href="#filewrite.write_stl_asc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a collection of triangles to an ascii .stl file.</p>
-<p>Parameters:</p>
-<ul class="simple">
-<li><cite>fn</cite>: file name, by preference ending with &#8216;.stl&#8217; or &#8216;.stla&#8217;</li>
-<li><cite>x</cite>: (ntriangles,3,3) shaped array with the vertices of the
-triangles</li>
-</ul>
-</dd></dl>
-
-</div>
+  <div class="section" id="filewrite-write-geometry-to-file-in-a-whole-number-of-formats">
+<span id="sec-ref-filewrite"></span><h1>20. <code class="xref py py-mod docutils literal"><span class="pre">filewrite</span></code> &#8212; Write geometry to file in a whole number of formats.<a class="headerlink" href="#filewrite-write-geometry-to-file-in-a-whole-number-of-formats" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -306,7 +146,7 @@ triangles</li>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -316,22 +156,22 @@ triangles</li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="coordsys.html" title="22. coordsys — Coordinate Systems."
+          <a href="coordsys.html" title="21. coordsys — Coordinate Systems."
              >next</a> |</li>
         <li class="right" >
-          <a href="fileread.html" title="20. fileread — Read geometry from file in a whole number of formats."
+          <a href="fileread.html" title="19. fileread — Read geometry from file in a whole number of formats."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

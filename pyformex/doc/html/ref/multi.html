@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>24. multi — Framework for multi-processing in pyFormex &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>23. multi — Framework for multi-processing in pyFormex &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="25. software — software.py" href="software.html" />
-    <link rel="prev" title="23. field — Field data in pyFormex." href="field.html" />
+    <link rel="next" title="24. software — software.py" href="software.html" />
+    <link rel="prev" title="22. field — Field data in pyFormex." href="field.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -77,16 +77,16 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="software.html" title="25. software — software.py"
+          <a href="software.html" title="24. software — software.py"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="field.html" title="23. field — Field data in pyFormex."
+          <a href="field.html" title="22. field — Field data in pyFormex."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">24. <tt class="docutils literal"><span class="pre">multi</span></tt> &#8212; Framework for multi-processing in pyFormex</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-multi">24.1. Classes defined in module multi</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-multi">24.2. Functions defined in module multi</a></li>
+<li><a class="reference internal" href="#">23. <code class="docutils literal"><span class="pre">multi</span></code> &#8212; Framework for multi-processing in pyFormex</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-multi">23.1. Classes defined in module multi</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-multi">23.2. Functions defined in module multi</a></li>
 </ul>
 </li>
 </ul>
@@ -111,22 +111,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="field.html"
-                        title="previous chapter">23. <tt class="docutils literal"><span class="pre">field</span></tt> &#8212; Field data in pyFormex.</a></p>
+                        title="previous chapter">22. <code class="docutils literal"><span class="pre">field</span></code> &#8212; Field data in pyFormex.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="software.html"
-                        title="next chapter">25. <tt class="docutils literal"><span class="pre">software</span></tt> &#8212; software.py</a></p>
+                        title="next chapter">24. <code class="docutils literal"><span class="pre">software</span></code> &#8212; software.py</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,20 +143,20 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-multi">
-<span id="multi-framework-for-multi-processing-in-pyformex"></span><span id="sec-ref-multi"></span><h1>24. <a class="reference internal" href="#module-multi" title="multi: Framework for multi-processing in pyFormex"><tt class="xref py py-mod docutils literal"><span class="pre">multi</span></tt></a> &#8212; Framework for multi-processing in pyFormex<a class="headerlink" href="#module-multi" title="Permalink to this headline">¶</a></h1>
+<span id="multi-framework-for-multi-processing-in-pyformex"></span><span id="sec-ref-multi"></span><h1>23. <a class="reference internal" href="#module-multi" title="multi: Framework for multi-processing in pyFormex"><code class="xref py py-mod docutils literal"><span class="pre">multi</span></code></a> &#8212; Framework for multi-processing in pyFormex<a class="headerlink" href="#module-multi" title="Permalink to this headline">¶</a></h1>
 <p>This module contains some functions to perform multiprocessing inside
 pyFormex in a unified way.</p>
 <div class="section" id="classes-defined-in-module-multi">
-<h2>24.1. Classes defined in module multi<a class="headerlink" href="#classes-defined-in-module-multi" title="Permalink to this headline">¶</a></h2>
+<h2>23.1. Classes defined in module multi<a class="headerlink" href="#classes-defined-in-module-multi" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="functions-defined-in-module-multi">
-<h2>24.2. Functions defined in module multi<a class="headerlink" href="#functions-defined-in-module-multi" title="Permalink to this headline">¶</a></h2>
+<h2>23.2. Functions defined in module multi<a class="headerlink" href="#functions-defined-in-module-multi" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="multi.splitArgs">
-<tt class="descclassname">multi.</tt><tt class="descname">splitArgs</tt><big>(</big><em>args</em>, <em>mask=None</em>, <em>nproc=-1</em>, <em>close=False</em><big>)</big><a class="headerlink" href="#multi.splitArgs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">multi.</code><code class="descname">splitArgs</code><span class="sig-paren">(</span><em>args</em>, <em>mask=None</em>, <em>nproc=-1</em>, <em>close=False</em><span class="sig-paren">)</span><a class="headerlink" href="#multi.splitArgs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split data blocks over multiple processors.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -173,23 +170,25 @@ it is set equal to the number of processors detected.</li>
 <li><cite>close</cite>: bool. If True, the elements where the arrays are
 split are included in both blocks delimited by the element.</li>
 </ul>
-<p>Returns a sequence of <cite>nproc</cite> tuples. Each tuple contains the same
+<p>Returns a list of <cite>nproc</cite> tuples. Each tuple contains the same
 number of items as the input <cite>args</cite> and in the same order, whereby
 the (nonmasked) arrays are replaced by a slice of the array along
 its first axis, and the masked and non-array items are replicated
 as is.</p>
-<p>This function uses <a class="reference internal" href="arraytools.html#arraytools.splitar" title="arraytools.splitar"><tt class="xref py py-meth docutils literal"><span class="pre">arraytools.splitar()</span></tt></a> for the splitting
+<p>This function uses <a class="reference internal" href="arraytools.html#arraytools.splitar" title="arraytools.splitar"><code class="xref py py-meth docutils literal"><span class="pre">arraytools.splitar()</span></code></a> for the splitting
 of the arrays.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">splitArgs</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="s">&#39;=&gt;&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span><span class="n">nproc</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">splitArgs</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="s1">&#39;abcde&#39;</span><span class="p">],</span><span class="n">nproc</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[(array([0, 1]), &#39;abcde&#39;), (array([2]), &#39;abcde&#39;), (array([3, 4]), &#39;abcde&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">splitArgs</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="s1">&#39;=&gt;&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span><span class="n">nproc</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
 <span class="go">[[ 1.  0.  0.  0.  0.]</span>
 <span class="go"> [ 0.  1.  0.  0.  0.]] =&gt; [0 1]</span>
 <span class="go">[[ 0.  0.  1.  0.  0.]] =&gt; [2]</span>
 <span class="go">[[ 0.  0.  0.  1.  0.]</span>
 <span class="go"> [ 0.  0.  0.  0.  1.]] =&gt; [3 4]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">splitArgs</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="s">&#39;=&gt;&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span><span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">nproc</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">splitArgs</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="s1">&#39;=&gt;&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">)],</span><span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">nproc</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
 <span class="go">[[ 1.  0.  0.  0.  0.]</span>
 <span class="go"> [ 0.  1.  0.  0.  0.]] =&gt; [0 1 2 3 4]</span>
 <span class="go">[[ 0.  0.  1.  0.  0.]] =&gt; [0 1 2 3 4]</span>
@@ -201,14 +200,14 @@ of the arrays.</p>
 
 <dl class="function">
 <dt id="multi.dofunc">
-<tt class="descclassname">multi.</tt><tt class="descname">dofunc</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#multi.dofunc" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">multi.</code><code class="descname">dofunc</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#multi.dofunc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function for the multitask function.</p>
 <p>It expects a tuple with (function,args) as single argument.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="multi.multitask">
-<tt class="descclassname">multi.</tt><tt class="descname">multitask</tt><big>(</big><em>tasks</em>, <em>nproc=-1</em><big>)</big><a class="headerlink" href="#multi.multitask" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">multi.</code><code class="descname">multitask</code><span class="sig-paren">(</span><em>tasks</em>, <em>nproc=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#multi.multitask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform tasks in parallel.</p>
 <p>Runs a number of tasks in parallel over a number of subprocesses.</p>
 <p>Parameters:</p>
@@ -227,7 +226,7 @@ values.</li>
 
 <dl class="function">
 <dt id="multi.worker">
-<tt class="descclassname">multi.</tt><tt class="descname">worker</tt><big>(</big><em>input</em>, <em>output</em><big>)</big><a class="headerlink" href="#multi.worker" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">multi.</code><code class="descname">worker</code><span class="sig-paren">(</span><em>input</em>, <em>output</em><span class="sig-paren">)</span><a class="headerlink" href="#multi.worker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function for the multitask function.</p>
 <p>This is the function executed by any of the processes started
 by the multitask function. It takes tuples (function,args) from
@@ -242,7 +241,7 @@ and pushes these results on the output queue.</p>
 
 <dl class="function">
 <dt id="multi.multitask2">
-<tt class="descclassname">multi.</tt><tt class="descname">multitask2</tt><big>(</big><em>tasks</em>, <em>nproc=-1</em><big>)</big><a class="headerlink" href="#multi.multitask2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">multi.</code><code class="descname">multitask2</code><span class="sig-paren">(</span><em>tasks</em>, <em>nproc=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#multi.multitask2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform tasks in parallel.</p>
 <p>Runs a number of tasks in parallel over a number of subprocesses.</p>
 <p>Parameters:</p>
@@ -268,7 +267,7 @@ values.</li>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -278,22 +277,22 @@ values.</li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="software.html" title="25. software — software.py"
+          <a href="software.html" title="24. software — software.py"
              >next</a> |</li>
         <li class="right" >
-          <a href="field.html" title="23. field — Field data in pyFormex."
+          <a href="field.html" title="22. field — Field data in pyFormex."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

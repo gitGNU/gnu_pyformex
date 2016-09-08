@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Configuring pyFormex &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>Configuring pyFormex &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="index.html" />
     <link rel="up" title="pyFormex user guide" href="user-guide.html" />
     <link rel="next" title="pyFormex example scripts" href="examples.html" />
     <link rel="prev" title="pyFormex plugins" href="plugins.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,11 +82,11 @@
         <li class="right" >
           <a href="plugins.html" title="pyFormex plugins"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="user-guide.html" accesskey="U">pyFormex user guide</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="user-guide.html" accesskey="U">pyFormex user guide</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -106,7 +106,7 @@
 <li><a class="reference internal" href="#syntax-of-the-configuration-files">Syntax of the configuration files</a></li>
 <li><a class="reference internal" href="#configuration-variables">Configuration variables</a><ul>
 <li><a class="reference internal" href="#general-section">General section</a></li>
-<li><a class="reference internal" href="#section-gui">Section <tt class="docutils literal"><span class="pre">[gui]</span></tt></a></li>
+<li><a class="reference internal" href="#section-gui">Section <code class="docutils literal"><span class="pre">[gui]</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -121,17 +121,14 @@
   <p class="topless"><a href="examples.html"
                         title="next chapter">pyFormex example scripts</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -151,7 +148,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="configuring-pyformex">
 <span id="cha-config"></span><h1>Configuring pyFormex<a class="headerlink" href="#configuring-pyformex" title="Permalink to this headline">¶</a></h1>
@@ -198,7 +195,7 @@ keep different configurations in different directories, depending on the
 purpose. Thus, one directory might aim at the use of for operating on
 triangulated surfaces, while another might be intended for pre- and post-
 processing of Finite Element models.</li>
-<li>Finally, the <tt class="docutils literal"><span class="pre">--config=</span></tt> command line option provides a way to specify
+<li>Finally, the <code class="docutils literal"><span class="pre">--config=</span></code> command line option provides a way to specify
 another file with any name to be used as the last configuration file.</li>
 </ul>
 <p>On exit,will store the changed settings on the last user configuration file that
@@ -234,7 +231,7 @@ The user can edit the configuration files with any text editor, but should make
 sure the lines are legal Python. Any line can use the previously defined
 variables, even those defined in previously read files.</p>
 <p>In the configuration files, the variable pyformexdir refers to the directory
-where was installed (and which is also reported by the <tt class="docutils literal"><span class="pre">pyformex</span> <span class="pre">--whereami</span></tt>
+where was installed (and which is also reported by the <code class="docutils literal"><span class="pre">pyformex</span> <span class="pre">--whereami</span></code>
 command).</p>
 </div>
 <div class="section" id="configuration-variables">
@@ -247,43 +244,43 @@ look at the installed default configuration file for more examples.</p>
 <div class="section" id="general-section">
 <h3>General section<a class="headerlink" href="#general-section" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><tt class="docutils literal"><span class="pre">syspath</span> <span class="pre">=</span> <span class="pre">[]</span></tt>: Value is a list of path names that will be appended to
+<li><code class="docutils literal"><span class="pre">syspath</span> <span class="pre">=</span> <span class="pre">[]</span></code>: Value is a list of path names that will be appended to
 the Python&#8217;s sys.path variable on startup. This enables your scripts
 to import modules from other than default Python paths.</li>
-<li><tt class="docutils literal"><span class="pre">scriptdirs</span> <span class="pre">=</span> <span class="pre">[</span> <span class="pre">('Examples',examplesdir),</span>
-<span class="pre">('MyScripts',myscriptsdir)]</span></tt>: a list of tuples (name,path). On
+<li><code class="docutils literal"><span class="pre">scriptdirs</span> <span class="pre">=</span> <span class="pre">[</span> <span class="pre">('Examples',examplesdir),</span>
+<span class="pre">('MyScripts',myscriptsdir)]</span></code>: a list of tuples (name,path). On
 startup, all these paths will be scanned for scripts and these will
 be added in the menu under an item named name.</li>
 </ul>
 <ul class="simple" id="index-0">
-<li><tt class="docutils literal"><span class="pre">autorun</span> <span class="pre">=</span> <span class="pre">'.pyformex.startup'</span></tt>: name of a script that will be
+<li><code class="docutils literal"><span class="pre">autorun</span> <span class="pre">=</span> <span class="pre">'.pyformex.startup'</span></code>: name of a script that will be
 executed on startup, before any other script (specified on the
 command line or started from the GUI).</li>
-<li><tt class="docutils literal"><span class="pre">editor</span> <span class="pre">=</span> <span class="pre">'kedit'</span></tt>: sets the name of the editor that will be used
+<li><code class="docutils literal"><span class="pre">editor</span> <span class="pre">=</span> <span class="pre">'kedit'</span></code>: sets the name of the editor that will be used
 for editing pyformex scripts.</li>
-<li><tt class="docutils literal"><span class="pre">viewer</span> <span class="pre">=</span> <span class="pre">'firefox'</span></tt>: sets the name of the html viewer to be used to
+<li><code class="docutils literal"><span class="pre">viewer</span> <span class="pre">=</span> <span class="pre">'firefox'</span></code>: sets the name of the html viewer to be used to
 display the html help screens.</li>
-<li><tt class="docutils literal"><span class="pre">browser</span> <span class="pre">=</span> <span class="pre">'firefox'</span></tt>: sets the name of the browser to be used to access the
+<li><code class="docutils literal"><span class="pre">browser</span> <span class="pre">=</span> <span class="pre">'firefox'</span></code>: sets the name of the browser to be used to access the
 website.</li>
-<li><tt class="docutils literal"><span class="pre">uselib</span> <span class="pre">=</span> <span class="pre">False</span></tt>: do not use the acceleration library. The default (True) is to use it when it is available.</li>
+<li><code class="docutils literal"><span class="pre">uselib</span> <span class="pre">=</span> <span class="pre">False</span></code>: do not use the acceleration library. The default (True) is to use it when it is available.</li>
 </ul>
 </div>
 <div class="section" id="section-gui">
-<h3>Section <tt class="docutils literal"><span class="pre">[gui]</span></tt><a class="headerlink" href="#section-gui" title="Permalink to this headline">¶</a></h3>
+<h3>Section <code class="docutils literal"><span class="pre">[gui]</span></code><a class="headerlink" href="#section-gui" title="Permalink to this headline">¶</a></h3>
 <ul class="simple" id="index-1">
-<li><tt class="docutils literal"><span class="pre">splash</span> <span class="pre">=</span> <span class="pre">'path-to-splash-image.png'</span></tt>: full path name of the image to be used
+<li><code class="docutils literal"><span class="pre">splash</span> <span class="pre">=</span> <span class="pre">'path-to-splash-image.png'</span></code>: full path name of the image to be used
 as splash image on startup.</li>
-<li><tt class="docutils literal"><span class="pre">modebar</span> <span class="pre">=</span> <span class="pre">True</span></tt>: adds a toolbar with the render mode buttons. Besides
+<li><code class="docutils literal"><span class="pre">modebar</span> <span class="pre">=</span> <span class="pre">True</span></code>: adds a toolbar with the render mode buttons. Besides
 True or False, the value can also be one of &#8216;top&#8217;, &#8216;bottom&#8217;, &#8216;left&#8217;
 or &#8216;right&#8217;, specifying the placement of the render mode toolbar at
 the specified window border. Any other value that evaluates True
 will make the buttons get included in the top toolbar.</li>
-<li><tt class="docutils literal"><span class="pre">viewbar</span> <span class="pre">=</span> <span class="pre">True</span></tt>: adds a toolbar with different view
+<li><code class="docutils literal"><span class="pre">viewbar</span> <span class="pre">=</span> <span class="pre">True</span></code>: adds a toolbar with different view
 buttons. Possioble values as explained above for modebar.</li>
-<li><tt class="docutils literal"><span class="pre">timeoutbutton</span> <span class="pre">=</span> <span class="pre">True</span></tt>: include the timeout button in the toolbar. The
+<li><code class="docutils literal"><span class="pre">timeoutbutton</span> <span class="pre">=</span> <span class="pre">True</span></code>: include the timeout button in the toolbar. The
 timeout button, when depressed, will cause input widgets to time out
 after a prespecified delay time. This feature is still experimental.</li>
-<li><tt class="docutils literal"><span class="pre">plugins</span> <span class="pre">=</span> <span class="pre">['surface_menu',</span> <span class="pre">'formex_menu',</span> <span class="pre">'tools_menu']</span></tt>: a list of
+<li><code class="docutils literal"><span class="pre">plugins</span> <span class="pre">=</span> <span class="pre">['surface_menu',</span> <span class="pre">'formex_menu',</span> <span class="pre">'tools_menu']</span></code>: a list of
 plugins to load on startup. This is mainly used to load extra
 (non-default) menus in the GUI to provide extended
 functionality. The named plugins should be available in the
@@ -300,7 +297,7 @@ extensions from a different place, the autorun script can be used.</li>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -315,17 +312,17 @@ extensions from a different place, the autorun script can be used.</li>
         <li class="right" >
           <a href="plugins.html" title="pyFormex plugins"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="user-guide.html" >pyFormex user guide</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="user-guide.html" >pyFormex user guide</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

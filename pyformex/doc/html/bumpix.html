@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>BuMPix Live GNU/Linux system &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>BuMPix Live GNU/Linux system &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,13 +51,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="index.html" />
     <link rel="next" title="GNU GENERAL PUBLIC LICENSE" href="license.html" />
     <link rel="prev" title="pyFormex file formats" href="file_format.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -66,7 +66,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -81,10 +81,10 @@
         <li class="right" >
           <a href="file_format.html" title="pyFormex file formats"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -123,17 +123,14 @@
   <p class="topless"><a href="license.html"
                         title="next chapter">GNU GENERAL PUBLIC LICENSE</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -153,7 +150,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="bumpix-live-gnu-linux-system">
 <span id="cha-bumpix"></span><h1>BuMPix Live GNU/Linux system<a class="headerlink" href="#bumpix-live-gnu-linux-system" title="Permalink to this headline">¶</a></h1>
@@ -212,17 +209,17 @@ USB stick will no longer be usable to store your files under Windows.</p>
 <h3>Create the BuMPix USB stick under GNU/Linux<a class="headerlink" href="#create-the-bumpix-usb-stick-under-gnu-linux" title="Permalink to this headline">¶</a></h3>
 <p>If you have an existing GNU/Linux system available, you can write the
 downloaded image to the USB-stick using the command:</p>
-<div class="highlight-python"><div class="highlight"><pre>dd if=bumpix-VERSION.img of=USBDEV
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dd</span> <span class="k">if</span><span class="o">=</span><span class="n">bumpix</span><span class="o">-</span><span class="n">VERSION</span><span class="o">.</span><span class="n">img</span> <span class="n">of</span><span class="o">=</span><span class="n">USBDEV</span>
 </pre></div>
 </div>
-<p>where <tt class="docutils literal"><span class="pre">bumpix-VERSION.img</span></tt> is the downloaded file and USBDEV
+<p>where <code class="docutils literal"><span class="pre">bumpix-VERSION.img</span></code> is the downloaded file and USBDEV
 is the device corresponding to your USB key. This should be
-<tt class="docutils literal"><span class="pre">/dev/sda</span></tt> or <tt class="docutils literal"><span class="pre">/dev/sdb</span></tt> or, generally, <tt class="docutils literal"><span class="pre">/dev/sd?</span></tt> where <tt class="docutils literal"><span class="pre">?</span></tt>
-is a single character from <tt class="docutils literal"><span class="pre">a-z</span></tt>. The value you should use depends
-on your hardware. You can find out the correct value by giving the command <tt class="docutils literal"><span class="pre">dmesg</span></tt>
+<code class="docutils literal"><span class="pre">/dev/sda</span></code> or <code class="docutils literal"><span class="pre">/dev/sdb</span></code> or, generally, <code class="docutils literal"><span class="pre">/dev/sd?</span></code> where <code class="docutils literal"><span class="pre">?</span></code>
+is a single character from <code class="docutils literal"><span class="pre">a-z</span></code>. The value you should use depends
+on your hardware. You can find out the correct value by giving the command <code class="docutils literal"><span class="pre">dmesg</span></code>
 after you have plugged in the USB key. You will see messages mentioning the
-correct <tt class="docutils literal"><span class="pre">[sd?]</span></tt> device.</p>
-<p>The <tt class="docutils literal"><span class="pre">dd</span></tt> command above will overwrite everything on the specified device,
+correct <code class="docutils literal"><span class="pre">[sd?]</span></code> device.</p>
+<p>The <code class="docutils literal"><span class="pre">dd</span></code> command above will overwrite everything on the specified device,
 so copy your files off the stick before you start, and make sure you&#8217;ve got the device designation correct.</p>
 </div>
 <div class="section" id="create-the-bumpix-usb-stick-under-windows">
@@ -231,23 +228,23 @@ so copy your files off the stick before you start, and make sure you&#8217;ve go
 are ways to do this under Windows as well.
 We recommend to use <a class="reference external" href="http://www.chrysocome.net/dd">dd for Windows</a>. You can then proceed as follows.</p>
 <ul>
-<li><p class="first">Download <a class="reference external" href="http://www.chrysocome.net/dd">dd for Windows</a> to a folder, say <tt class="docutils literal"><span class="pre">C:\\download\ddWrite</span></tt>.</p>
+<li><p class="first">Download <a class="reference external" href="http://www.chrysocome.net/dd">dd for Windows</a> to a folder, say <code class="docutils literal"><span class="pre">C:\\download\ddWrite</span></code>.</p>
 </li>
 <li><p class="first">Download the <a class="reference external" href="ftp://bumps.ugent.be/pub/bumpix/bumpix-latest.img">latest BuMPix image</a> to the same folder.</p>
 </li>
 <li><p class="first">Mount the target USB stick and look for the number of the mounted
-USB. This can be done with the command <tt class="docutils literal"><span class="pre">c:\\download\ddWrite</span> <span class="pre">dd</span> <span class="pre">--list</span></tt>.
+USB. This can be done with the command <code class="docutils literal"><span class="pre">c:\\download\ddWrite</span> <span class="pre">dd</span> <span class="pre">--list</span></code>.
 Look at the description (Removable media) and the size to make sure
-you&#8217;ve got the correct harddisk designation (e.g. <tt class="docutils literal"><span class="pre">harddisk1</span></tt>).</p>
+you&#8217;ve got the correct harddisk designation (e.g. <code class="docutils literal"><span class="pre">harddisk1</span></code>).</p>
 </li>
 <li><p class="first">Write the image to the USB stick with the command, substituting the
 harddisk designation found above:</p>
-<div class="highlight-python"><div class="highlight"><pre>dd if=c:\download\ddwrite\bumpix-0.4-b1.img of=\\?\device\harddisk1\partition0 bs=1M --progress
+<div class="highlight-default"><div class="highlight"><pre><span></span>dd if=c:\download\ddwrite\bumpix-0.4-b1.img of=\\?\device\harddisk1\partition0 bs=1M --progress
 </pre></div>
 </div>
 </li>
 </ul>
-<p>The <tt class="docutils literal"><span class="pre">dd</span></tt> command above will overwrite everything on the specified device,
+<p>The <code class="docutils literal"><span class="pre">dd</span></code> command above will overwrite everything on the specified device,
 so copy your files off the stick before you start, and make sure you&#8217;ve got the device designation correct.</p>
 </div>
 <div class="section" id="buy-a-usb-stick-with-bumpix">
@@ -260,7 +257,7 @@ so copy your files off the stick before you start, and make sure you&#8217;ve go
 <li>if you need a large number of pyFormex USB installations,</li>
 </ul>
 <p>you may be happy to know that we can provide ready-made BuMPix USB
-sticks with the <tt class="docutils literal"><span class="pre">pyformex.org</span></tt> logo at a cost hardly exceeding that
+sticks with the <code class="docutils literal"><span class="pre">pyformex.org</span></code> logo at a cost hardly exceeding that
 of production and distribution.
 If you think this is the right choice for you, just <a class="reference external" href="mailto:benedict&#46;verhegghe&#37;&#52;&#48;ugent&#46;be">email us</a> for a quotation.</p>
 <img alt="pyFormex USB stick with BuMPix Live GNU/Linux" class="align-center" src="_images/pyformex_ufd.jpg" />
@@ -295,7 +292,7 @@ first hit <cite>ENTER</cite> and remove the USB stick when the screen goes black
 <li><p class="first">BuMPix 0.7.0 may contain a few user configuration files with incorrect
 owner settings. As a result some XFCE configuration may not be permanent.
 To solve the problem, you should run the following command in a terminal</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo chown -R user:user /home/user
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="n">user</span><span class="p">:</span><span class="n">user</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span>
 </pre></div>
 </div>
 </li>
@@ -303,12 +300,12 @@ To solve the problem, you should run the following command in a terminal</p>
 have reported occaional problems with starting the window manager. Windows
 remain undecorated and the mouse cursor keeps showing the <em>BUSY</em> symbol.
 This is probably caused by an improper previous shutdown and can be resolved
-as follows: open a terminal and enter the command <tt class="docutils literal"><span class="pre">xfwm4</span></tt>. That will start
+as follows: open a terminal and enter the command <code class="docutils literal"><span class="pre">xfwm4</span></code>. That will start
 up the window manager for your current session and most likely will also
 remove the problem for your next sessions.</p>
 </li>
 <li><p class="first">Install the latest pyFormex version from the SVN repository. The BuMPix
-stick contains a script <tt class="docutils literal"><span class="pre">pyformex-svn</span></tt> under the user&#8217;s <tt class="docutils literal"><span class="pre">bin</span></tt> directory
+stick contains a script <code class="docutils literal"><span class="pre">pyformex-svn</span></code> under the user&#8217;s <code class="docutils literal"><span class="pre">bin</span></code> directory
 to install a pyFormex version directly from the SVN repository.
 However, the repository has been relocated to a ne server and the script
 might still contain the old location. You can download a fixed script from
@@ -324,44 +321,44 @@ do this.</p>
 <ul>
 <li><p class="first">First, we need to fix some file ownerships. Open a Terminal and do
 the following</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo -i
-chown -R user:user /home/user
-exit
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">-</span><span class="n">i</span>
+<span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="n">user</span><span class="p">:</span><span class="n">user</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span>
+<span class="n">exit</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Then, add your own bin directory to the PATH:</p>
-<div class="highlight-python"><div class="highlight"><pre>echo &#39;export PATH=~/bin:$PATH&#39; &gt;&gt; ~/.bash_profile
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s1">&#39;export PATH=~/bin:$PATH&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/.</span><span class="n">bash_profile</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Change the configuration of your teminal. Click
-<tt class="docutils literal"><span class="pre">Edit</span> <span class="pre">-&gt;</span> <span class="pre">Profiles</span> <span class="pre">-&gt;</span> <span class="pre">Edit</span> <span class="pre">-&gt;</span> <span class="pre">Title</span> <span class="pre">and</span> <span class="pre">Command</span></tt>
+<code class="docutils literal"><span class="pre">Edit</span> <span class="pre">-&gt;</span> <span class="pre">Profiles</span> <span class="pre">-&gt;</span> <span class="pre">Edit</span> <span class="pre">-&gt;</span> <span class="pre">Title</span> <span class="pre">and</span> <span class="pre">Command</span></code>
 and check the option &#8216;Run command as a login shell&#8217;.</p>
 </li>
 <li><p class="first">Close the terminal and open a new one. Check that the previous
 operation went correct:</p>
-<div class="highlight-python"><div class="highlight"><pre>echo $PATH
+<div class="highlight-default"><div class="highlight"><pre><span></span>echo $PATH
 </pre></div>
 </div>
 </li>
 <li><p class="first">This should start with &#8216;/home/user/bin&#8217;. If ok, then do:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd bin
-chmod +x pyformex-svn
-ls
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="nb">bin</span>
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">pyformex</span><span class="o">-</span><span class="n">svn</span>
+<span class="n">ls</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">You should now see a green &#8216;pyformex-svn&#8217; script. Execute it as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre>./pyformex-svn install makelib symlink
-ls
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">pyformex</span><span class="o">-</span><span class="n">svn</span> <span class="n">install</span> <span class="n">makelib</span> <span class="n">symlink</span>
+<span class="n">ls</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">If everything went well, you should now also have a blue &#8216;pyformex&#8217;
 link. Test it:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd ..
-pyformex
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">..</span>
+<span class="n">pyformex</span>
 </pre></div>
 </div>
 </li>
@@ -369,20 +366,20 @@ pyformex
 you can make this the default version to start from the pyFormex
 button in the top panel. Right click on the button, then
 &#8216;Properties&#8217;. Change the Command to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="nb">bin</span><span class="o">/</span><span class="n">pyformex</span> <span class="o">--</span><span class="n">redirect</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">bin</span><span class="o">/</span><span class="n">pyformex</span> <span class="o">--</span><span class="n">redirect</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Now you should always have the updated pyformex running, from the
 command line as well as from the panel button. Next time you want to
 upgrade (or downgrade), you can just do:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd pyformex-svn
-svn up
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">pyformex</span><span class="o">-</span><span class="n">svn</span>
+<span class="n">svn</span> <span class="n">up</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">or, for a downgrade, add a specific revision number:</p>
-<div class="highlight-python"><div class="highlight"><pre>svn up -r 1833
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">svn</span> <span class="n">up</span> <span class="o">-</span><span class="n">r</span> <span class="mi">1833</span>
 </pre></div>
 </div>
 </li>
@@ -396,7 +393,7 @@ svn up
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -411,16 +408,16 @@ svn up
         <li class="right" >
           <a href="file_format.html" title="pyFormex file formats"
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

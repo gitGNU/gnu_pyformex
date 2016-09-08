@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyFormex FAQ ‘n TRICKS &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>pyFormex FAQ ‘n TRICKS &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,13 +51,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="index.html" />
     <link rel="next" title="pyFormex file formats" href="file_format.html" />
-    <link rel="prev" title="89. timer — A timer class." href="ref/timer.html" />
+    <link rel="prev" title="88. timer — A timer class." href="ref/timer.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -66,7 +66,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -79,12 +79,12 @@
           <a href="file_format.html" title="pyFormex file formats"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="ref/timer.html" title="89. timer — A timer class."
+          <a href="ref/timer.html" title="88. timer — A timer class."
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -109,22 +109,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="ref/timer.html"
-                        title="previous chapter">89. <tt class="docutils literal"><span class="pre">timer</span></tt> &#8212; A timer class.</a></p>
+                        title="previous chapter">88. <code class="docutils literal"><span class="pre">timer</span></code> &#8212; A timer class.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="file_format.html"
                         title="next chapter">pyFormex file formats</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -144,7 +141,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="pyformex-faq-n-tricks">
 <span id="cha-faq"></span><h1>pyFormex FAQ &#8216;n TRICKS<a class="headerlink" href="#pyformex-faq-n-tricks" title="Permalink to this headline">¶</a></h1>
@@ -152,7 +149,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Date:</th><td class="field-body">June 18, 2016</td>
+<tr class="field-odd field"><th class="field-name">Date:</th><td class="field-body">Sep 08, 2016</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Version:</th><td class="field-body">1.0.2</td>
 </tr>
@@ -175,23 +172,23 @@ include it in the next version of this FAQ.</p>
 <li><p class="first"><strong>How was the pyFormex logo created?</strong></p>
 <p>We used the GNU Image Manipulation Program (<a class="reference external" href="http://www.gimp.org">GIMP</a>). It has a wide variety
 of scripts to create logos. With newer versions (&gt;= 2.6) use the menu
-<em class="menuselection">Fille‣Create‣Logos‣Alien-neon</em>. With older
-versions (&lt;=2.4) use <em class="menuselection">Xtra‣Script-Fu‣Logos‣Alien-neon</em>.</p>
+<span class="menuselection">Fille‣Create‣Logos‣Alien-neon</span>. With older
+versions (&lt;=2.4) use <span class="menuselection">Xtra‣Script-Fu‣Logos‣Alien-neon</span>.</p>
 <p>In the Alien Neon dialog specify the following data:</p>
-<div class="highlight-python"><div class="highlight"><pre>Text: pyFormex
-Font Size: 150
-Font: Blippo-Heavy
-Glow Color: 0xFF3366
-Background Color: 0x000000
-Width of Bands: 2
-Width of Gaps: 2
-Number of Bands: 7
-Fade Away: Yes
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">:</span> <span class="n">pyFormex</span>
+<span class="n">Font</span> <span class="n">Size</span><span class="p">:</span> <span class="mi">150</span>
+<span class="n">Font</span><span class="p">:</span> <span class="n">Blippo</span><span class="o">-</span><span class="n">Heavy</span>
+<span class="n">Glow</span> <span class="n">Color</span><span class="p">:</span> <span class="mh">0xFF3366</span>
+<span class="n">Background</span> <span class="n">Color</span><span class="p">:</span> <span class="mh">0x000000</span>
+<span class="n">Width</span> <span class="n">of</span> <span class="n">Bands</span><span class="p">:</span> <span class="mi">2</span>
+<span class="n">Width</span> <span class="n">of</span> <span class="n">Gaps</span><span class="p">:</span> <span class="mi">2</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">Bands</span><span class="p">:</span> <span class="mi">7</span>
+<span class="n">Fade</span> <span class="n">Away</span><span class="p">:</span> <span class="n">Yes</span>
 </pre></div>
 </div>
-<p>Press <em class="guilabel">OK</em> to create the logo. Then switch off the background
+<p>Press <span class="guilabel">OK</span> to create the logo. Then switch off the background
 layer and save the image in PNG format.
-Export the image with <tt class="docutils literal"><span class="pre">Save</span> <span class="pre">Background</span> <span class="pre">Color</span></tt> option switched off!</p>
+Export the image with <code class="docutils literal"><span class="pre">Save</span> <span class="pre">Background</span> <span class="pre">Color</span></code> option switched off!</p>
 </li>
 <li><p class="first"><strong>How was the pyFormex favicon created?</strong>
 With FTGL, save as icon, handedited .xpm in emacs to set background color
@@ -209,7 +206,7 @@ hand, Python provides numerous interfaces with established compiled
 libraries, so it can be surprisingly fast.</p>
 </li>
 <li><p class="first"><strong>Is an interpreted language like Python fast enough with large data models?</strong></p>
-<p>See the <a class="reference internal" href="#faq-why-python"><em>question above</em></a>.</p>
+<p>See the <a class="reference internal" href="#faq-why-python"><span class="std std-ref">question above</span></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">We should add something about NumPy and the pyFormex C-library.</p>
@@ -222,31 +219,31 @@ libraries, so it can be surprisingly fast.</p>
 <ol class="arabic">
 <li><p class="first"><strong>Use your script path as the current working directory</strong></p>
 <p>Start your script with the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">chdir</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">chdir</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>When executing a script, pyFormex sets the name of the script
-file in a variable <tt class="docutils literal"><span class="pre">__file__</span></tt> passed with the global variables to
+file in a variable <code class="docutils literal"><span class="pre">__file__</span></code> passed with the global variables to
 the execution environment of the script.</p>
 </li>
 <li><p class="first"><strong>Import modules from your own script directories</strong></p>
 <p>In order for Python to find the modules in non-standard locations,
-you should add the directory path of the module to the <tt class="docutils literal"><span class="pre">sys.path</span></tt>
+you should add the directory path of the module to the <code class="docutils literal"><span class="pre">sys.path</span></code>
 variable.</p>
 <p>A common example is a script that wants to import modules from the
 same directory where it is located. In that case you can just add
 the following two lines to the start of your script:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first"><strong>Automatically load plugin menus on startup</strong></p>
 <p>Plugin menus can be loaded automatically on pyFormex startup, by
-adding a line to the <tt class="docutils literal"><span class="pre">[gui]</span></tt> section of your configuration file
-(<tt class="docutils literal"><span class="pre">~/.pyformexrc</span></tt>):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">gui</span><span class="p">]</span>
-<span class="n">plugins</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;surface_menu&#39;</span><span class="p">,</span> <span class="s">&#39;formex_menu&#39;</span><span class="p">]</span>
+adding a line to the <code class="docutils literal"><span class="pre">[gui]</span></code> section of your configuration file
+(<code class="docutils literal"><span class="pre">~/.pyformexrc</span></code>):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">gui</span><span class="p">]</span>
+<span class="n">plugins</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;surface_menu&#39;</span><span class="p">,</span> <span class="s1">&#39;formex_menu&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </li>
@@ -258,9 +255,9 @@ installation. Do not be tempted to put your own files under the
 installation directory (even if you can acquire the permissions to
 do so), because on removal or reinstall your files might be
 deleted! You can however automatically execute your own scripts by
-adding their full path names in the <tt class="docutils literal"><span class="pre">autorun</span></tt> variable of your
+adding their full path names in the <code class="docutils literal"><span class="pre">autorun</span></code> variable of your
 configuration file</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">autorun</span> <span class="o">=</span> <span class="s">&#39;/home/user/myscripts/startup/&#39;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">autorun</span> <span class="o">=</span> <span class="s1">&#39;/home/user/myscripts/startup/&#39;</span>
 </pre></div>
 </div>
 <p>This script will then be run when the pyFormex GUI starts up. You
@@ -278,7 +275,7 @@ The following example produces 4 viewports in a 2x2
 layout, with the right column(1) having double width of the left
 one(0), while the bottom row has a height equal to 1.5 times the
 height of the top row</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">layout</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">layout</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">pf</span><span class="o">.</span><span class="n">GUI</span><span class="o">.</span><span class="n">viewports</span><span class="o">.</span><span class="n">setColumnStretch</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">pf</span><span class="o">.</span><span class="n">GUI</span><span class="o">.</span><span class="n">viewports</span><span class="o">.</span><span class="n">setColumnStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">pf</span><span class="o">.</span><span class="n">GUI</span><span class="o">.</span><span class="n">viewports</span><span class="o">.</span><span class="n">setRowStretch</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
@@ -287,22 +284,22 @@ height of the top row</p>
 </div>
 </li>
 <li><p class="first"><strong>Activate pyFormex debug messages from your script</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyformex</span>
-<span class="n">pyformex</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="bp">True</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyformex</span>
+<span class="n">pyformex</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first"><strong>Get a list of all available image formats</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">gui.image</span>
-<span class="k">print</span> <span class="n">image</span><span class="o">.</span><span class="n">imageFormats</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gui.image</span>
+<span class="nb">print</span> <span class="n">image</span><span class="o">.</span><span class="n">imageFormats</span><span class="p">()</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first"><strong>Create a movie from a sequence of recorded images</strong></p>
 <p>The multisave option allows you to easily record a series of images
 while working with pyFormex. You may want to turn this sequence
-into a movie afterwards. This can be done with the <tt class="docutils literal"><span class="pre">mencoder</span></tt>
-and/or <tt class="docutils literal"><span class="pre">ffmpeg</span></tt> programs. The internet provides comprehensive
+into a movie afterwards. This can be done with the <code class="docutils literal"><span class="pre">mencoder</span></code>
+and/or <code class="docutils literal"><span class="pre">ffmpeg</span></code> programs. The internet provides comprehensive
 information on how to use these video encoders.</p>
 <p>If you are looking for a quick answer, however, here are some of
 the commands we have often used to create movies.</p>
@@ -313,33 +310,33 @@ format like MPEG. You can use the MPNG codec instead. Beware
 though that uncompressed encodings may lead to huge video
 files. Also, the MNPG is (though freely available), not installed
 by default on Windows machines.</p>
-<p>Suppose you have images in files <tt class="docutils literal"><span class="pre">image-000.png</span></tt>,
-<tt class="docutils literal"><span class="pre">image-001.png</span></tt>, ....  First, you should get the size of the
+<p>Suppose you have images in files <code class="docutils literal"><span class="pre">image-000.png</span></code>,
+<code class="docutils literal"><span class="pre">image-001.png</span></code>, ....  First, you should get the size of the
 images (they all should have the same size). The command</p>
-<div class="highlight-python"><div class="highlight"><pre>file image*.png
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">file</span> <span class="n">image</span><span class="o">*.</span><span class="n">png</span>
 </pre></div>
 </div>
 <p>will tell you the size. Then create movie with the command</p>
-<div class="highlight-python"><div class="highlight"><pre>mencoder mf://image-*.png -mf w=796:h=516:fps=5:type=png -ovc copy -oac copy -o movie1.avi
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mencoder</span> <span class="n">mf</span><span class="p">:</span><span class="o">//</span><span class="n">image</span><span class="o">-*.</span><span class="n">png</span> <span class="o">-</span><span class="n">mf</span> <span class="n">w</span><span class="o">=</span><span class="mi">796</span><span class="p">:</span><span class="n">h</span><span class="o">=</span><span class="mi">516</span><span class="p">:</span><span class="n">fps</span><span class="o">=</span><span class="mi">5</span><span class="p">:</span><span class="nb">type</span><span class="o">=</span><span class="n">png</span> <span class="o">-</span><span class="n">ovc</span> <span class="n">copy</span> <span class="o">-</span><span class="n">oac</span> <span class="n">copy</span> <span class="o">-</span><span class="n">o</span> <span class="n">movie1</span><span class="o">.</span><span class="n">avi</span>
 </pre></div>
 </div>
 <p>Fill in the correct width(w) and height(h) of the images, and set
-the frame rate(fps). The result will be a movie <tt class="docutils literal"><span class="pre">movie1.avi</span></tt>.</p>
+the frame rate(fps). The result will be a movie <code class="docutils literal"><span class="pre">movie1.avi</span></code>.</p>
 </li>
 <li><p class="first">Create a movie from (compressed) JPEG images. Because the
 compressed format saves a lot of space, this will be the prefered
 format if you have lots of image files. The quality of the
 compressed image movie will suffer somewhat, though.</p>
-<div class="highlight-python"><div class="highlight"><pre>ffmpeg -r 5 -b 800 -i image-%03d.jpg movie.mp4
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">r</span> <span class="mi">5</span> <span class="o">-</span><span class="n">b</span> <span class="mi">800</span> <span class="o">-</span><span class="n">i</span> <span class="n">image</span><span class="o">-%</span><span class="mi">03</span><span class="n">d</span><span class="o">.</span><span class="n">jpg</span> <span class="n">movie</span><span class="o">.</span><span class="n">mp4</span>
 </pre></div>
 </div>
 </li>
 </ul>
 </li>
-<li><p class="first"><strong>Install the</strong> <tt class="xref py py-mod docutils literal"><span class="pre">gl2ps</span></tt> <strong>extension</strong></p>
+<li><p class="first"><strong>Install the</strong> <code class="xref py py-mod docutils literal"><span class="pre">gl2ps</span></code> <strong>extension</strong></p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This belongs in <a class="reference internal" href="install.html"><em>Installing pyFormex</em></a></p>
+<p class="last">This belongs in <a class="reference internal" href="install.html"><span class="doc">Installing pyFormex</span></a></p>
 </div>
 <p>Saving images in EPS format is done through the gl2ps library,
 which can be accessed from Python using wrapper functions.
@@ -347,24 +344,24 @@ Recent versions of pyFormex come with an installation script
 that will also generate the required Python interface module.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">The older <tt class="docutils literal"><span class="pre">python-gl2ps-1.1.2.tar.gz</span></tt> available from the
+<p class="last">The older <code class="docutils literal"><span class="pre">python-gl2ps-1.1.2.tar.gz</span></code> available from the
 web is no longer supported</p>
 </div>
 <p>You need to have the OpenGL header files installed in order to do
-this (on Debian: <tt class="docutils literal"><span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">libgl1-mesa-dev</span></tt>).</p>
+this (on Debian: <code class="docutils literal"><span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">libgl1-mesa-dev</span></code>).</p>
 </li>
 <li><p class="first"><strong>Permission denied error when running calpy simulation</strong></p>
 <p>If you have no write permission in your current working directory,
 running a calpy simulation will result in an error like this:</p>
-<div class="highlight-python"><div class="highlight"><pre>fil = file(self.tempfilename,&#39;w&#39;)
-IOError
-:
-[Errno 13] Permission denied: &#39;calpy.tmp.part-0&#39;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">fil</span> <span class="o">=</span> <span class="n">file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tempfilename</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="ne">IOError</span>
+<span class="p">:</span>
+<span class="p">[</span><span class="n">Errno</span> <span class="mi">13</span><span class="p">]</span> <span class="n">Permission</span> <span class="n">denied</span><span class="p">:</span> <span class="s1">&#39;calpy.tmp.part-0&#39;</span>
 </pre></div>
 </div>
 <p>You can fix this by changing your current working directory to a path
 where you have write permission (e.g. your home directory).
-You can do this using the <em class="menuselection">File-&gt;Change workdir</em> menu option.
+You can do this using the <span class="menuselection">File-&gt;Change workdir</span> menu option.
 The setting will be saved when you leave pyFormex (but other scripts
 might change the setting again).</p>
 </li>
@@ -386,11 +383,11 @@ in formex.py and mesh.py respectively.</p>
 <p>If the problem comes from a relocation of a module (e.g. the mesh module
 was moved from plugins to the pyFormex core), you may get an error like
 this:</p>
-<div class="highlight-python"><div class="highlight"><pre>AttributeError: &#39;NoneType&#39; object has no attribute &#39;Mesh&#39;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ne">AttributeError</span><span class="p">:</span> <span class="s1">&#39;NoneType&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;Mesh&#39;</span>
 </pre></div>
 </div>
 <p>The reason is that the path recorded in the Project file pointed to the
-old location of the mesh module under <tt class="docutils literal"><span class="pre">plugins</span></tt> while the mesh module
+old location of the mesh module under <code class="docutils literal"><span class="pre">plugins</span></code> while the mesh module
 is now in the top pyformex directory. This can be fixed in two ways:</p>
 <ul>
 <li><p class="first">The easy (but discouraged) way is to add a symbolic link in the old
@@ -399,10 +396,10 @@ method, because it sustains the dependency on legacy versions.</p>
 </li>
 <li><p class="first">The recommended way is to convert your Project file to point to the
 new path. To take care of the above relocation of the mesh module,
-you could e.g. use the following command to convert your <tt class="docutils literal"><span class="pre">old.pyf</span></tt> to
-a <tt class="docutils literal"><span class="pre">new.pyf</span></tt> that can be properly read. It just replaces the old module
-path (<tt class="docutils literal"><span class="pre">plugins.mesh</span></tt>) with the current path (<tt class="docutils literal"><span class="pre">mesh</span></tt>):</p>
-<div class="highlight-python"><div class="highlight"><pre>sed &#39;s|plugins.mesh|mesh|&#39;g old.pyf &gt;new.pyf
+you could e.g. use the following command to convert your <code class="docutils literal"><span class="pre">old.pyf</span></code> to
+a <code class="docutils literal"><span class="pre">new.pyf</span></code> that can be properly read. It just replaces the old module
+path (<code class="docutils literal"><span class="pre">plugins.mesh</span></code>) with the current path (<code class="docutils literal"><span class="pre">mesh</span></code>):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sed</span> <span class="s1">&#39;s|plugins.mesh|mesh|&#39;</span><span class="n">g</span> <span class="n">old</span><span class="o">.</span><span class="n">pyf</span> <span class="o">&gt;</span><span class="n">new</span><span class="o">.</span><span class="n">pyf</span>
 </pre></div>
 </div>
 </li>
@@ -425,13 +422,13 @@ released). He could then use the provided function binding for the
 tracking function, and bind another function to the slider widget&#8217;s
 &#8216;sliderReleased&#8217; signal. The outline to do such a binding would be like
 the following:</p>
-<div class="highlight-python"><div class="highlight"><pre>def myfunc(*args,**kargs):
-    &quot;&quot;&quot;My function invoked on release of the slider&quot;
-    ...
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">myfunc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+    <span class="s2">&quot;&quot;&quot;My function invoked on release of the slider&quot;</span>
+<span class="s2">    ...</span>
 
-dialog = Dialog(items=[ _I(&#39;fieldname&#39;, itemtype=&#39;fslider&#39;, ...) ])
-item = dialog[&#39;fieldname&#39;]
-item.slider.sliderReleased.connect(myfunc)
+<span class="s2">dialog = Dialog(items=[ _I(&#39;fieldname&#39;, itemtype=&#39;fslider&#39;, ...) ])</span>
+<span class="s2">item = dialog[&#39;fieldname&#39;]</span>
+<span class="s2">item.slider.sliderReleased.connect(myfunc)</span>
 </pre></div>
 </div>
 <p>First, the function to be called is defined. The dialog is constructed
@@ -451,7 +448,7 @@ connects the &#8216;sliderReleased&#8217; signal of that widget to the user func
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -464,18 +461,18 @@ connects the &#8216;sliderReleased&#8217; signal of that widget to the user func
           <a href="file_format.html" title="pyFormex file formats"
              >next</a> |</li>
         <li class="right" >
-          <a href="ref/timer.html" title="89. timer — A timer class."
+          <a href="ref/timer.html" title="88. timer — A timer class."
              >previous</a> |</li>
-        <li><a href="index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>9. connectivity — A class and functions for handling nodal connectivity. &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>9. connectivity — A class and functions for handling nodal connectivity. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="10. elements — Definition of elements." href="elements.html" />
     <link rel="prev" title="8. geometry — A generic interface to the Coords transformation methods" href="geometry.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,11 +82,11 @@
         <li class="right" >
           <a href="geometry.html" title="8. geometry — A generic interface to the Coords transformation methods"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -101,7 +101,7 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">9. <tt class="docutils literal"><span class="pre">connectivity</span></tt> &#8212; A class and functions for handling nodal connectivity.</a><ul>
+<li><a class="reference internal" href="#">9. <code class="docutils literal"><span class="pre">connectivity</span></code> &#8212; A class and functions for handling nodal connectivity.</a><ul>
 <li><a class="reference internal" href="#classes-defined-in-module-connectivity">9.1. Classes defined in module connectivity</a></li>
 <li><a class="reference internal" href="#functions-defined-in-module-connectivity">9.2. Functions defined in module connectivity</a></li>
 </ul>
@@ -111,22 +111,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="geometry.html"
-                        title="previous chapter">8. <tt class="docutils literal"><span class="pre">geometry</span></tt> &#8212; A generic interface to the Coords transformation methods</a></p>
+                        title="previous chapter">8. <code class="docutils literal"><span class="pre">geometry</span></code> &#8212; A generic interface to the Coords transformation methods</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="elements.html"
-                        title="next chapter">10. <tt class="docutils literal"><span class="pre">elements</span></tt> &#8212; Definition of elements.</a></p>
+                        title="next chapter">10. <code class="docutils literal"><span class="pre">elements</span></code> &#8212; Definition of elements.</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,10 +143,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-connectivity">
-<span id="connectivity-a-class-and-functions-for-handling-nodal-connectivity"></span><span id="sec-ref-connectivity"></span><h1>9. <a class="reference internal" href="#module-connectivity" title="connectivity: A class and functions for handling nodal connectivity."><tt class="xref py py-mod docutils literal"><span class="pre">connectivity</span></tt></a> &#8212; A class and functions for handling nodal connectivity.<a class="headerlink" href="#module-connectivity" title="Permalink to this headline">¶</a></h1>
+<span id="connectivity-a-class-and-functions-for-handling-nodal-connectivity"></span><span id="sec-ref-connectivity"></span><h1>9. <a class="reference internal" href="#module-connectivity" title="connectivity: A class and functions for handling nodal connectivity."><code class="xref py py-mod docutils literal"><span class="pre">connectivity</span></code></a> &#8212; A class and functions for handling nodal connectivity.<a class="headerlink" href="#module-connectivity" title="Permalink to this headline">¶</a></h1>
 <p>This module defines a specialized array class for representing nodal
 connectivity. This is e.g. used in mesh models, where geometry is
 represented by a set of numbered points (nodes) and the geometric elements
@@ -160,11 +157,11 @@ adjacency of elements can easily be detected from common node numbers.</p>
 <h2>9.1. Classes defined in module connectivity<a class="headerlink" href="#classes-defined-in-module-connectivity" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="connectivity.Connectivity">
-<em class="property">class </em><tt class="descclassname">connectivity.</tt><tt class="descname">Connectivity</tt><a class="headerlink" href="#connectivity.Connectivity" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">connectivity.</code><code class="descname">Connectivity</code><a class="headerlink" href="#connectivity.Connectivity" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class for handling element/node connectivity.</p>
 <p>A connectivity object is a 2-dimensional integer array with all
 non-negative values. Each row of the array defines an element by listing
-the numbers of its lower entity types. A typical use is a <tt class="xref py py-class docutils literal"><span class="pre">Mesh</span></tt>
+the numbers of its lower entity types. A typical use is a <code class="xref py py-class docutils literal"><span class="pre">Mesh</span></code>
 object, where each element is defined in function of its nodes.
 While in a Mesh the word &#8216;node&#8217; will normally refer to a geometrical
 point, here we will use &#8216;node&#8217; for the lower entity whatever its nature
@@ -177,7 +174,7 @@ numbers are called <cite>degenerate</cite> elements.
 Rows containing the same node sets, albeit different permutations thereof,
 are called duplicates.</p>
 <p>A new Connectivity object is created with the following syntax</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">Connectivity</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[],</span><span class="n">dtyp</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">nplex</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">eltype</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Connectivity</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[],</span><span class="n">dtyp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">nplex</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">eltype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Parameters:</p>
@@ -194,14 +191,14 @@ data, or to set the plexitude for an empty Connectivity.
 An error will be raised if the specified data do not match the
 specified plexitude. If an <cite>eltype</cite> is specified, the plexitude of
 the element type will override this value.</li>
-<li><cite>eltype</cite>: an Element type (a subclass of <tt class="xref py py-class docutils literal"><span class="pre">Element</span></tt>) or the name
+<li><cite>eltype</cite>: an Element type (a subclass of <code class="xref py py-class docutils literal"><span class="pre">Element</span></code>) or the name
 of an Element type, or None (default). If the Connectivity will be used
 to create a Mesh, the proper element type or name should be set: either
 here or at Mesh creation time. If the Connectivity will be used for other
 purposes, the element type may be not important.</li>
 </ul>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]]))</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]]))</span>
 <span class="go">[[0 1 2]</span>
 <span class="go"> [0 1 3]</span>
 <span class="go"> [0 3 2]</span>
@@ -210,10 +207,10 @@ purposes, the element type may be not important.</li>
 </div>
 <dl class="method">
 <dt id="connectivity.Connectivity.nelems">
-<tt class="descname">nelems</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.nelems" title="Permalink to this definition">¶</a></dt>
+<code class="descname">nelems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.nelems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of elements in the Connectivity table.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span><span class="o">.</span><span class="n">nelems</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span><span class="o">.</span><span class="n">nelems</span><span class="p">()</span>
 <span class="go">4</span>
 </pre></div>
 </div>
@@ -221,24 +218,24 @@ purposes, the element type may be not important.</li>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.maxnodes">
-<tt class="descname">maxnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.maxnodes" title="Permalink to this definition">¶</a></dt>
+<code class="descname">maxnodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.maxnodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an upper limit for number of nodes in the connectivity.</p>
 <p>This returns the highest node number plus one.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.nnodes">
-<tt class="descname">nnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.nnodes" title="Permalink to this definition">¶</a></dt>
+<code class="descname">nnodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.nnodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the actual number of nodes in the connectivity.</p>
 <p>This returns the count of the unique node numbers.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.nplex">
-<tt class="descname">nplex</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.nplex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">nplex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.nplex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the plexitude of the elements in the Connectivity table.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span><span class="o">.</span><span class="n">nplex</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span><span class="o">.</span><span class="n">nplex</span><span class="p">()</span>
 <span class="go">3</span>
 </pre></div>
 </div>
@@ -246,20 +243,20 @@ purposes, the element type may be not important.</li>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.report">
-<tt class="descname">report</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.report" title="Permalink to this definition">¶</a></dt>
+<code class="descname">report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.report" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format a Connectivity table</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.testDegenerate">
-<tt class="descname">testDegenerate</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.testDegenerate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">testDegenerate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.testDegenerate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flag the degenerate elements (rows).</p>
 <p>A degenerate element is a row which contains at least two
 equal values.</p>
 <p>Returns a boolean array with shape (self.nelems(),).
 The True values flag the degenerate rows.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">testDegenerate</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">testDegenerate</span><span class="p">()</span>
 <span class="go">array([False,  True, False], dtype=bool)</span>
 </pre></div>
 </div>
@@ -267,10 +264,10 @@ The True values flag the degenerate rows.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.listDegenerate">
-<tt class="descname">listDegenerate</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.listDegenerate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">listDegenerate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.listDegenerate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with the numbers of the degenerate elements.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">listDegenerate</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">listDegenerate</span><span class="p">()</span>
 <span class="go">array([1])</span>
 </pre></div>
 </div>
@@ -278,10 +275,10 @@ The True values flag the degenerate rows.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.listNonDegenerate">
-<tt class="descname">listNonDegenerate</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.listNonDegenerate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">listNonDegenerate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.listNonDegenerate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with the numbers of the non-degenerate elements.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">listNonDegenerate</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">listNonDegenerate</span><span class="p">()</span>
 <span class="go">array([0, 2])</span>
 </pre></div>
 </div>
@@ -289,12 +286,12 @@ The True values flag the degenerate rows.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.removeDegenerate">
-<tt class="descname">removeDegenerate</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.removeDegenerate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">removeDegenerate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.removeDegenerate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the degenerate elements from a Connectivity table.</p>
 <p>Degenerate elements are rows with repeating values.</p>
 <p>Returns a Connectivity with the degenerate elements removed.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">removeDegenerate</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">removeDegenerate</span><span class="p">()</span>
 <span class="go">Connectivity([[0, 1, 2],</span>
 <span class="go">       [0, 3, 2]])</span>
 </pre></div>
@@ -303,12 +300,12 @@ The True values flag the degenerate rows.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.reduceDegenerate">
-<tt class="descname">reduceDegenerate</tt><big>(</big><em>target=None</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.reduceDegenerate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reduceDegenerate</code><span class="sig-paren">(</span><em>target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.reduceDegenerate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reduce degenerate elements to lower plexitude elements.</p>
 <p>This will try to reduce the degenerate elements of the Connectivity
 to a lower plexitude. This is only possible if an element type
 was set in the Connectivity. This function uses the data of
-the Element database in <a class="reference internal" href="elements.html#module-elements" title="elements: Definition of elements."><tt class="xref py py-mod docutils literal"><span class="pre">elements</span></tt></a>.</p>
+the Element database in <a class="reference internal" href="elements.html#module-elements" title="elements: Definition of elements."><code class="xref py py-mod docutils literal"><span class="pre">elements</span></code></a>.</p>
 <p>If a target element type is given, only the reductions to that element
 type are performed. Else, all the target element types for which
 a reduction scheme is available, will be tried.</p>
@@ -327,8 +324,8 @@ Mesh.reduceDegenerate method instead, as that one will preserve
 the property numbers into the resulting Meshes.</p>
 </div>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]],</span><span class="n">eltype</span><span class="o">=</span><span class="s">&#39;line3&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">reduceDegenerate</span><span class="p">())</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]],</span><span class="n">eltype</span><span class="o">=</span><span class="s1">&#39;line3&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">reduceDegenerate</span><span class="p">())</span>
 <span class="go">[Connectivity([[0, 1]]), Connectivity([[0, 1, 2],</span>
 <span class="go">       [0, 3, 2]])]</span>
 </pre></div>
@@ -337,7 +334,7 @@ the property numbers into the resulting Meshes.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.testDuplicate">
-<tt class="descname">testDuplicate</tt><big>(</big><em>permutations=True</em>, <em>return_multiplicity=False</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.testDuplicate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">testDuplicate</code><span class="sig-paren">(</span><em>permutations=True</em>, <em>return_multiplicity=False</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.testDuplicate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test the Connectivity list for duplicates.</p>
 <p>By default, duplicates are elements that consist of the same set of
 nodes, in any particular order. Setting permutations to False
@@ -352,20 +349,20 @@ and False for those of the duplicates.</li>
 multiplicities as keys and a list of elements as value.</li>
 </ul>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">conn</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
 <span class="go">[[0 1 3]</span>
 <span class="go"> [2 3 0]</span>
 <span class="go"> [0 2 3]</span>
 <span class="go"> [0 1 2]</span>
 <span class="go"> [0 2 1]</span>
 <span class="go"> [0 3 2]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ind</span><span class="p">,</span><span class="n">ok</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">testDuplicate</span><span class="p">(</span><span class="n">return_multiplicity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span><span class="n">ok</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ind</span><span class="p">,</span><span class="n">ok</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">testDuplicate</span><span class="p">(</span><span class="n">return_multiplicity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span><span class="n">ok</span><span class="p">)</span>
 <span class="go">[3 4 0 1 2 5] [ True False  True  True False False]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">ok</span><span class="o">.</span><span class="n">cumsum</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ok</span><span class="o">.</span><span class="n">cumsum</span><span class="p">())</span>
 <span class="go">[1 1 2 3 3 3]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
 <span class="go">{1: array([0]), 2: array([3, 4]), 3: array([1, 2, 5])}</span>
 </pre></div>
 </div>
@@ -373,10 +370,10 @@ multiplicities as keys and a list of elements as value.</li>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.listUnique">
-<tt class="descname">listUnique</tt><big>(</big><em>permutations=True</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.listUnique" title="Permalink to this definition">¶</a></dt>
+<code class="descname">listUnique</code><span class="sig-paren">(</span><em>permutations=True</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.listUnique" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with the numbers of the unique elements.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">listUnique</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">listUnique</span><span class="p">()</span>
 <span class="go">array([0, 2])</span>
 </pre></div>
 </div>
@@ -384,10 +381,10 @@ multiplicities as keys and a list of elements as value.</li>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.listDuplicate">
-<tt class="descname">listDuplicate</tt><big>(</big><em>permutations=True</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.listDuplicate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">listDuplicate</code><span class="sig-paren">(</span><em>permutations=True</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.listDuplicate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list with the numbers of the duplicate elements.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">listDuplicate</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">listDuplicate</span><span class="p">()</span>
 <span class="go">array([1])</span>
 </pre></div>
 </div>
@@ -395,7 +392,7 @@ multiplicities as keys and a list of elements as value.</li>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.removeDuplicate">
-<tt class="descname">removeDuplicate</tt><big>(</big><em>permutations=True</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.removeDuplicate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">removeDuplicate</code><span class="sig-paren">(</span><em>permutations=True</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.removeDuplicate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove duplicate elements from a Connectivity list.</p>
 <p>By default, duplicates are elements that consist of the same set of
 nodes, in any particular order. Setting permutations to False
@@ -403,7 +400,7 @@ will only remove the duplicate rows that have matching values at
 matching positions.</p>
 <p>Returns a new Connectivity with the duplicate elements removed.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">removeDuplicate</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">removeDuplicate</span><span class="p">()</span>
 <span class="go">Connectivity([[0, 1, 2],</span>
 <span class="go">       [0, 3, 2]])</span>
 </pre></div>
@@ -412,7 +409,7 @@ matching positions.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.reorder">
-<tt class="descname">reorder</tt><big>(</big><em>order='nodes'</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.reorder" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reorder</code><span class="sig-paren">(</span><em>order='nodes'</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.reorder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reorder the elements of a Connectivity in a specified order.</p>
 <p>This does not actually reorder the elements itself, but returns
 an index with the order of the rows (elements) in the connectivity
@@ -422,7 +419,7 @@ table that meets the specified requirements.</p>
 <li><p class="first"><cite>order</cite>: specifies how to reorder the elements. It is either one
 of the special string values defined below, or else it is an index
 with length equal to the number of elements. The index should be
-a permutation of the numbers in <tt class="docutils literal"><span class="pre">range(self.nelems()</span></tt>. Each value
+a permutation of the numbers in <code class="docutils literal"><span class="pre">range(self.nelems()</span></code>. Each value
 gives of the number of the old element that should be placed at
 this position. Thus, the order values are the old element numbers
 on the position of the new element number.</p>
@@ -440,18 +437,18 @@ node 0, then the as yet unlisted elements connected to node 1, etc.</li>
 <p>Returns:</p>
 <blockquote>
 <div>A 1-D integer array which is a permutation of
-<tt class="docutils literal"><span class="pre">arange(self.nelems()</span></tt>, such that taking the elements in this order
+<code class="docutils literal"><span class="pre">arange(self.nelems()</span></code>, such that taking the elements in this order
 will produce a Connectivity reordered as requested. In case an
 explicit order was specified as input, this order is returned after
-checking that it is indeed a permutation of <tt class="docutils literal"><span class="pre">range(self.nelems()</span></tt>.</div></blockquote>
+checking that it is indeed a permutation of <code class="docutils literal"><span class="pre">range(self.nelems()</span></code>.</div></blockquote>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="p">[</span><span class="n">A</span><span class="o">.</span><span class="n">reorder</span><span class="p">(</span><span class="s">&#39;reverse&#39;</span><span class="p">)]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="p">[</span><span class="n">A</span><span class="o">.</span><span class="n">reorder</span><span class="p">(</span><span class="s1">&#39;reverse&#39;</span><span class="p">)]</span>
 <span class="go">Connectivity([[0, 1],</span>
 <span class="go">       [3, 0],</span>
 <span class="go">       [2, 3],</span>
 <span class="go">       [1, 2]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">reorder</span><span class="p">(</span><span class="s">&#39;nodes&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">reorder</span><span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">)</span>
 <span class="go">array([3, 2, 0, 1])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="p">[</span><span class="n">A</span><span class="o">.</span><span class="n">reorder</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])]</span>
 <span class="go">Connectivity([[3, 0],</span>
@@ -464,7 +461,7 @@ checking that it is indeed a permutation of <tt class="docutils literal"><span c
 
 <dl class="method">
 <dt id="connectivity.Connectivity.renumber">
-<tt class="descname">renumber</tt><big>(</big><em>start=0</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.renumber" title="Permalink to this definition">¶</a></dt>
+<code class="descname">renumber</code><span class="sig-paren">(</span><em>start=0</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.renumber" title="Permalink to this definition">¶</a></dt>
 <dd><p>Renumber the nodes to a consecutive integer range.</p>
 <p>The node numbers in the table are changed thus that they
 form a consecutive integer range starting from the specified
@@ -478,8 +475,8 @@ thus the old node number for new node number <cite>i</cite> can be found
 at position <cite>i - start</cite>.</li>
 </ul>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">renumber</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">renumber</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
 <span class="go">[[ 7  9]</span>
 <span class="go"> [ 8 10]</span>
 <span class="go"> [10  9]] [0 1 2 4]</span>
@@ -489,12 +486,12 @@ at position <cite>i - start</cite>.</li>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.inverse">
-<tt class="descname">inverse</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.inverse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">inverse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the inverse index of a Connectivity table.</p>
 <p>Returns the inverse index of the Connectivity, as computed
-by <a class="reference internal" href="arraytools.html#arraytools.inverseIndex" title="arraytools.inverseIndex"><tt class="xref py py-func docutils literal"><span class="pre">arraytools.inverseIndex()</span></tt></a>.</p>
+by <a class="reference internal" href="arraytools.html#arraytools.inverseIndex" title="arraytools.inverseIndex"><code class="xref py py-func docutils literal"><span class="pre">arraytools.inverseIndex()</span></code></a>.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
 <span class="go">array([[ 0,  1,  2],</span>
 <span class="go">       [-1,  0,  1],</span>
 <span class="go">       [-1,  0,  2],</span>
@@ -506,13 +503,13 @@ by <a class="reference internal" href="arraytools.html#arraytools.inverseIndex" 
 
 <dl class="method">
 <dt id="connectivity.Connectivity.nParents">
-<tt class="descname">nParents</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.nParents" title="Permalink to this definition">¶</a></dt>
+<code class="descname">nParents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.nParents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of elements connected to each node.</p>
 <p>Returns a 1-D int array with the number of elements connected
 to each node. The length of the array is equal to the highest
 node number + 1. Unused node numbers will have a count of zero.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">nParents</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">nParents</span><span class="p">()</span>
 <span class="go">array([3, 2, 2, 0, 2])</span>
 </pre></div>
 </div>
@@ -520,7 +517,7 @@ node number + 1. Unused node numbers will have a count of zero.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.connectedTo">
-<tt class="descname">connectedTo</tt><big>(</big><em>nodes</em>, <em>return_ncon=False</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.connectedTo" title="Permalink to this definition">¶</a></dt>
+<code class="descname">connectedTo</code><span class="sig-paren">(</span><em>nodes</em>, <em>return_ncon=False</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.connectedTo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the elements are connected to the specified nodes.</p>
 <ul class="simple">
 <li><cite>nodes</cite>: a single node number or a list/array thereof,</li>
@@ -532,10 +529,10 @@ at least one of the specified nodes.
 If <cite>return_ncon</cite> is True, also returns an int array giving the number
 of connections for each connected element.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">connectedTo</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">connectedTo</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 <span class="go">[0 2 3]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">connectedTo</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">connectedTo</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">(array([0, 1, 2, 3], dtype=int32), array([2, 3, 2, 2]))</span>
 </pre></div>
 </div>
@@ -543,7 +540,7 @@ of connections for each connected element.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.hits">
-<tt class="descname">hits</tt><big>(</big><em>nodes</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.hits" title="Permalink to this definition">¶</a></dt>
+<code class="descname">hits</code><span class="sig-paren">(</span><em>nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.hits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Count the nodes from a list connected to the elements.</p>
 <p><cite>nodes</cite>: a single node number or a list/array thereof</p>
 <p>Returns an (nelems,) shaped int array with the number of nodes from
@@ -551,11 +548,11 @@ the list that are contained in each of the elements.</p>
 <p>Note that this information can also be got from meth:<cite>connectedTo</cite>.
 This method however exapnds the results to the full element set,
 making it apt for use in selector expressions like:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hits</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hits</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">hits</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">array([1, 0, 1, 1])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">hits</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
@@ -566,7 +563,7 @@ making it apt for use in selector expressions like:</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.adjacency">
-<tt class="descname">adjacency</tt><big>(</big><em>kind='e'</em>, <em>mask=None</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.adjacency" title="Permalink to this definition">¶</a></dt>
+<code class="descname">adjacency</code><span class="sig-paren">(</span><em>kind='e'</em>, <em>mask=None</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.adjacency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a table of adjacent items.</p>
 <p>Create an element adjacency table (kind=&#8217;e&#8217;) or node adjacency
 table (kind=&#8217;n&#8217;).</p>
@@ -584,7 +581,7 @@ all nodes are considered connections.
 This option is only useful in the case <cite>kind</cite> == &#8216;e&#8217;. If you want to
 use an element mask for the &#8216;n&#8217; case, just apply the (element) mask
 beforehand:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s">&#39;n&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -595,31 +592,31 @@ where row <cite>i</cite> holds a sorted list of all the items that are
 adjacent to item <cite>i</cite>, padded with -1 values to create an equal
 list length for all items.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s">&#39;e&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">)</span>
 <span class="go">Adjacency([[ 1,  2,  3],</span>
 <span class="go">       [-1,  0,  3],</span>
 <span class="go">       [-1, -1,  0],</span>
 <span class="go">       [-1,  0,  1]], dtype=int32)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s">&#39;e&#39;</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
 <span class="go">Adjacency([[ 2],</span>
 <span class="go">       [-1],</span>
 <span class="go">       [ 0],</span>
 <span class="go">       [-1]], dtype=int32)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s">&#39;n&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
 <span class="go">Adjacency([[ 1,  2,  5],</span>
 <span class="go">       [-1,  0,  3],</span>
 <span class="go">       [-1, -1,  0],</span>
 <span class="go">       [-1, -1,  1],</span>
 <span class="go">       [-1, -1, -1],</span>
 <span class="go">       [-1, -1,  0]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s">&#39;n&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
 <span class="go">Adjacency([[-1,  1,  2,  3],</span>
 <span class="go">       [-1,  0,  2,  3],</span>
 <span class="go">       [ 0,  1,  4,  5],</span>
 <span class="go">       [-1, -1,  0,  1],</span>
 <span class="go">       [-1, -1,  2,  5],</span>
 <span class="go">       [-1, -1,  2,  4]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]])[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s">&#39;n&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]])[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">adjacency</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">)</span>
 <span class="go">Adjacency([[-1, -1,  1,  2],</span>
 <span class="go">       [-1, -1,  0,  2],</span>
 <span class="go">       [ 0,  1,  4,  5],</span>
@@ -632,10 +629,10 @@ list length for all items.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.frontGenerator">
-<tt class="descname">frontGenerator</tt><big>(</big><em>startat=0</em>, <em>frontinc=1</em>, <em>partinc=1</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.frontGenerator" title="Permalink to this definition">¶</a></dt>
+<code class="descname">frontGenerator</code><span class="sig-paren">(</span><em>startat=0</em>, <em>frontinc=1</em>, <em>partinc=1</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.frontGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generator function returning the frontal elements.</p>
 <p>This is a generator function and is normally not used directly,
-but via the <a class="reference internal" href="#connectivity.Connectivity.frontWalk" title="connectivity.Connectivity.frontWalk"><tt class="xref py py-meth docutils literal"><span class="pre">frontWalk()</span></tt></a> method.</p>
+but via the <a class="reference internal" href="#connectivity.Connectivity.frontWalk" title="connectivity.Connectivity.frontWalk"><code class="xref py py-meth docutils literal"><span class="pre">frontWalk()</span></code></a> method.</p>
 <p>It returns an int array with a value for each element.
 On the initial call, all values are -1, except for the elements
 in the initial front, which get a value 0. At each call a new front
@@ -644,14 +641,14 @@ current front and which have not yet been visited. The new front
 elements get a value equal to the last front&#8217;s value plus the
 <cite>frontinc</cite>. If the front becomes empty and a new starting front is
 created, the front value is extra incremented with <cite>partinc</cite>.</p>
-<p>Parameters: see <a class="reference internal" href="#connectivity.Connectivity.frontWalk" title="connectivity.Connectivity.frontWalk"><tt class="xref py py-meth docutils literal"><span class="pre">frontWalk()</span></tt></a>.</p>
+<p>Parameters: see <a class="reference internal" href="#connectivity.Connectivity.frontWalk" title="connectivity.Connectivity.frontWalk"><code class="xref py py-meth docutils literal"><span class="pre">frontWalk()</span></code></a>.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Adjacency</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Adjacency</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>                 <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>                 <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>
 <span class="gp">... </span>                 <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>                 <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span><span class="n">frontGenerator</span><span class="p">():</span> <span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span><span class="n">frontGenerator</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 <span class="go">[ 0 -1 -1 -1 -1]</span>
 <span class="go">[ 0  1  1 -1 -1]</span>
 <span class="go">[ 0  1  1  2 -1]</span>
@@ -662,7 +659,7 @@ created, the front value is extra incremented with <cite>partinc</cite>.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.frontWalk">
-<tt class="descname">frontWalk</tt><big>(</big><em>startat=0</em>, <em>frontinc=1</em>, <em>partinc=1</em>, <em>maxval=-1</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.frontWalk" title="Permalink to this definition">¶</a></dt>
+<code class="descname">frontWalk</code><span class="sig-paren">(</span><em>startat=0</em>, <em>frontinc=1</em>, <em>partinc=1</em>, <em>maxval=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.frontWalk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Walks through the elements by their node front.</p>
 <p>A frontal walk is executed starting from the given element(s).
 A number of steps is executed, each step advancing the front
@@ -682,14 +679,14 @@ maximum.</li>
 <p>Returns: an array of integers specifying for each element in which step
 the element was reached by the walker.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Adjacency</span><span class="p">([</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">Adjacency</span><span class="p">([</span>
 <span class="gp">... </span>      <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">],</span>
 <span class="gp">... </span>      <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">],</span>
 <span class="gp">... </span>      <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">4</span><span class="p">,</span>  <span class="mi">5</span><span class="p">],</span>
 <span class="gp">... </span>      <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>      <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">5</span><span class="p">],</span>
 <span class="gp">... </span>      <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">4</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">frontWalk</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">frontWalk</span><span class="p">())</span>
 <span class="go">[0 1 1 1 2 2]</span>
 </pre></div>
 </div>
@@ -697,7 +694,7 @@ the element was reached by the walker.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.front">
-<tt class="descname">front</tt><big>(</big><em>startat=0</em>, <em>add=False</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.front" title="Permalink to this definition">¶</a></dt>
+<code class="descname">front</code><span class="sig-paren">(</span><em>startat=0</em>, <em>add=False</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.front" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the elements of the first node front.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -708,9 +705,9 @@ in the next front line.</li>
 </ul>
 <p>Returns a list of the elements that are connected to any of the nodes
 that are part of the startat elements.</p>
-<p>Note that this is equivalent to the first step of a <a class="reference internal" href="#connectivity.Connectivity.frontWalk" title="connectivity.Connectivity.frontWalk"><tt class="xref py py-func docutils literal"><span class="pre">frontWalk()</span></tt></a>
+<p>Note that this is equivalent to the first step of a <a class="reference internal" href="#connectivity.Connectivity.frontWalk" title="connectivity.Connectivity.frontWalk"><code class="xref py py-func docutils literal"><span class="pre">frontWalk()</span></code></a>
 with the same startat elements, and could thus also be obtained from:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frontWalk</span><span class="p">(</span><span class="n">startat</span><span class="p">,</span><span class="n">maxval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frontWalk</span><span class="p">(</span><span class="n">startat</span><span class="p">,</span><span class="n">maxval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Here another implementation is used, which is more efficient for very
@@ -720,8 +717,8 @@ by frontWalk.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.selectNodes">
-<tt class="descname">selectNodes</tt><big>(</big><em>selector</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.selectNodes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a <a class="reference internal" href="#connectivity.Connectivity" title="connectivity.Connectivity"><tt class="xref py py-class docutils literal"><span class="pre">Connectivity</span></tt></a> containing subsets of the nodes.</p>
+<code class="descname">selectNodes</code><span class="sig-paren">(</span><em>selector</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.selectNodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#connectivity.Connectivity" title="connectivity.Connectivity"><code class="xref py py-class docutils literal"><span class="pre">Connectivity</span></code></a> containing subsets of the nodes.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>selector</cite>: an object that can be converted to a 1-dim or 2-dim
@@ -732,12 +729,12 @@ should be retained in the new Connectivity table.</li>
 </ul>
 <p>Returns:</p>
 <blockquote>
-<div>A <a class="reference internal" href="#connectivity.Connectivity" title="connectivity.Connectivity"><tt class="xref py py-class docutils literal"><span class="pre">Connectivity</span></tt></a> object with shape
-<tt class="docutils literal"><span class="pre">(self.nelems*selector.nelems,selector.nplex)</span></tt>.
+<div>A <a class="reference internal" href="#connectivity.Connectivity" title="connectivity.Connectivity"><code class="xref py py-class docutils literal"><span class="pre">Connectivity</span></code></a> object with shape
+<code class="docutils literal"><span class="pre">(self.nelems*selector.nelems,selector.nplex)</span></code>.
 This function does not collapse the duplicate elements. The eltype
 of the result is equal to that of the selector, possibly None.</div></blockquote>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">selectNodes</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">selectNodes</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
 <span class="go">Connectivity([[0, 1],</span>
 <span class="go">       [0, 2],</span>
 <span class="go">       [0, 2],</span>
@@ -750,7 +747,7 @@ of the result is equal to that of the selector, possibly None.</div></blockquote
 
 <dl class="method">
 <dt id="connectivity.Connectivity.insertLevel">
-<tt class="descname">insertLevel</tt><big>(</big><em>selector</em>, <em>permutations=True</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.insertLevel" title="Permalink to this definition">¶</a></dt>
+<code class="descname">insertLevel</code><span class="sig-paren">(</span><em>selector</em>, <em>permutations=True</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.insertLevel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert an extra hierarchical level in a Connectivity table.</p>
 <p>A Connectivity table identifies higher hierarchical entities in
 function of lower ones. This method inserts an extra level in the
@@ -777,9 +774,9 @@ constructed automatically from self.eltype.getEntities(selector).</p>
 </ul>
 <p>Returns:</p>
 <ul class="simple">
-<li><cite>hi</cite>: a <a class="reference internal" href="#connectivity.Connectivity" title="connectivity.Connectivity"><tt class="xref py py-class docutils literal"><span class="pre">Connectivity</span></tt></a> defining the original elements
+<li><cite>hi</cite>: a <a class="reference internal" href="#connectivity.Connectivity" title="connectivity.Connectivity"><code class="xref py py-class docutils literal"><span class="pre">Connectivity</span></code></a> defining the original elements
 in function of the intermediate level ones,</li>
-<li><cite>lo</cite>: a <a class="reference internal" href="#connectivity.Connectivity" title="connectivity.Connectivity"><tt class="xref py py-class docutils literal"><span class="pre">Connectivity</span></tt></a> defining the intermediate level
+<li><cite>lo</cite>: a <a class="reference internal" href="#connectivity.Connectivity" title="connectivity.Connectivity"><code class="xref py py-class docutils literal"><span class="pre">Connectivity</span></code></a> defining the intermediate level
 items in function of the lowest level ones (the original nodes).
 If the <cite>selector</cite> has an <cite>eltype</cite> attribute, then <cite>lo</cite> will inherit
 the same <cite>eltype</cite> value.</li>
@@ -794,14 +791,14 @@ collapsed sequences is returned.</p>
 <p>Because the precise order of the data in the collapsed rows is lost,
 it is in general not possible to restore the exact original table
 from the two result tables.
-See however <tt class="xref py py-meth docutils literal"><span class="pre">Mesh.getBorder()</span></tt> for an application where an
+See however <code class="xref py py-meth docutils literal"><span class="pre">Mesh.getBorder()</span></code> for an application where an
 inverse operation is possible, because the border only contains
 unique rows.
-See also <tt class="xref py py-meth docutils literal"><span class="pre">Mesh.combine()</span></tt>, which is an almost inverse operation
+See also <code class="xref py py-meth docutils literal"><span class="pre">Mesh.combine()</span></code>, which is an almost inverse operation
 for the general case, if the selector is complete.
 The resulting rows may however be permutations of the original.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span>          <span class="n">insertLevel</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span>          <span class="n">insertLevel</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
 <span class="go">(Connectivity([[0, 3, 1],</span>
 <span class="go">       [1, 3, 0],</span>
 <span class="go">       [2, 4, 1]]), Connectivity([[0, 1],</span>
@@ -819,7 +816,7 @@ The resulting rows may however be permutations of the original.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.combine">
-<tt class="descname">combine</tt><big>(</big><em>lo</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.combine" title="Permalink to this definition">¶</a></dt>
+<code class="descname">combine</code><span class="sig-paren">(</span><em>lo</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.combine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combine two hierarchical Connectivity levels to a single one.</p>
 <p>self and lo are two hierarchical Connectivity tables, representing
 higher and lower level respectively. This means that the elements
@@ -830,12 +827,12 @@ items.</p>
 triangles defined by 3 edges and lo could represent edges defined
 by 2 vertices. This method will then result in a table
 with plexitude 3 defining the triangles in function of the vertices.</p>
-<p>This is the inverse operation of <a class="reference internal" href="#connectivity.Connectivity.insertLevel" title="connectivity.Connectivity.insertLevel"><tt class="xref py py-meth docutils literal"><span class="pre">insertLevel()</span></tt></a> with a selector
+<p>This is the inverse operation of <a class="reference internal" href="#connectivity.Connectivity.insertLevel" title="connectivity.Connectivity.insertLevel"><code class="xref py py-meth docutils literal"><span class="pre">insertLevel()</span></code></a> with a selector
 which is complete.
 The algorithm only works if all vertex numbers of an element are
 unique.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">hi</span><span class="p">,</span><span class="n">lo</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span>          <span class="n">insertLevel</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hi</span><span class="p">,</span><span class="n">lo</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span>          <span class="n">insertLevel</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hi</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">lo</span><span class="p">)</span>
 <span class="go">Connectivity([[0, 1, 2],</span>
 <span class="go">       [0, 2, 1],</span>
@@ -846,7 +843,7 @@ unique.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.resolve">
-<tt class="descname">resolve</tt><big>(</big><big>)</big><a class="headerlink" href="#connectivity.Connectivity.resolve" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resolve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.resolve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve the connectivity into plex-2 connections.</p>
 <p>Creates a Connectivity table with a plex-2 (edge) connection
 between any two nodes that are connected to a common element.</p>
@@ -855,7 +852,7 @@ Plexitudes lower than 2 can not be resolved.</p>
 <p>Returns a plex-2 Connectivity with all connections between node
 pairs. In each element the nodes are sorted.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">([</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span> <span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">([</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span> <span class="p">])</span>
 <span class="go">[(0, 1), (0, 2), (1, 2)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 <span class="go">Connectivity([[0, 1],</span>
@@ -869,7 +866,7 @@ pairs. In each element the nodes are sorted.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.sharedNodes">
-<tt class="descname">sharedNodes</tt><big>(</big><em>elist=None</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.sharedNodes" title="Permalink to this definition">¶</a></dt>
+<code class="descname">sharedNodes</code><span class="sig-paren">(</span><em>elist=None</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.sharedNodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the list of nodes shared by all elements in elist</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -880,7 +877,7 @@ all elements are considered.</li>
 common to all elements in the specified list. This array may be
 empty.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">sharedNodes</span><span class="p">()</span>
 <span class="go">Connectivity([0, 2])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">sharedNodes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
@@ -891,7 +888,7 @@ empty.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.replic">
-<tt class="descname">replic</tt><big>(</big><em>n</em>, <em>inc</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.replic" title="Permalink to this definition">¶</a></dt>
+<code class="descname">replic</code><span class="sig-paren">(</span><em>n</em>, <em>inc</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.replic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Repeat a Connectivity with increasing node numbers.</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -902,7 +899,7 @@ empty.</p>
 <cite>self</cite>, where the first replica is identical to self and each
 next one has its node numbers increased by <cite>inc</cite>.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span><span class="o">.</span><span class="n">replic</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span><span class="o">.</span><span class="n">replic</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
 <span class="go">Connectivity([[0, 1, 2],</span>
 <span class="go">       [0, 2, 3],</span>
 <span class="go">       [4, 5, 6],</span>
@@ -913,11 +910,11 @@ next one has its node numbers increased by <cite>inc</cite>.</p>
 
 <dl class="method">
 <dt id="connectivity.Connectivity.extrude">
-<tt class="descname">extrude</tt><big>(</big><em>nnod</em>, <em>degree</em><big>)</big><a class="headerlink" href="#connectivity.Connectivity.extrude" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extrude</code><span class="sig-paren">(</span><em>nnod</em>, <em>degree</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.Connectivity.extrude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extrude a Connectivity to a higher level Connectivity.</p>
 <p>This method is only available if the Connectivity has an
 element type and the element type is extrudable. See
-<a class="reference internal" href="elements.html#module-elements" title="elements: Definition of elements."><tt class="xref py py-mod docutils literal"><span class="pre">elements</span></tt></a> for more details.</p>
+<a class="reference internal" href="elements.html#module-elements" title="elements: Definition of elements."><code class="xref py py-mod docutils literal"><span class="pre">elements</span></code></a> for more details.</p>
 <p>Parameters:</p>
 <ul class="simple">
 <li><cite>nnod</cite>: integer: should be larger than the highest node number in self</li>
@@ -928,18 +925,18 @@ element type and the element type is extrudable. See
 nodes from it as defined by the <cite>self.eltype.extruded[degree]</cite> value.</p>
 <p>Returns a Connectivity for the extruded element.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyformex.elements</span> <span class="kn">import</span> <span class="n">Line2</span><span class="p">,</span><span class="n">Line3</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyformex.elements</span> <span class="k">import</span> <span class="n">Line2</span><span class="p">,</span><span class="n">Line3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]],</span><span class="n">eltype</span><span class="o">=</span><span class="n">Line2</span><span class="p">)</span><span class="o">.</span><span class="n">extrude</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="go">[[0 1 4 3]</span>
 <span class="go"> [1 2 5 4]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">eltype</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">eltype</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
 <span class="go">quad4</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span><span class="n">eltype</span><span class="o">=</span><span class="n">Line3</span><span class="p">)</span><span class="o">.</span><span class="n">extrude</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="go">[[ 0  2 10  8  1  6  9  4  5]</span>
 <span class="go"> [ 0  3 11  8  2  7 10  4  6]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">eltype</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">eltype</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
 <span class="go">quad9</span>
 </pre></div>
 </div>
@@ -952,12 +949,12 @@ nodes from it as defined by the <cite>self.eltype.extruded[degree]</cite> value.
 <h2>9.2. Functions defined in module connectivity<a class="headerlink" href="#functions-defined-in-module-connectivity" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="connectivity.findConnectedLineElems">
-<tt class="descclassname">connectivity.</tt><tt class="descname">findConnectedLineElems</tt><big>(</big><em>elems</em><big>)</big><a class="headerlink" href="#connectivity.findConnectedLineElems" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">connectivity.</code><code class="descname">findConnectedLineElems</code><span class="sig-paren">(</span><em>elems</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.findConnectedLineElems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find a single path of connected line elems.</p>
 <p>This function is intended as a helper function for
-<a class="reference internal" href="#connectivity.connectedLineElems" title="connectivity.connectedLineElems"><tt class="xref py py-func docutils literal"><span class="pre">connectedLineElems()</span></tt></a>. It should probably not be used directly,
+<a class="reference internal" href="#connectivity.connectedLineElems" title="connectivity.connectedLineElems"><code class="xref py py-func docutils literal"><span class="pre">connectedLineElems()</span></code></a>. It should probably not be used directly,
 because, as a side-effect, it changes the data in the <cite>elems</cite> argument.
-<a class="reference internal" href="#connectivity.connectedLineElems" title="connectivity.connectedLineElems"><tt class="xref py py-func docutils literal"><span class="pre">connectedLineElems()</span></tt></a> does not have this inconvenience.</p>
+<a class="reference internal" href="#connectivity.connectedLineElems" title="connectivity.connectedLineElems"><code class="xref py py-func docutils literal"><span class="pre">connectedLineElems()</span></code></a> does not have this inconvenience.</p>
 <p>The function searches a Connectivity table for a chain of elements
 in which the first node of all but the first element is equal to the
 last node of the previous element. To create such a chain, elements may
@@ -981,43 +978,43 @@ the element is traversed in original direction (+1) in the chain or in
 the reverse direction (-1).</li>
 </ul>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">con</span><span class="p">,</span><span class="n">inv</span> <span class="o">=</span> <span class="n">findConnectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">con</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">con</span><span class="p">,</span><span class="n">inv</span> <span class="o">=</span> <span class="n">findConnectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">con</span><span class="p">)</span>
 <span class="go">[[0 1]</span>
 <span class="go"> [1 2]</span>
 <span class="go"> [2 4]</span>
 <span class="go"> [4 0]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
 <span class="go">[[ 0  1]</span>
 <span class="go"> [ 1  1]</span>
 <span class="go"> [ 3 -1]</span>
 <span class="go"> [ 2 -1]]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">con</span><span class="p">,</span><span class="n">inv</span> <span class="o">=</span> <span class="n">findConnectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">con</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">con</span><span class="p">,</span><span class="n">inv</span> <span class="o">=</span> <span class="n">findConnectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">con</span><span class="p">)</span>
 <span class="go">[[2 1]</span>
 <span class="go"> [1 0]</span>
 <span class="go"> [0 4]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
 <span class="go">[[ 1 -1]</span>
 <span class="go"> [ 0 -1]</span>
 <span class="go"> [ 2  1]]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">Connectivity</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">con</span><span class="p">,</span><span class="n">inv</span> <span class="o">=</span> <span class="n">findConnectedLineElems</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">con</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">con</span><span class="p">)</span>
 <span class="go">[[ 1  0]</span>
 <span class="go"> [ 0  2]</span>
 <span class="go"> [-1 -1]</span>
 <span class="go"> [-1 -1]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
 <span class="go">[[ 0 -1]</span>
 <span class="go"> [ 1  1]</span>
 <span class="go"> [-1  0]</span>
 <span class="go"> [-1  0]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
 <span class="go">[[-1 -1]</span>
 <span class="go"> [-1 -1]</span>
 <span class="go"> [ 0  3]</span>
@@ -1028,7 +1025,7 @@ the reverse direction (-1).</li>
 
 <dl class="function">
 <dt id="connectivity.connectedLineElems">
-<tt class="descclassname">connectivity.</tt><tt class="descname">connectedLineElems</tt><big>(</big><em>elems</em>, <em>return_indices=False</em><big>)</big><a class="headerlink" href="#connectivity.connectedLineElems" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">connectivity.</code><code class="descname">connectedLineElems</code><span class="sig-paren">(</span><em>elems</em>, <em>return_indices=False</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.connectedLineElems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Partition a collection of line segments into connected polylines.</p>
 <p>The input argument is a (nelems,2) shaped array of integers.
 Each row holds the two vertex numbers of a single line segment.</p>
@@ -1044,30 +1041,30 @@ entries, and in the second column a value +1 or -1 depending on
 whether the element traversal in the connected segment is in the
 original direction (+1) or the reverse (-1).</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">connectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">connectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
 <span class="go">[Connectivity([[0, 1],</span>
 <span class="go">       [1, 2],</span>
 <span class="go">       [2, 4],</span>
 <span class="go">       [4, 0]])]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">connectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">connectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
 <span class="go">[Connectivity([[2, 1],</span>
 <span class="go">       [1, 0],</span>
 <span class="go">       [0, 4]])]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">connectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">connectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span>
 <span class="go">[Connectivity([[1, 0],</span>
 <span class="go">       [0, 2]]), Connectivity([[4, 5]]), Connectivity([[0, 3]])]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">connectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">connectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]])</span>
 <span class="go">[Connectivity([[1, 0],</span>
 <span class="go">       [0, 2]]), Connectivity([[4, 5]]), Connectivity([[0, 3]])]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">connectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]],</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">connectedLineElems</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]],</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">([Connectivity([[1, 0],</span>
 <span class="go">       [0, 2]]), Connectivity([[4, 5]]), Connectivity([[0, 3]])], [array([[ 0, -1],</span>
 <span class="go">       [ 1,  1]], dtype=int32), array([[3, 1]], dtype=int32), array([[2, 1]], dtype=int32)])</span>
@@ -1079,7 +1076,7 @@ original direction (+1) or the reverse (-1).</p>
 </div>
 <p>Obviously, from the input elems table and the second return value,
 the first return value could be reconstructed:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">first</span> <span class="o">=</span> <span class="p">[</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">first</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">where</span><span class="p">(</span><span class="n">i</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">elems</span><span class="p">[</span><span class="n">i</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]],</span> <span class="n">elems</span><span class="p">[</span><span class="n">i</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">second</span>
 <span class="p">]</span>
@@ -1091,7 +1088,7 @@ it is returned anyway.</p>
 
 <dl class="function">
 <dt id="connectivity.adjacencyArrays">
-<tt class="descclassname">connectivity.</tt><tt class="descname">adjacencyArrays</tt><big>(</big><em>elems</em>, <em>nsteps=1</em><big>)</big><a class="headerlink" href="#connectivity.adjacencyArrays" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">connectivity.</code><code class="descname">adjacencyArrays</code><span class="sig-paren">(</span><em>elems</em>, <em>nsteps=1</em><span class="sig-paren">)</span><a class="headerlink" href="#connectivity.adjacencyArrays" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create adjacency arrays for 2-node elements.</p>
 <p>elems is a (nr,2) shaped integer array.
 The result is a list of adjacency arrays, where row i of adjacency array j
@@ -1100,7 +1097,7 @@ path of j elements, padded with -1 values to create an equal list length
 for all nodes.
 This is: [adj0, adj1, ..., adjj, ... , adjn] with n=nsteps.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">adjacencyArrays</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span><span class="mi">3</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">adjacencyArrays</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span><span class="mi">3</span><span class="p">)</span>
 <span class="go">[array([[0],</span>
 <span class="go">       [1],</span>
 <span class="go">       [2],</span>
@@ -1127,7 +1124,7 @@ This is: [adj0, adj1, ..., adjj, ... , adjn] with n=nsteps.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1142,17 +1139,17 @@ This is: [adj0, adj1, ..., adjj, ... , adjn] with n=nsteps.</p>
         <li class="right" >
           <a href="geometry.html" title="8. geometry — A generic interface to the Coords transformation methods"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

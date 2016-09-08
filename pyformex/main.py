@@ -306,7 +306,7 @@ def doc_module(module):
     module is a pyFormex module dotted path. The leading pyformex.
     may be omitted.
     """
-    import py2rst
+    from . import py2rst
     return py2rst.do_module(module)
 
 

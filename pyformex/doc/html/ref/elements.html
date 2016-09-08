@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>10. elements — Definition of elements. &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>10. elements — Definition of elements. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="11. trisurface — Operations on triangulated surfaces." href="trisurface.html" />
     <link rel="prev" title="9. connectivity — A class and functions for handling nodal connectivity." href="connectivity.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,11 +82,11 @@
         <li class="right" >
           <a href="connectivity.html" title="9. connectivity — A class and functions for handling nodal connectivity."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -101,7 +101,7 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">10. <tt class="docutils literal"><span class="pre">elements</span></tt> &#8212; Definition of elements.</a><ul>
+<li><a class="reference internal" href="#">10. <code class="docutils literal"><span class="pre">elements</span></code> &#8212; Definition of elements.</a><ul>
 <li><a class="reference internal" href="#classes-defined-in-module-elements">10.1. Classes defined in module elements</a></li>
 <li><a class="reference internal" href="#functions-defined-in-module-elements">10.2. Functions defined in module elements</a></li>
 </ul>
@@ -111,22 +111,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="connectivity.html"
-                        title="previous chapter">9. <tt class="docutils literal"><span class="pre">connectivity</span></tt> &#8212; A class and functions for handling nodal connectivity.</a></p>
+                        title="previous chapter">9. <code class="docutils literal"><span class="pre">connectivity</span></code> &#8212; A class and functions for handling nodal connectivity.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="trisurface.html"
-                        title="next chapter">11. <tt class="docutils literal"><span class="pre">trisurface</span></tt> &#8212; Operations on triangulated surfaces.</a></p>
+                        title="next chapter">11. <code class="docutils literal"><span class="pre">trisurface</span></code> &#8212; Operations on triangulated surfaces.</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,10 +143,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-elements">
-<span id="elements-definition-of-elements"></span><span id="sec-ref-elements"></span><h1>10. <a class="reference internal" href="#module-elements" title="elements: Definition of elements."><tt class="xref py py-mod docutils literal"><span class="pre">elements</span></tt></a> &#8212; Definition of elements.<a class="headerlink" href="#module-elements" title="Permalink to this headline">¶</a></h1>
+<span id="elements-definition-of-elements"></span><span id="sec-ref-elements"></span><h1>10. <a class="reference internal" href="#module-elements" title="elements: Definition of elements."><code class="xref py py-mod docutils literal"><span class="pre">elements</span></code></a> &#8212; Definition of elements.<a class="headerlink" href="#module-elements" title="Permalink to this headline">¶</a></h1>
 <p>This modules allows for a consistent local numbering scheme of element
 connectivities throughout pyFormex.
 When interfacing with other programs, one should be aware
@@ -159,14 +156,14 @@ should be done by the interface modules.</p>
 <h2>10.1. Classes defined in module elements<a class="headerlink" href="#classes-defined-in-module-elements" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="elements.ElementType">
-<em class="property">class </em><tt class="descclassname">elements.</tt><tt class="descname">ElementType</tt><a class="headerlink" href="#elements.ElementType" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">elements.</code><code class="descname">ElementType</code><a class="headerlink" href="#elements.ElementType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for element type classes.</p>
 <p>Element type data are stored in a class derived from ElementType.
 The derived element type classes contain only static data. No instances
 of these classes should be created. The base class defines the access
 methods, which are all class methods.</p>
 <p>Derived classes should be created by calling the function
-<tt class="xref py py-func docutils literal"><span class="pre">createElementType()</span></tt>.</p>
+<code class="xref py py-func docutils literal"><span class="pre">createElementType()</span></code>.</p>
 <p>Each element is defined by the following attributes:</p>
 <ul class="simple">
 <li><cite>name</cite>: a string. It is capitalized before use, thus all ElementType
@@ -200,7 +197,7 @@ or elements.</p>
 numbered in a consecutive order spinning positively around the outward
 normal on the face.</p>
 <p>The list of available element types can be found from:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">printElementTypes</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">printElementTypes</span><span class="p">()</span>
 <span class="go">Available Element Types:</span>
 <span class="go">  0-dimensional elements: [&#39;Point&#39;]</span>
 <span class="go">  1-dimensional elements: [&#39;Line2&#39;, &#39;Line3&#39;, &#39;Line4&#39;]</span>
@@ -234,28 +231,28 @@ different but equivalent conversion paths.</li>
 </ul>
 <dl class="classmethod">
 <dt id="elements.ElementType.nplex">
-<em class="property">classmethod </em><tt class="descname">nplex</tt><big>(</big><big>)</big><a class="headerlink" href="#elements.ElementType.nplex" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">nplex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#elements.ElementType.nplex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the plexitude of the element</p>
 </dd></dl>
 
 <dl class="classmethod">
 <dt id="elements.ElementType.nvertices">
-<em class="property">classmethod </em><tt class="descname">nvertices</tt><big>(</big><big>)</big><a class="headerlink" href="#elements.ElementType.nvertices" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">nvertices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#elements.ElementType.nvertices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the plexitude of the element</p>
 </dd></dl>
 
 <dl class="classmethod">
 <dt id="elements.ElementType.nnodes">
-<em class="property">classmethod </em><tt class="descname">nnodes</tt><big>(</big><big>)</big><a class="headerlink" href="#elements.ElementType.nnodes" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">nnodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#elements.ElementType.nnodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the plexitude of the element</p>
 </dd></dl>
 
 <dl class="classmethod">
 <dt id="elements.ElementType.getEntities">
-<em class="property">classmethod </em><tt class="descname">getEntities</tt><big>(</big><em>level</em>, <em>reduce=False</em><big>)</big><a class="headerlink" href="#elements.ElementType.getEntities" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">getEntities</code><span class="sig-paren">(</span><em>level</em>, <em>reduce=False</em><span class="sig-paren">)</span><a class="headerlink" href="#elements.ElementType.getEntities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the type and connectivity table of some element entities.</p>
 <p>The full list of entities with increasing dimensionality  0,1,2,3 is:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="s">&#39;points&#39;</span><span class="p">,</span> <span class="s">&#39;edges&#39;</span><span class="p">,</span> <span class="s">&#39;faces&#39;</span><span class="p">,</span> <span class="s">&#39;cells&#39;</span> <span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="s1">&#39;edges&#39;</span><span class="p">,</span> <span class="s1">&#39;faces&#39;</span><span class="p">,</span> <span class="s1">&#39;cells&#39;</span> <span class="p">]</span>
 </pre></div>
 </div>
 <p>If level is negative, the dimensionality returned is relative
@@ -276,27 +273,27 @@ the return value is None.</p>
 
 <dl class="classmethod">
 <dt id="elements.ElementType.getDrawFaces">
-<em class="property">classmethod </em><tt class="descname">getDrawFaces</tt><big>(</big><em>quadratic=False</em><big>)</big><a class="headerlink" href="#elements.ElementType.getDrawFaces" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">getDrawFaces</code><span class="sig-paren">(</span><em>quadratic=False</em><span class="sig-paren">)</span><a class="headerlink" href="#elements.ElementType.getDrawFaces" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the local connectivity for drawing the element&#8217;s faces</p>
 </dd></dl>
 
 <dl class="classmethod">
 <dt id="elements.ElementType.toMesh">
-<em class="property">classmethod </em><tt class="descname">toMesh</tt><big>(</big><big>)</big><a class="headerlink" href="#elements.ElementType.toMesh" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">toMesh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#elements.ElementType.toMesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the element type to a Mesh.</p>
 <p>Returns a Mesh with a single element of natural size.</p>
 </dd></dl>
 
 <dl class="classmethod">
 <dt id="elements.ElementType.toFormex">
-<em class="property">classmethod </em><tt class="descname">toFormex</tt><big>(</big><big>)</big><a class="headerlink" href="#elements.ElementType.toFormex" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">toFormex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#elements.ElementType.toFormex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the element type to a Formex.</p>
 <p>Returns a Formex with a single element of natural size.</p>
 </dd></dl>
 
 <dl class="classmethod">
 <dt id="elements.ElementType.name">
-<em class="property">classmethod </em><tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#elements.ElementType.name" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#elements.ElementType.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the lowercase name of the element.</p>
 <p>For compatibility, name() returns the lower case version of the
 ElementType&#8217;s name. To get the real name, use the attribute
@@ -310,7 +307,7 @@ ElementType&#8217;s name. To get the real name, use the attribute
 <h2>10.2. Functions defined in module elements<a class="headerlink" href="#functions-defined-in-module-elements" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="elements.elementType">
-<tt class="descclassname">elements.</tt><tt class="descname">elementType</tt><big>(</big><em>name=None</em>, <em>nplex=-1</em><big>)</big><a class="headerlink" href="#elements.elementType" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">elements.</code><code class="descname">elementType</code><span class="sig-paren">(</span><em>name=None</em>, <em>nplex=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#elements.elementType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the requested element type</p>
 <p>Parameters:</p>
 <ul class="simple">
@@ -320,13 +317,13 @@ element for the specified plexitude is returned.</li>
 <li><cite>nplex</cite>: plexitude of the element. If specified and no element name
 was given, the default element type for this plexitude is returned.</li>
 </ul>
-<p>Returns a subclass of <a class="reference internal" href="#elements.ElementType" title="elements.ElementType"><tt class="xref py py-class docutils literal"><span class="pre">ElementType</span></tt></a>.</p>
+<p>Returns a subclass of <a class="reference internal" href="#elements.ElementType" title="elements.ElementType"><code class="xref py py-class docutils literal"><span class="pre">ElementType</span></code></a>.</p>
 <p>Errors:</p>
 <blockquote>
 <div>If neither <cite>name</cite> nor <cite>nplex</cite> can resolve into an element type,
 an error is raised.</div></blockquote>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">elementType</span><span class="p">(</span><span class="s">&#39;tri3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">elementType</span><span class="p">(</span><span class="s1">&#39;tri3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
 <span class="go">&#39;tri3&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">elementType</span><span class="p">(</span><span class="n">nplex</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
 <span class="go">&#39;line2&#39;</span>
@@ -336,7 +333,7 @@ an error is raised.</div></blockquote>
 
 <dl class="function">
 <dt id="elements.elementTypes">
-<tt class="descclassname">elements.</tt><tt class="descname">elementTypes</tt><big>(</big><em>ndim=None</em>, <em>lower=True</em><big>)</big><a class="headerlink" href="#elements.elementTypes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">elements.</code><code class="descname">elementTypes</code><span class="sig-paren">(</span><em>ndim=None</em>, <em>lower=True</em><span class="sig-paren">)</span><a class="headerlink" href="#elements.elementTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the names of available elements.</p>
 <p>If a value is specified for ndim, only the elements with the matching
 dimensionality are returned.</p>
@@ -344,7 +341,7 @@ dimensionality are returned.</p>
 
 <dl class="function">
 <dt id="elements.printElementTypes">
-<tt class="descclassname">elements.</tt><tt class="descname">printElementTypes</tt><big>(</big><em>lower=False</em><big>)</big><a class="headerlink" href="#elements.printElementTypes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">elements.</code><code class="descname">printElementTypes</code><span class="sig-paren">(</span><em>lower=False</em><span class="sig-paren">)</span><a class="headerlink" href="#elements.printElementTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print all available element types.</p>
 <p>Prints a list of the names of all available element types,
 grouped by their dimensionality.</p>
@@ -359,7 +356,7 @@ grouped by their dimensionality.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -374,17 +371,17 @@ grouped by their dimensionality.</p>
         <li class="right" >
           <a href="connectivity.html" title="9. connectivity — A class and functions for handling nodal connectivity."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

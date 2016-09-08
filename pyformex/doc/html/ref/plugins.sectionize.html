@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>61. plugins.sectionize — sectionize.py &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>61. plugins.sectionize — sectionize.py &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="62. plugins.tetgen — Interface with tetgen" href="plugins.tetgen.html" />
     <link rel="prev" title="60. plugins.section2d — Some functions operating on 2D structures." href="plugins.section2d.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,11 +82,11 @@
         <li class="right" >
           <a href="plugins.section2d.html" title="60. plugins.section2d — Some functions operating on 2D structures."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -99,34 +99,22 @@
 
 </div>
    
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">61. <tt class="docutils literal"><span class="pre">plugins.sectionize</span></tt> &#8212; sectionize.py</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-plugins-sectionize">61.1. Classes defined in module plugins.sectionize</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-plugins-sectionize">61.2. Functions defined in module plugins.sectionize</a></li>
-</ul>
-</li>
-</ul>
-
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.section2d.html"
-                        title="previous chapter">60. <tt class="docutils literal"><span class="pre">plugins.section2d</span></tt> &#8212; Some functions operating on 2D structures.</a></p>
+                        title="previous chapter">60. <code class="docutils literal"><span class="pre">plugins.section2d</span></code> &#8212; Some functions operating on 2D structures.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="plugins.tetgen.html"
-                        title="next chapter">62. <tt class="docutils literal"><span class="pre">plugins.tetgen</span></tt> &#8212; Interface with tetgen</a></p>
+                        title="next chapter">62. <code class="docutils literal"><span class="pre">plugins.tetgen</span></code> &#8212; Interface with tetgen</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,62 +134,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
-  <div class="section" id="module-plugins.sectionize">
-<span id="plugins-sectionize-sectionize-py"></span><span id="sec-ref-plugins-sectionize"></span><h1>61. <a class="reference internal" href="#module-plugins.sectionize" title="plugins.sectionize: sectionize.py"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.sectionize</span></tt></a> &#8212; sectionize.py<a class="headerlink" href="#module-plugins.sectionize" title="Permalink to this headline">¶</a></h1>
-<p>Create, measure and approximate cross section of a Formex.</p>
-<div class="section" id="classes-defined-in-module-plugins-sectionize">
-<h2>61.1. Classes defined in module plugins.sectionize<a class="headerlink" href="#classes-defined-in-module-plugins-sectionize" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="functions-defined-in-module-plugins-sectionize">
-<h2>61.2. Functions defined in module plugins.sectionize<a class="headerlink" href="#functions-defined-in-module-plugins-sectionize" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="plugins.sectionize.connectPoints">
-<tt class="descclassname">plugins.sectionize.</tt><tt class="descname">connectPoints</tt><big>(</big><em>F</em>, <em>close=False</em><big>)</big><a class="headerlink" href="#plugins.sectionize.connectPoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Formex with straight segments connecting subsequent points.</p>
-<p>F can be a Formex or data that can be turned into a Formex (e.g. an (n,3)
-array of points). The result is a plex-2 Formex connecting the subsequent
-points of F or the first point of subsequent elements in case the plexitude
-of F &gt; 1.    
-If close=True, the last point is connected back to the first to create a
-closed polyline.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.sectionize.centerline">
-<tt class="descclassname">plugins.sectionize.</tt><tt class="descname">centerline</tt><big>(</big><em>F</em>, <em>dir</em>, <em>nx=2</em>, <em>mode=2</em>, <em>th=0.2</em><big>)</big><a class="headerlink" href="#plugins.sectionize.centerline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the centerline in the direction dir.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.sectionize.createSegments">
-<tt class="descclassname">plugins.sectionize.</tt><tt class="descname">createSegments</tt><big>(</big><em>F</em>, <em>ns=None</em>, <em>th=None</em><big>)</big><a class="headerlink" href="#plugins.sectionize.createSegments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create segments along 0 axis for sectionizing the Formex F.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.sectionize.sectionize">
-<tt class="descclassname">plugins.sectionize.</tt><tt class="descname">sectionize</tt><big>(</big><em>F</em>, <em>segments</em>, <em>th=0.1</em>, <em>visual=True</em><big>)</big><a class="headerlink" href="#plugins.sectionize.sectionize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sectionize a Formex in planes perpendicular to the segments.</p>
-<p>F is any Formex.
-segments is a plex-2 Formex.</p>
-<p>Planes are chosen in each center of a segment, perpendicular to
-that segment. Then parts of the Formex F are selected in the
-neighbourhood of each plane. Each part is then approximated by a
-circle in that plane.</p>
-<p>th is the relative thickness of the selected part of the Formex.
-If th = 0.5, that part will be delimited by two planes in the endpoints
-of and perpendicular to the segments.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.sectionize.drawCircles">
-<tt class="descclassname">plugins.sectionize.</tt><tt class="descname">drawCircles</tt><big>(</big><em>sections</em>, <em>ctr</em>, <em>diam</em><big>)</big><a class="headerlink" href="#plugins.sectionize.drawCircles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw circles as approximation of Formices.</p>
-</dd></dl>
-
-</div>
+  <div class="section" id="plugins-sectionize-sectionize-py">
+<span id="sec-ref-plugins-sectionize"></span><h1>61. <code class="xref py py-mod docutils literal"><span class="pre">plugins.sectionize</span></code> &#8212; sectionize.py<a class="headerlink" href="#plugins-sectionize-sectionize-py" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -210,7 +146,7 @@ of and perpendicular to the segments.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -225,17 +161,17 @@ of and perpendicular to the segments.</p>
         <li class="right" >
           <a href="plugins.section2d.html" title="60. plugins.section2d — Some functions operating on 2D structures."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

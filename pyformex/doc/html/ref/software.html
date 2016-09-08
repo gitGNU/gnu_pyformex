@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>25. software — software.py &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>24. software — software.py &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="26. gui.widgets — A collection of custom widgets used in the pyFormex GUI" href="gui.widgets.html" />
-    <link rel="prev" title="24. multi — Framework for multi-processing in pyFormex" href="multi.html" />
+    <link rel="prev" title="23. multi — Framework for multi-processing in pyFormex" href="multi.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -80,13 +80,13 @@
           <a href="gui.widgets.html" title="26. gui.widgets — A collection of custom widgets used in the pyFormex GUI"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="multi.html" title="24. multi — Framework for multi-processing in pyFormex"
+          <a href="multi.html" title="23. multi — Framework for multi-processing in pyFormex"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -101,9 +101,9 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">25. <tt class="docutils literal"><span class="pre">software</span></tt> &#8212; software.py</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-software">25.1. Classes defined in module software</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-software">25.2. Functions defined in module software</a></li>
+<li><a class="reference internal" href="#">24. <code class="docutils literal"><span class="pre">software</span></code> &#8212; software.py</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-software">24.1. Classes defined in module software</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-software">24.2. Functions defined in module software</a></li>
 </ul>
 </li>
 </ul>
@@ -111,22 +111,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="multi.html"
-                        title="previous chapter">24. <tt class="docutils literal"><span class="pre">multi</span></tt> &#8212; Framework for multi-processing in pyFormex</a></p>
+                        title="previous chapter">23. <code class="docutils literal"><span class="pre">multi</span></code> &#8212; Framework for multi-processing in pyFormex</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="gui.widgets.html"
-                        title="next chapter">26. <tt class="docutils literal"><span class="pre">gui.widgets</span></tt> &#8212; A collection of custom widgets used in the pyFormex GUI</a></p>
+                        title="next chapter">26. <code class="docutils literal"><span class="pre">gui.widgets</span></code> &#8212; A collection of custom widgets used in the pyFormex GUI</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,22 +143,22 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-software">
-<span id="software-software-py"></span><span id="sec-ref-software"></span><h1>25. <a class="reference internal" href="#module-software" title="software: software.py"><tt class="xref py py-mod docutils literal"><span class="pre">software</span></tt></a> &#8212; software.py<a class="headerlink" href="#module-software" title="Permalink to this headline">¶</a></h1>
+<span id="software-software-py"></span><span id="sec-ref-software"></span><h1>24. <a class="reference internal" href="#module-software" title="software: software.py"><code class="xref py py-mod docutils literal"><span class="pre">software</span></code></a> &#8212; software.py<a class="headerlink" href="#module-software" title="Permalink to this headline">¶</a></h1>
 <p>A module to help with detecting required software and helper software,
 and to check the versions of it.</p>
 <p>This module is currently experimental. It contains some old functions
 moved here from utils.py.</p>
 <div class="section" id="classes-defined-in-module-software">
-<h2>25.1. Classes defined in module software<a class="headerlink" href="#classes-defined-in-module-software" title="Permalink to this headline">¶</a></h2>
+<h2>24.1. Classes defined in module software<a class="headerlink" href="#classes-defined-in-module-software" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="functions-defined-in-module-software">
-<h2>25.2. Functions defined in module software<a class="headerlink" href="#functions-defined-in-module-software" title="Permalink to this headline">¶</a></h2>
+<h2>24.2. Functions defined in module software<a class="headerlink" href="#functions-defined-in-module-software" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="software.checkVersion">
-<tt class="descclassname">software.</tt><tt class="descname">checkVersion</tt><big>(</big><em>name</em>, <em>version</em>, <em>external=False</em><big>)</big><a class="headerlink" href="#software.checkVersion" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">checkVersion</code><span class="sig-paren">(</span><em>name</em>, <em>version</em>, <em>external=False</em><span class="sig-paren">)</span><a class="headerlink" href="#software.checkVersion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks a version of a program/module.</p>
 <p>name is either a module or an external program whose availability has
 been registered.
@@ -174,7 +171,7 @@ Returns -2 if no version found.</p>
 
 <dl class="function">
 <dt id="software.hasModule">
-<tt class="descclassname">software.</tt><tt class="descname">hasModule</tt><big>(</big><em>name</em>, <em>check=False</em><big>)</big><a class="headerlink" href="#software.hasModule" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">hasModule</code><span class="sig-paren">(</span><em>name</em>, <em>check=False</em><span class="sig-paren">)</span><a class="headerlink" href="#software.hasModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if we have the named module available.</p>
 <p>Returns a nonzero (version) string if the module is available,
 or an empty string if it is not.</p>
@@ -185,7 +182,7 @@ The optional argument check==True forces a new detection.</p>
 
 <dl class="function">
 <dt id="software.requireModule">
-<tt class="descclassname">software.</tt><tt class="descname">requireModule</tt><big>(</big><em>name</em>, <em>version=None</em>, <em>comp='ge'</em><big>)</big><a class="headerlink" href="#software.requireModule" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">requireModule</code><span class="sig-paren">(</span><em>name</em>, <em>version=None</em>, <em>comp='ge'</em><span class="sig-paren">)</span><a class="headerlink" href="#software.requireModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ensure that the named Python module/version is available.</p>
 <p>Checks that the specified module is available, and that its version
 number is not lower than the specified version.
@@ -198,13 +195,13 @@ error is raised.</p>
 
 <dl class="function">
 <dt id="software.checkAllModules">
-<tt class="descclassname">software.</tt><tt class="descname">checkAllModules</tt><big>(</big><big>)</big><a class="headerlink" href="#software.checkAllModules" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">checkAllModules</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#software.checkAllModules" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the existence of all known modules.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="software.checkModule">
-<tt class="descclassname">software.</tt><tt class="descname">checkModule</tt><big>(</big><em>name</em>, <em>ver=()</em>, <em>fatal=False</em>, <em>quiet=False</em><big>)</big><a class="headerlink" href="#software.checkModule" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">checkModule</code><span class="sig-paren">(</span><em>name</em>, <em>ver=()</em>, <em>fatal=False</em>, <em>quiet=False</em><span class="sig-paren">)</span><a class="headerlink" href="#software.checkModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the named Python module is available, and record its version.</p>
 <p>ver is a tuple of:</p>
 <ul class="simple">
@@ -220,7 +217,7 @@ The (name,version) pair is also inserted into the the_version dict.</p>
 
 <dl class="function">
 <dt id="software.hasExternal">
-<tt class="descclassname">software.</tt><tt class="descname">hasExternal</tt><big>(</big><em>name</em>, <em>force=False</em><big>)</big><a class="headerlink" href="#software.hasExternal" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">hasExternal</code><span class="sig-paren">(</span><em>name</em>, <em>force=False</em><span class="sig-paren">)</span><a class="headerlink" href="#software.hasExternal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if we have the external command &#8216;name&#8217; available.</p>
 <p>Returns a nonzero string if the command is available,
 or an empty string if it is not.</p>
@@ -230,14 +227,14 @@ The result is remembered in the the_external dict.</p>
 
 <dl class="function">
 <dt id="software.requireExternal">
-<tt class="descclassname">software.</tt><tt class="descname">requireExternal</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#software.requireExternal" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">requireExternal</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#software.requireExternal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ensure that the named external program is available.</p>
 <p>If the module is not available, an error is raised.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="software.checkAllExternals">
-<tt class="descclassname">software.</tt><tt class="descname">checkAllExternals</tt><big>(</big><big>)</big><a class="headerlink" href="#software.checkAllExternals" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">checkAllExternals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#software.checkAllExternals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the existence of all known externals.</p>
 <p>Returns a dict with all the known externals, detected or not.
 The detected ones have a non-zero value, usually the version number.</p>
@@ -245,7 +242,7 @@ The detected ones have a non-zero value, usually the version number.</p>
 
 <dl class="function">
 <dt id="software.checkExternal">
-<tt class="descclassname">software.</tt><tt class="descname">checkExternal</tt><big>(</big><em>name</em>, <em>command=None</em>, <em>answer=None</em>, <em>quiet=False</em><big>)</big><a class="headerlink" href="#software.checkExternal" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">checkExternal</code><span class="sig-paren">(</span><em>name</em>, <em>command=None</em>, <em>answer=None</em>, <em>quiet=False</em><span class="sig-paren">)</span><a class="headerlink" href="#software.checkExternal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the named external command is available on the system.</p>
 <p>name is the generic command name,
 command is the command as it will be executed to check its operation,
@@ -263,16 +260,16 @@ that can be checked by their name alone.</p>
 
 <dl class="function">
 <dt id="software.detectedSoftware">
-<tt class="descclassname">software.</tt><tt class="descname">detectedSoftware</tt><big>(</big><em>all=True</em><big>)</big><a class="headerlink" href="#software.detectedSoftware" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">detectedSoftware</code><span class="sig-paren">(</span><em>all=True</em><span class="sig-paren">)</span><a class="headerlink" href="#software.detectedSoftware" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict with all detected helper software</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="software.formatDict">
-<tt class="descclassname">software.</tt><tt class="descname">formatDict</tt><big>(</big><em>d</em>, <em>indent=4</em><big>)</big><a class="headerlink" href="#software.formatDict" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">formatDict</code><span class="sig-paren">(</span><em>d</em>, <em>indent=4</em><span class="sig-paren">)</span><a class="headerlink" href="#software.formatDict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format a dict in nicely formatted Python source representation.</p>
 <p>Each (key,value) pair is formatted on a line of the form:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">key</span> <span class="o">=</span> <span class="n">value</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">key</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
 <p>If all the keys are strings containing only characters that are
@@ -284,7 +281,7 @@ on a file and executed.</p>
 
 <dl class="function">
 <dt id="software.compareVersion">
-<tt class="descclassname">software.</tt><tt class="descname">compareVersion</tt><big>(</big><em>has</em>, <em>want</em><big>)</big><a class="headerlink" href="#software.compareVersion" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">compareVersion</code><span class="sig-paren">(</span><em>has</em>, <em>want</em><span class="sig-paren">)</span><a class="headerlink" href="#software.compareVersion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a detected version matches the requirements.</p>
 <p>has is the version string detected.
 want is the required version string, possibly preceded by one
@@ -294,15 +291,15 @@ If no comparison operator is specified, &#8216;__eq__&#8217; is assumed.</p>
 version than x.y.z.</p>
 <p>Returns the result of the comparison: True or False
 Examples:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s">&#39;2.7&#39;</span><span class="p">,</span><span class="s">&#39;2.4.3&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s1">&#39;2.7&#39;</span><span class="p">,</span><span class="s1">&#39;2.4.3&#39;</span><span class="p">)</span>
 <span class="go">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s">&#39;2.7&#39;</span><span class="p">,</span><span class="s">&#39;&gt;2.4.3&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s1">&#39;2.7&#39;</span><span class="p">,</span><span class="s1">&#39;&gt;2.4.3&#39;</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s">&#39;2.7&#39;</span><span class="p">,</span><span class="s">&#39;&gt;= 2.4.3&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s1">&#39;2.7&#39;</span><span class="p">,</span><span class="s1">&#39;&gt;= 2.4.3&#39;</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s">&#39;2.7&#39;</span><span class="p">,</span><span class="s">&#39;&gt;= 2.7-rc3&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s1">&#39;2.7&#39;</span><span class="p">,</span><span class="s1">&#39;&gt;= 2.7-rc3&#39;</span><span class="p">)</span>
 <span class="go">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s">&#39;2.7-rc4&#39;</span><span class="p">,</span><span class="s">&#39;&gt;= 2.7-rc3&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compareVersion</span><span class="p">(</span><span class="s1">&#39;2.7-rc4&#39;</span><span class="p">,</span><span class="s1">&#39;&gt;= 2.7-rc3&#39;</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -310,7 +307,7 @@ Examples:</p>
 
 <dl class="function">
 <dt id="software.checkSoftware">
-<tt class="descclassname">software.</tt><tt class="descname">checkSoftware</tt><big>(</big><em>req</em>, <em>report=False</em><big>)</big><a class="headerlink" href="#software.checkSoftware" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">checkSoftware</code><span class="sig-paren">(</span><em>req</em>, <em>report=False</em><span class="sig-paren">)</span><a class="headerlink" href="#software.checkSoftware" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that we have the matching components</p>
 <p>Returns True or False.
 If report=True, also returns a string with a full report.</p>
@@ -318,31 +315,31 @@ If report=True, also returns a string with a full report.</p>
 
 <dl class="function">
 <dt id="software.registerSoftware">
-<tt class="descclassname">software.</tt><tt class="descname">registerSoftware</tt><big>(</big><em>req</em><big>)</big><a class="headerlink" href="#software.registerSoftware" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">registerSoftware</code><span class="sig-paren">(</span><em>req</em><span class="sig-paren">)</span><a class="headerlink" href="#software.registerSoftware" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register the current values of required software</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="software.soft2config">
-<tt class="descclassname">software.</tt><tt class="descname">soft2config</tt><big>(</big><em>soft</em><big>)</big><a class="headerlink" href="#software.soft2config" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">soft2config</code><span class="sig-paren">(</span><em>soft</em><span class="sig-paren">)</span><a class="headerlink" href="#software.soft2config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert software collection to config</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="software.config2soft">
-<tt class="descclassname">software.</tt><tt class="descname">config2soft</tt><big>(</big><em>conf</em><big>)</big><a class="headerlink" href="#software.config2soft" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">config2soft</code><span class="sig-paren">(</span><em>conf</em><span class="sig-paren">)</span><a class="headerlink" href="#software.config2soft" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert software collection from config</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="software.storeSoftware">
-<tt class="descclassname">software.</tt><tt class="descname">storeSoftware</tt><big>(</big><em>soft</em>, <em>fn</em>, <em>mode='pretty'</em><big>)</big><a class="headerlink" href="#software.storeSoftware" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">storeSoftware</code><span class="sig-paren">(</span><em>soft</em>, <em>fn</em>, <em>mode='pretty'</em><span class="sig-paren">)</span><a class="headerlink" href="#software.storeSoftware" title="Permalink to this definition">¶</a></dt>
 <dd><p>Store the software collection on file.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="software.readSoftware">
-<tt class="descclassname">software.</tt><tt class="descname">readSoftware</tt><big>(</big><em>fn</em>, <em>mode='python'</em><big>)</big><a class="headerlink" href="#software.readSoftware" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">software.</code><code class="descname">readSoftware</code><span class="sig-paren">(</span><em>fn</em>, <em>mode='python'</em><span class="sig-paren">)</span><a class="headerlink" href="#software.readSoftware" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the software collection from file.</p>
 <ul class="simple">
 <li><cite>mode</cite> = &#8216;pretty&#8217;: readable, editable</li>
@@ -361,7 +358,7 @@ If report=True, also returns a string with a full report.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -374,19 +371,19 @@ If report=True, also returns a string with a full report.</p>
           <a href="gui.widgets.html" title="26. gui.widgets — A collection of custom widgets used in the pyFormex GUI"
              >next</a> |</li>
         <li class="right" >
-          <a href="multi.html" title="24. multi — Framework for multi-processing in pyFormex"
+          <a href="multi.html" title="23. multi — Framework for multi-processing in pyFormex"
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

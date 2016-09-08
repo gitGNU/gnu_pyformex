@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>34. plugins.bifmesh — Vascular Sweeping Mesher &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>34. plugins.bifmesh — Vascular Sweeping Mesher &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="&lt;no title&gt;" href="plugins.calpy_itf.html" />
+    <link rel="next" title="35. plugins.cameratools — Camera tools" href="plugins.cameratools.html" />
     <link rel="prev" title="33. gui.toolbar — Toolbars for the pyFormex GUI." href="gui.toolbar.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -77,16 +77,16 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.calpy_itf.html" title="&lt;no title&gt;"
+          <a href="plugins.cameratools.html" title="35. plugins.cameratools — Camera tools"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="gui.toolbar.html" title="33. gui.toolbar — Toolbars for the pyFormex GUI."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -99,34 +99,22 @@
 
 </div>
    
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">34. <tt class="docutils literal"><span class="pre">plugins.bifmesh</span></tt> &#8212; Vascular Sweeping Mesher</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-plugins-bifmesh">34.1. Classes defined in module plugins.bifmesh</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-plugins-bifmesh">34.2. Functions defined in module plugins.bifmesh</a></li>
-</ul>
-</li>
-</ul>
-
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="gui.toolbar.html"
-                        title="previous chapter">33. <tt class="docutils literal"><span class="pre">gui.toolbar</span></tt> &#8212; Toolbars for the pyFormex GUI.</a></p>
+                        title="previous chapter">33. <code class="docutils literal"><span class="pre">gui.toolbar</span></code> &#8212; Toolbars for the pyFormex GUI.</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="plugins.calpy_itf.html"
-                        title="next chapter">&lt;no title&gt;</a></p>
+  <p class="topless"><a href="plugins.cameratools.html"
+                        title="next chapter">35. <code class="docutils literal"><span class="pre">plugins.cameratools</span></code> &#8212; Camera tools</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,86 +134,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
-  <div class="section" id="module-plugins.bifmesh">
-<span id="plugins-bifmesh-vascular-sweeping-mesher"></span><span id="sec-ref-plugins-bifmesh"></span><h1>34. <a class="reference internal" href="#module-plugins.bifmesh" title="plugins.bifmesh: Vascular Sweeping Mesher"><tt class="xref py py-mod docutils literal"><span class="pre">plugins.bifmesh</span></tt></a> &#8212; Vascular Sweeping Mesher<a class="headerlink" href="#module-plugins.bifmesh" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="classes-defined-in-module-plugins-bifmesh">
-<h2>34.1. Classes defined in module plugins.bifmesh<a class="headerlink" href="#classes-defined-in-module-plugins-bifmesh" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="functions-defined-in-module-plugins-bifmesh">
-<h2>34.2. Functions defined in module plugins.bifmesh<a class="headerlink" href="#functions-defined-in-module-plugins-bifmesh" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="plugins.bifmesh.structuredQuadMeshGrid">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">structuredQuadMeshGrid</tt><big>(</big><em>sgx=3</em>, <em>sgy=3</em>, <em>isopquad=None</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.structuredQuadMeshGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>it returns nodes (2D) and elems of a structured quadrilateral grid. nodes and elements are both ordered first vertically (y) and then orizontally (x). This function is the equivalent of simple.rectangularGrid but on the mesh level.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.bifmesh.structuredHexMeshGrid">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">structuredHexMeshGrid</tt><big>(</big><em>dx</em>, <em>dy</em>, <em>dz</em>, <em>isophex='hex64'</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.structuredHexMeshGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>it builds a structured hexahedral grid with nodes and elements both numbered in a structured way: first along z, then along y,and then along x. The resulting hex cells are oriented along z. This function is the equivalent of simple.rectangularGrid but for a mesh. Additionally, dx,dy,dz can be either integers or div (1D list or array). In case of list/array, first and last numbers should be 0.0 and 1.0 if the desired grid has to be inside the region 0.,0.,0. to 1.,1.,1.
-TODO: include other optons to get the control points for other isoparametric transformation for hex.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.bifmesh.findBisectrixUsingPlanes">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">findBisectrixUsingPlanes</tt><big>(</big><em>cpx</em>, <em>centx</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.findBisectrixUsingPlanes" title="Permalink to this definition">¶</a></dt>
-<dd><p>it returns a bisectrix-points at each point of a Polygon (unit vector of the bisectrix). All the bisectrix-points are on the side of centx (inside the Polygon), regardless to the concavity or convexity of the angle, thus avoiding the problem of collinear or concave segments. The points will point towards the centx if the centx is offplane. It uses the lines from intersection of 2 planes.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.bifmesh.cpBoundaryLayer">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">cpBoundaryLayer</tt><big>(</big><em>BS</em>, <em>centr</em>, <em>issection0=False</em>, <em>bl_rel=0.2</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.cpBoundaryLayer" title="Permalink to this definition">¶</a></dt>
-<dd><p>it takes n points of a nearly circular section (for the isop transformation, n should be 24, 48 etc) and find the control points needed for the boundary layer. The center of the section has to be given separately.
--issection0 needs to be True only for the section-0 of each branch of a bifurcation, which has to share the control points with the other branches. So it must be False for all other sections and single vessels.
-This implementation for the bl (separated from the inner lumen) is needed to ensure an optimal mesh quality at the boundary layer in terms of angular skewness, needed for WSS calculation.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.bifmesh.cpQuarterLumen">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">cpQuarterLumen</tt><big>(</big><em>lumb</em>, <em>centp</em>, <em>edgesq=0.75</em>, <em>diag=0.848528137423857</em>, <em>verbos=False</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.cpQuarterLumen" title="Permalink to this definition">¶</a></dt>
-<dd><p>control points for 1 quarter of lumen mapped in quad regions. lumb is a set of points on a quarter of section. centp is the center of the section. The number of poin I found that edgesq=0.75, diag=0.6*2**0.5 give the better mapping. Also possible edgesq=0.4, diag=0.42*2**0.5. Currently, it is not perfect if the section is not planar.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.bifmesh.visualizeSubmappingQuadRegion">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">visualizeSubmappingQuadRegion</tt><big>(</big><em>sqr</em>, <em>timewait=None</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.visualizeSubmappingQuadRegion" title="Permalink to this definition">¶</a></dt>
-<dd><p>visualilze the control points (-1,16,3) in each submapped region and check the quality of the region (which will be inherited by the mesh crossectionally)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.bifmesh.cpOneSection">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">cpOneSection</tt><big>(</big><em>hc</em>, <em>oc=None</em>, <em>isBranchingSection=False</em>, <em>verbos=False</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.cpOneSection" title="Permalink to this definition">¶</a></dt>
-<dd><p>hc is a numbers of points on the boundary line of 1 almost circular section. oc is the center point of the section. It returns 3 groups of control points: for the inner part, for the transitional part and for the boundary layer of one single section</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.bifmesh.cpAllSections">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">cpAllSections</tt><big>(</big><em>HC, OC, start_end_branching=[False, False]</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.cpAllSections" title="Permalink to this definition">¶</a></dt>
-<dd><p>control points of all sections divided  in 3 groups of control points: for the inner part, for the transitional part and for the boundary layer. if start_end_branching is [True,True] the first and the last section are considered bifurcation sections and therefore meshed differently.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.bifmesh.cpStackQ16toH64">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">cpStackQ16toH64</tt><big>(</big><em>cpq16</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.cpStackQ16toH64" title="Permalink to this definition">¶</a></dt>
-<dd><p>sweeping trick: from sweeping sections longitudinally to mapping hex64: ittakes -1,16,3 (cp of the quad16) and groups them in -1,64,3 (cp of the hex63) but slice after slice: [0,1,2,3],[1,2,3,4],[2,3,4,5],... It is a trick to use the hex64 for sweeping along an arbitrary number of sections.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.bifmesh.mapHexLong">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">mapHexLong</tt><big>(</big><em>mesh_block</em>, <em>cpvr</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.mapHexLong" title="Permalink to this definition">¶</a></dt>
-<dd><p>map a structured mesh (n_block, e_block, cp_block are in mesh_block) into a volume defined by the control points cpvr (# regions longitudinally, # regions in 1 cross sectionsm, 64, 3 ). cp_block are the control points of the mesh block. It returns nodes and elements. Nodes are repeated in subsequently mapped regions !
-TRICK: in order to make the mapping working for an arbitrary number of sections the following trick is used: of the whole mesh_block, only the part located between the points 1&#8211;2 is meshed and mapped between 2 slices only. Thus, the other parts 0&#8211;1 and 2&#8211;3 are not mapped. To do so, the first and the last slice need to be meshed separately: n_start 0&#8211;1 and n_end 2&#8211;3.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="plugins.bifmesh.mapQuadLong">
-<tt class="descclassname">plugins.bifmesh.</tt><tt class="descname">mapQuadLong</tt><big>(</big><em>mesh_block</em>, <em>cpvr</em><big>)</big><a class="headerlink" href="#plugins.bifmesh.mapQuadLong" title="Permalink to this definition">¶</a></dt>
-<dd><p>TRICK: in order to make the mapping working for an arbitrary number of sections the following trick is used: of the whole mesh_block, only the part located between the points 1&#8211;2 is meshed and mapped between 2 slices only. Thus, the other parts 0&#8211;1 and 2&#8211;3 are not mapped. To do so, the first and the last slice need to be meshed separately: n_start 0&#8211;1 and n_end 2&#8211;3.</p>
-</dd></dl>
-
-</div>
+  <div class="section" id="plugins-bifmesh-vascular-sweeping-mesher">
+<span id="sec-ref-plugins-bifmesh"></span><h1>34. <code class="xref py py-mod docutils literal"><span class="pre">plugins.bifmesh</span></code> &#8212; Vascular Sweeping Mesher<a class="headerlink" href="#plugins-bifmesh-vascular-sweeping-mesher" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -234,7 +146,7 @@ TRICK: in order to make the mapping working for an arbitrary number of sections 
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -244,22 +156,22 @@ TRICK: in order to make the mapping working for an arbitrary number of sections 
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="plugins.calpy_itf.html" title="&lt;no title&gt;"
+          <a href="plugins.cameratools.html" title="35. plugins.cameratools — Camera tools"
              >next</a> |</li>
         <li class="right" >
           <a href="gui.toolbar.html" title="33. gui.toolbar — Toolbars for the pyFormex GUI."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>

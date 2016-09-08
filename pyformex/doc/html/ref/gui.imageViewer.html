@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>31. gui.imageViewer — A general image viewer &mdash; pyFormex 1.0.2-a5 documentation</title>
+    <title>31. gui.imageViewer — A general image viewer &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -42,7 +42,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.2-a5',
+        VERSION:     '1.0.2-a6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  false
@@ -51,14 +51,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pyFormex 1.0.2-a5 documentation" href="../index.html" />
+    <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
     <link rel="next" title="32. gui.appMenu — Menu with pyFormex apps." href="gui.appMenu.html" />
     <link rel="prev" title="30. gui.image — Saving OpenGL renderings to image files." href="gui.image.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header">
   <a href="http://pyformex.org">
@@ -67,7 +67,7 @@
   </a>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,11 +82,11 @@
         <li class="right" >
           <a href="gui.image.html" title="30. gui.image — Saving OpenGL renderings to image files."
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div align="center">
 
@@ -101,7 +101,7 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">31. <tt class="docutils literal"><span class="pre">gui.imageViewer</span></tt> &#8212; A general image viewer</a><ul>
+<li><a class="reference internal" href="#">31. <code class="docutils literal"><span class="pre">gui.imageViewer</span></code> &#8212; A general image viewer</a><ul>
 <li><a class="reference internal" href="#classes-defined-in-module-gui-imageviewer">31.1. Classes defined in module gui.imageViewer</a></li>
 <li><a class="reference internal" href="#functions-defined-in-module-gui-imageviewer">31.2. Functions defined in module gui.imageViewer</a></li>
 </ul>
@@ -111,22 +111,19 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="gui.image.html"
-                        title="previous chapter">30. <tt class="docutils literal"><span class="pre">gui.image</span></tt> &#8212; Saving OpenGL renderings to image files.</a></p>
+                        title="previous chapter">30. <code class="docutils literal"><span class="pre">gui.image</span></code> &#8212; Saving OpenGL renderings to image files.</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="gui.appMenu.html"
-                        title="next chapter">32. <tt class="docutils literal"><span class="pre">gui.appMenu</span></tt> &#8212; Menu with pyFormex apps.</a></p>
+                        title="next chapter">32. <code class="docutils literal"><span class="pre">gui.appMenu</span></code> &#8212; Menu with pyFormex apps.</a></p>
   
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
@@ -146,16 +143,16 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-gui.imageViewer">
-<span id="gui-imageviewer-a-general-image-viewer"></span><span id="sec-ref-gui-imageviewer"></span><h1>31. <a class="reference internal" href="#module-gui.imageViewer" title="gui.imageViewer: A general image viewer"><tt class="xref py py-mod docutils literal"><span class="pre">gui.imageViewer</span></tt></a> &#8212; A general image viewer<a class="headerlink" href="#module-gui.imageViewer" title="Permalink to this headline">¶</a></h1>
+<span id="gui-imageviewer-a-general-image-viewer"></span><span id="sec-ref-gui-imageviewer"></span><h1>31. <a class="reference internal" href="#module-gui.imageViewer" title="gui.imageViewer: A general image viewer"><code class="xref py py-mod docutils literal"><span class="pre">gui.imageViewer</span></code></a> &#8212; A general image viewer<a class="headerlink" href="#module-gui.imageViewer" title="Permalink to this headline">¶</a></h1>
 <p>Part of this code was borrowed from the TrollTech Qt examples.</p>
 <div class="section" id="classes-defined-in-module-gui-imageviewer">
 <h2>31.1. Classes defined in module gui.imageViewer<a class="headerlink" href="#classes-defined-in-module-gui-imageviewer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gui.imageViewer.ImageViewer">
-<em class="property">class </em><tt class="descclassname">gui.imageViewer.</tt><tt class="descname">ImageViewer</tt><big>(</big><em>parent=None</em>, <em>path=None</em><big>)</big><a class="headerlink" href="#gui.imageViewer.ImageViewer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gui.imageViewer.</code><code class="descname">ImageViewer</code><span class="sig-paren">(</span><em>parent=None</em>, <em>path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.imageViewer.ImageViewer" title="Permalink to this definition">¶</a></dt>
 <dd><p>pyFormex image viewer</p>
 <p>The pyFormex image viewer was shaped after the Image Viewer from the
 TrollTech Qt documentation.</p>
@@ -181,7 +178,7 @@ an image to be displayed. The image can be resized to fit a window.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -196,17 +193,17 @@ an image to be displayed. The image can be resized to fit a window.</p>
         <li class="right" >
           <a href="gui.image.html" title="30. gui.image — Saving OpenGL renderings to image files."
              >previous</a> |</li>
-        <li><a href="../index.html">pyFormex 1.0.2-a5 documentation</a> &gt;</li>
-          <li><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Jun 18, 2016.
+      Last updated on Sep 08, 2016.
     <span class="right">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
     </div>
   </body>
