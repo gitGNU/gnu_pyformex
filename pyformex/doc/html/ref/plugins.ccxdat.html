@@ -99,6 +99,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">36. <code class="docutils literal"><span class="pre">plugins.ccxdat</span></code> &#8212;</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-ccxdat">36.1. Classes defined in module plugins.ccxdat</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-ccxdat">36.2. Functions defined in module plugins.ccxdat</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.cameratools.html"
@@ -136,8 +145,52 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="plugins-ccxdat">
-<span id="sec-ref-plugins-ccxdat"></span><h1>36. <code class="xref py py-mod docutils literal"><span class="pre">plugins.ccxdat</span></code> &#8212;<a class="headerlink" href="#plugins-ccxdat" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-plugins.ccxdat">
+<span id="plugins-ccxdat"></span><span id="sec-ref-plugins-ccxdat"></span><h1>36. <a class="reference internal" href="#module-plugins.ccxdat" title="plugins.ccxdat"><code class="xref py py-mod docutils literal"><span class="pre">plugins.ccxdat</span></code></a> &#8212;<a class="headerlink" href="#module-plugins.ccxdat" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes-defined-in-module-plugins-ccxdat">
+<h2>36.1. Classes defined in module plugins.ccxdat<a class="headerlink" href="#classes-defined-in-module-plugins-ccxdat" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-plugins-ccxdat">
+<h2>36.2. Functions defined in module plugins.ccxdat<a class="headerlink" href="#functions-defined-in-module-plugins-ccxdat" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.ccxdat.readDispl">
+<code class="descclassname">plugins.ccxdat.</code><code class="descname">readDispl</code><span class="sig-paren">(</span><em>fil</em>, <em>nnodes</em>, <em>nres</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.ccxdat.readDispl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read displacements from a Calculix .dat file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.ccxdat.readStress">
+<code class="descclassname">plugins.ccxdat.</code><code class="descname">readStress</code><span class="sig-paren">(</span><em>fil</em>, <em>nelems</em>, <em>ngp</em>, <em>nres</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.ccxdat.readStress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read stresses from a Calculix .dat file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.ccxdat.readResults">
+<code class="descclassname">plugins.ccxdat.</code><code class="descname">readResults</code><span class="sig-paren">(</span><em>fn</em>, <em>DB</em>, <em>nnodes</em>, <em>nelems</em>, <em>ngp</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.ccxdat.readResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read Calculix results file for nnodes, nelems, ngp</p>
+<p>Add results to the specified DB</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.ccxdat.createResultDB">
+<code class="descclassname">plugins.ccxdat.</code><code class="descname">createResultDB</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.ccxdat.createResultDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a results database for the given FE model</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.ccxdat.addFeResult">
+<code class="descclassname">plugins.ccxdat.</code><code class="descname">addFeResult</code><span class="sig-paren">(</span><em>DB</em>, <em>step</em>, <em>time</em>, <em>result</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.ccxdat.addFeResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an FeResult for a time step to the result DB</p>
+<p>This is currently 2D only</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.ccxdat.computeAveragedNodalStresses">
+<code class="descclassname">plugins.ccxdat.</code><code class="descname">computeAveragedNodalStresses</code><span class="sig-paren">(</span><em>M</em>, <em>data</em>, <em>gprule</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.ccxdat.computeAveragedNodalStresses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute averaged nodal stresses from GP stresses in 2D quad8 mesh</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -169,7 +222,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

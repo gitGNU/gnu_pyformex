@@ -196,7 +196,7 @@ path, these modules are in no way different from other pyFormex modules.
    ref/plugins.web
    ref/plugins.webgl
 
-..   ref/plugins.calpy_itf
+   ref/plugins.calpy_itf
 
 ..   ref/centerline  still relevant?
 ..   ref/draw2d   gives errors on py2rst
@@ -288,4 +288,3 @@ elsewhere.
 .. ref/track    errors on py2rst
 
 .. End
-

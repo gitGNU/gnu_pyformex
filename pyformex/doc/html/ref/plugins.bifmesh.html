@@ -99,6 +99,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">34. <code class="docutils literal"><span class="pre">plugins.bifmesh</span></code> &#8212; Vascular Sweeping Mesher</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-bifmesh">34.1. Classes defined in module plugins.bifmesh</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-bifmesh">34.2. Functions defined in module plugins.bifmesh</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="gui.toolbar.html"
@@ -136,8 +145,84 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="plugins-bifmesh-vascular-sweeping-mesher">
-<span id="sec-ref-plugins-bifmesh"></span><h1>34. <code class="xref py py-mod docutils literal"><span class="pre">plugins.bifmesh</span></code> &#8212; Vascular Sweeping Mesher<a class="headerlink" href="#plugins-bifmesh-vascular-sweeping-mesher" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-plugins.bifmesh">
+<span id="plugins-bifmesh-vascular-sweeping-mesher"></span><span id="sec-ref-plugins-bifmesh"></span><h1>34. <a class="reference internal" href="#module-plugins.bifmesh" title="plugins.bifmesh: Vascular Sweeping Mesher"><code class="xref py py-mod docutils literal"><span class="pre">plugins.bifmesh</span></code></a> &#8212; Vascular Sweeping Mesher<a class="headerlink" href="#module-plugins.bifmesh" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes-defined-in-module-plugins-bifmesh">
+<h2>34.1. Classes defined in module plugins.bifmesh<a class="headerlink" href="#classes-defined-in-module-plugins-bifmesh" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-plugins-bifmesh">
+<h2>34.2. Functions defined in module plugins.bifmesh<a class="headerlink" href="#functions-defined-in-module-plugins-bifmesh" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.bifmesh.structuredQuadMeshGrid">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">structuredQuadMeshGrid</code><span class="sig-paren">(</span><em>sgx=3</em>, <em>sgy=3</em>, <em>isopquad=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.structuredQuadMeshGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>it returns nodes (2D) and elems of a structured quadrilateral grid. nodes and elements are both ordered first vertically (y) and then orizontally (x). This function is the equivalent of simple.rectangularGrid but on the mesh level.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.bifmesh.structuredHexMeshGrid">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">structuredHexMeshGrid</code><span class="sig-paren">(</span><em>dx</em>, <em>dy</em>, <em>dz</em>, <em>isophex='hex64'</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.structuredHexMeshGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>it builds a structured hexahedral grid with nodes and elements both numbered in a structured way: first along z, then along y,and then along x. The resulting hex cells are oriented along z. This function is the equivalent of simple.rectangularGrid but for a mesh. Additionally, dx,dy,dz can be either integers or div (1D list or array). In case of list/array, first and last numbers should be 0.0 and 1.0 if the desired grid has to be inside the region 0.,0.,0. to 1.,1.,1.
+TODO: include other optons to get the control points for other isoparametric transformation for hex.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.bifmesh.findBisectrixUsingPlanes">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">findBisectrixUsingPlanes</code><span class="sig-paren">(</span><em>cpx</em>, <em>centx</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.findBisectrixUsingPlanes" title="Permalink to this definition">¶</a></dt>
+<dd><p>it returns a bisectrix-points at each point of a Polygon (unit vector of the bisectrix). All the bisectrix-points are on the side of centx (inside the Polygon), regardless to the concavity or convexity of the angle, thus avoiding the problem of collinear or concave segments. The points will point towards the centx if the centx is offplane. It uses the lines from intersection of 2 planes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.bifmesh.cpBoundaryLayer">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">cpBoundaryLayer</code><span class="sig-paren">(</span><em>BS</em>, <em>centr</em>, <em>issection0=False</em>, <em>bl_rel=0.2</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.cpBoundaryLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>it takes n points of a nearly circular section (for the isop transformation, n should be 24, 48 etc) and find the control points needed for the boundary layer. The center of the section has to be given separately.
+-issection0 needs to be True only for the section-0 of each branch of a bifurcation, which has to share the control points with the other branches. So it must be False for all other sections and single vessels.
+This implementation for the bl (separated from the inner lumen) is needed to ensure an optimal mesh quality at the boundary layer in terms of angular skewness, needed for WSS calculation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.bifmesh.cpQuarterLumen">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">cpQuarterLumen</code><span class="sig-paren">(</span><em>lumb</em>, <em>centp</em>, <em>edgesq=0.75</em>, <em>diag=0.848528137423857</em>, <em>verbos=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.cpQuarterLumen" title="Permalink to this definition">¶</a></dt>
+<dd><p>control points for 1 quarter of lumen mapped in quad regions. lumb is a set of points on a quarter of section. centp is the center of the section. The number of poin I found that edgesq=0.75, diag=0.6*2**0.5 give the better mapping. Also possible edgesq=0.4, diag=0.42*2**0.5. Currently, it is not perfect if the section is not planar.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.bifmesh.visualizeSubmappingQuadRegion">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">visualizeSubmappingQuadRegion</code><span class="sig-paren">(</span><em>sqr</em>, <em>timewait=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.visualizeSubmappingQuadRegion" title="Permalink to this definition">¶</a></dt>
+<dd><p>visualilze the control points (-1,16,3) in each submapped region and check the quality of the region (which will be inherited by the mesh crossectionally)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.bifmesh.cpOneSection">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">cpOneSection</code><span class="sig-paren">(</span><em>hc</em>, <em>oc=None</em>, <em>isBranchingSection=False</em>, <em>verbos=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.cpOneSection" title="Permalink to this definition">¶</a></dt>
+<dd><p>hc is a numbers of points on the boundary line of 1 almost circular section. oc is the center point of the section. It returns 3 groups of control points: for the inner part, for the transitional part and for the boundary layer of one single section</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.bifmesh.cpAllSections">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">cpAllSections</code><span class="sig-paren">(</span><em>HC, OC, start_end_branching=[False, False]</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.cpAllSections" title="Permalink to this definition">¶</a></dt>
+<dd><p>control points of all sections divided  in 3 groups of control points: for the inner part, for the transitional part and for the boundary layer. if start_end_branching is [True,True] the first and the last section are considered bifurcation sections and therefore meshed differently.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.bifmesh.cpStackQ16toH64">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">cpStackQ16toH64</code><span class="sig-paren">(</span><em>cpq16</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.cpStackQ16toH64" title="Permalink to this definition">¶</a></dt>
+<dd><p>sweeping trick: from sweeping sections longitudinally to mapping hex64: ittakes -1,16,3 (cp of the quad16) and groups them in -1,64,3 (cp of the hex63) but slice after slice: [0,1,2,3],[1,2,3,4],[2,3,4,5],... It is a trick to use the hex64 for sweeping along an arbitrary number of sections.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.bifmesh.mapHexLong">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">mapHexLong</code><span class="sig-paren">(</span><em>mesh_block</em>, <em>cpvr</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.mapHexLong" title="Permalink to this definition">¶</a></dt>
+<dd><p>map a structured mesh (n_block, e_block, cp_block are in mesh_block) into a volume defined by the control points cpvr (# regions longitudinally, # regions in 1 cross sectionsm, 64, 3 ). cp_block are the control points of the mesh block. It returns nodes and elements. Nodes are repeated in subsequently mapped regions !
+TRICK: in order to make the mapping working for an arbitrary number of sections the following trick is used: of the whole mesh_block, only the part located between the points 1&#8211;2 is meshed and mapped between 2 slices only. Thus, the other parts 0&#8211;1 and 2&#8211;3 are not mapped. To do so, the first and the last slice need to be meshed separately: n_start 0&#8211;1 and n_end 2&#8211;3.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.bifmesh.mapQuadLong">
+<code class="descclassname">plugins.bifmesh.</code><code class="descname">mapQuadLong</code><span class="sig-paren">(</span><em>mesh_block</em>, <em>cpvr</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.bifmesh.mapQuadLong" title="Permalink to this definition">¶</a></dt>
+<dd><p>TRICK: in order to make the mapping working for an arbitrary number of sections the following trick is used: of the whole mesh_block, only the part located between the points 1&#8211;2 is meshed and mapped between 2 slices only. Thus, the other parts 0&#8211;1 and 2&#8211;3 are not mapped. To do so, the first and the last slice need to be meshed separately: n_start 0&#8211;1 and n_end 2&#8211;3.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -169,7 +254,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

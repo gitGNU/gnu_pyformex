@@ -463,7 +463,7 @@ directly.</p>
 <p>The first two lines define two concentrated loads: <code class="docutils literal"><span class="pre">P1</span></code> consists of three
 point loads in each of the coordinate directions; P2 contains three force
 moments around the axes. The third line specifies a boundary condition where the
-first DOF (usually displacement in <span class="math">x</span>-direction) is constrained, while
+first DOF (usually displacement in <img class="math" src="_images/math/a59f68a4202623bb859a7093f0316bf466e6f75d.png" alt="x"/>-direction) is constrained, while
 the remaining 5 DOF&#8217;s are free. The next line defines a local coordinate system,
 in this case a cylindrical coordinate system with axis pointing from point
 <code class="docutils literal"><span class="pre">[0.,0.,0.]</span></code> to point <code class="docutils literal"><span class="pre">[0.,0.,1.]</span></code>. The last line</p>
@@ -528,11 +528,11 @@ constructor takes two arguments:</p>
 <li>a string defining the type of coordinate system, either &#8216;Rectangular&#8217;,
 &#8216;Cylindrical&#8217; or &#8216;Spherical&#8217; (the first character suffices), and</li>
 <li>a list of 6 coordinates, specifying two points A and B. With &#8216;R&#8217;, A is on the
-new <span class="math">x</span>-axis and B is on the new &#8216;<span class="math">y</span> axis. With &#8216;C&#8217; and &#8216;S&#8217;, AB
+new <img class="math" src="_images/math/a59f68a4202623bb859a7093f0316bf466e6f75d.png" alt="x"/>-axis and B is on the new &#8216;<img class="math" src="_images/math/276f7e256cbddeb81eee42e1efc348f3cb4ab5f8.png" alt="y"/> axis. With &#8216;C&#8217; and &#8216;S&#8217;, AB
 is the axis of the cylindrical/spherical coordinates.</li>
 </ul>
 <p>Thus, <code class="docutils literal"><span class="pre">CoordSystem('C',[0.,0.,0.,0.,0.,1.])</span></code> defines a cylindrical coordinate
-system with the global <span class="math">z</span> as axis.</p>
+system with the global <img class="math" src="_images/math/683f2dd9129a91d21aaf1c04afa6f78b39d4cb0a.png" alt="z"/> as axis.</p>
 <p><code class="xref py py-class docutils literal"><span class="pre">ElemLoad</span></code> is a distributed load on an element. Its constructor takes two
 arguments:</p>
 <ul class="simple">
@@ -541,7 +541,7 @@ arguments:</p>
 <li>optionally, the name of an amplitude curve.</li>
 </ul>
 <p>E.g., ElemLoad(&#8216;PZ&#8217;,2.5) defines a distributed load of value 2.5 in the
-direction of the <span class="math">z</span>-axis.</p>
+direction of the <img class="math" src="_images/math/683f2dd9129a91d21aaf1c04afa6f78b39d4cb0a.png" alt="z"/>-axis.</p>
 <p><code class="xref py py-class docutils literal"><span class="pre">ElemSection</span></code> can be used to set the material and section properties on
 the elements. It can hold:</p>
 <ul class="simple">
@@ -606,7 +606,7 @@ element section and an element type &#8216;CPS3&#8217; to all elements.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

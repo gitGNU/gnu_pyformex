@@ -99,6 +99,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">27. <code class="docutils literal"><span class="pre">gui.menu</span></code> &#8212; Menus for the pyFormex GUI.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-gui-menu">27.1. Classes defined in module gui.menu</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-gui-menu">27.2. Functions defined in module gui.menu</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="gui.widgets.html"
@@ -136,8 +145,455 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="gui-menu-menus-for-the-pyformex-gui">
-<span id="sec-ref-gui-menu"></span><h1>27. <code class="xref py py-mod docutils literal"><span class="pre">gui.menu</span></code> &#8212; Menus for the pyFormex GUI.<a class="headerlink" href="#gui-menu-menus-for-the-pyformex-gui" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-gui.menu">
+<span id="gui-menu-menus-for-the-pyformex-gui"></span><span id="sec-ref-gui-menu"></span><h1>27. <a class="reference internal" href="#module-gui.menu" title="gui.menu: Menus for the pyFormex GUI."><code class="xref py py-mod docutils literal"><span class="pre">gui.menu</span></code></a> &#8212; Menus for the pyFormex GUI.<a class="headerlink" href="#module-gui.menu" title="Permalink to this headline">¶</a></h1>
+<p>This modules implements specialized classes and functions for building
+the pyFormex GUI menu system.</p>
+<div class="section" id="classes-defined-in-module-gui-menu">
+<h2>27.1. Classes defined in module gui.menu<a class="headerlink" href="#classes-defined-in-module-gui-menu" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.menu.BaseMenu">
+<em class="property">class </em><code class="descclassname">gui.menu.</code><code class="descname">BaseMenu</code><span class="sig-paren">(</span><em>title='AMenu'</em>, <em>parent=None</em>, <em>before=None</em>, <em>items=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu" title="Permalink to this definition">¶</a></dt>
+<dd><p>A general menu class.</p>
+<p>A hierarchical menu that keeps a list of its item names and actions.
+The item names are normalized by removing all &#8216;&amp;&#8217; characters and
+converting the result to lower case.
+It thus becomes easy to search for an existing item in a menu.</p>
+<p>This class is not intended for direct use, but through subclasses.
+Subclasses should implement at least the following methods:</p>
+<ul class="simple">
+<li>addSeparator()</li>
+<li>insertSeperator(before)</li>
+<li>addAction(text,action)</li>
+<li>insertAction(before,text,action)</li>
+<li>addMenu(text,menu)</li>
+<li>insertMenu(before,text,menu)</li>
+</ul>
+<p>QtGui.Menu and QtGui.MenuBar provide these methods.</p>
+<dl class="method">
+<dt id="gui.menu.BaseMenu.actionList">
+<code class="descname">actionList</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.actionList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.actionsLike">
+<code class="descname">actionsLike</code><span class="sig-paren">(</span><em>clas</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.actionsLike" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions of given class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.subMenus">
+<code class="descname">subMenus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.subMenus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the submenus</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the specified item in the actionlist.</p>
+<p>If the requested item is not in the actionlist, -1 is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.action">
+<code class="descname">action</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the action with specified text.</p>
+<p>First, a normal action is tried. If none is found,
+a separator is tried.</p>
+<p>See also <a class="reference internal" href="#gui.menu.BaseMenu.item" title="gui.menu.BaseMenu.item"><code class="xref py py-meth docutils literal"><span class="pre">item()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.item">
+<code class="descname">item</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the item with specified text.</p>
+<p>For a normal action or a separator, an action is returned.
+For a menu action, a menu is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.nextitem">
+<code class="descname">nextitem</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.nextitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the next item.</p>
+<p>This can be used to replace the current item with another menu.
+If the item is the last, None is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.removeItem">
+<code class="descname">removeItem</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.removeItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an item from this menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.insert_sep">
+<code class="descname">insert_sep</code><span class="sig-paren">(</span><em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.insert_sep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert a separator</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.insert_menu">
+<code class="descname">insert_menu</code><span class="sig-paren">(</span><em>menu</em>, <em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.insert_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an existing menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.insert_action">
+<code class="descname">insert_action</code><span class="sig-paren">(</span><em>action</em>, <em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.create_insert_action">
+<code class="descname">create_insert_action</code><span class="sig-paren">(</span><em>name</em>, <em>val</em>, <em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.create_insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.BaseMenu.insertItems">
+<code class="descname">insertItems</code><span class="sig-paren">(</span><em>items</em>, <em>before=None</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.BaseMenu.insertItems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a list of items in the menu.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>items</cite>: a list of menuitem tuples. Each item is a tuple of two
+or three elements: (text, action, options):<ul>
+<li><cite>text</cite>: the text that will be displayed in the menu item.
+It is stored in a normalized way: all lower case and with
+&#8216;&amp;&#8217; removed.</li>
+<li><cite>action</cite>: can be any of the following:<ul>
+<li>a Python function or instance method : it will be called when the
+item is selected,</li>
+<li>a string with the name of a function/method,</li>
+<li>a list of Menu Items: a popup Menu will be created that will
+appear when the item is selected,</li>
+<li>an existing Menu,</li>
+<li>None : this will create a separator item with no action.</li>
+</ul>
+</li>
+<li><cite>options</cite>: optional dictionary with following honoured fields:<ul>
+<li><cite>icon</cite>: the name of an icon to be displayed with the item text.
+This name should be that of one of the icons in the pyFormex
+configured icon dirs.</li>
+<li><cite>shortcut</cite>: is an optional key combination to select the item.</li>
+<li><cite>tooltip</cite>: a text that is displayed as popup help.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><cite>before</cite>: if specified, should be the text <em>or</em> the action of one
+of the items in the Menu (not the items list!): the new list of
+items will be inserted before the specified item.</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.menu.Menu">
+<em class="property">class </em><code class="descclassname">gui.menu.</code><code class="descname">Menu</code><span class="sig-paren">(</span><em>title='UserMenu'</em>, <em>parent=None</em>, <em>before=None</em>, <em>tearoff=False</em>, <em>items=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>A popup/pulldown menu.</p>
+<dl class="method">
+<dt id="gui.menu.Menu.action">
+<code class="descname">action</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the action with specified text.</p>
+<p>First, a normal action is tried. If none is found,
+a separator is tried.</p>
+<p>See also <a class="reference internal" href="#gui.menu.Menu.item" title="gui.menu.Menu.item"><code class="xref py py-meth docutils literal"><span class="pre">item()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.actionList">
+<code class="descname">actionList</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.actionList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.actionsLike">
+<code class="descname">actionsLike</code><span class="sig-paren">(</span><em>clas</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.actionsLike" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions of given class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.create_insert_action">
+<code class="descname">create_insert_action</code><span class="sig-paren">(</span><em>name</em>, <em>val</em>, <em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.create_insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the specified item in the actionlist.</p>
+<p>If the requested item is not in the actionlist, -1 is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.insertItems">
+<code class="descname">insertItems</code><span class="sig-paren">(</span><em>items</em>, <em>before=None</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.insertItems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a list of items in the menu.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>items</cite>: a list of menuitem tuples. Each item is a tuple of two
+or three elements: (text, action, options):<ul>
+<li><cite>text</cite>: the text that will be displayed in the menu item.
+It is stored in a normalized way: all lower case and with
+&#8216;&amp;&#8217; removed.</li>
+<li><cite>action</cite>: can be any of the following:<ul>
+<li>a Python function or instance method : it will be called when the
+item is selected,</li>
+<li>a string with the name of a function/method,</li>
+<li>a list of Menu Items: a popup Menu will be created that will
+appear when the item is selected,</li>
+<li>an existing Menu,</li>
+<li>None : this will create a separator item with no action.</li>
+</ul>
+</li>
+<li><cite>options</cite>: optional dictionary with following honoured fields:<ul>
+<li><cite>icon</cite>: the name of an icon to be displayed with the item text.
+This name should be that of one of the icons in the pyFormex
+configured icon dirs.</li>
+<li><cite>shortcut</cite>: is an optional key combination to select the item.</li>
+<li><cite>tooltip</cite>: a text that is displayed as popup help.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><cite>before</cite>: if specified, should be the text <em>or</em> the action of one
+of the items in the Menu (not the items list!): the new list of
+items will be inserted before the specified item.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.insert_action">
+<code class="descname">insert_action</code><span class="sig-paren">(</span><em>action</em>, <em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.insert_menu">
+<code class="descname">insert_menu</code><span class="sig-paren">(</span><em>menu</em>, <em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.insert_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an existing menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.insert_sep">
+<code class="descname">insert_sep</code><span class="sig-paren">(</span><em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.insert_sep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert a separator</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.item">
+<code class="descname">item</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the item with specified text.</p>
+<p>For a normal action or a separator, an action is returned.
+For a menu action, a menu is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.nextitem">
+<code class="descname">nextitem</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.nextitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the next item.</p>
+<p>This can be used to replace the current item with another menu.
+If the item is the last, None is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.removeItem">
+<code class="descname">removeItem</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.removeItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an item from this menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.Menu.subMenus">
+<code class="descname">subMenus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.Menu.subMenus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the submenus</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.menu.MenuBar">
+<em class="property">class </em><code class="descclassname">gui.menu.</code><code class="descname">MenuBar</code><span class="sig-paren">(</span><em>title='TopMenuBar'</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar" title="Permalink to this definition">¶</a></dt>
+<dd><p>A menu bar allowing easy menu creation.</p>
+<dl class="method">
+<dt id="gui.menu.MenuBar.action">
+<code class="descname">action</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the action with specified text.</p>
+<p>First, a normal action is tried. If none is found,
+a separator is tried.</p>
+<p>See also <a class="reference internal" href="#gui.menu.MenuBar.item" title="gui.menu.MenuBar.item"><code class="xref py py-meth docutils literal"><span class="pre">item()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.actionList">
+<code class="descname">actionList</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.actionList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.actionsLike">
+<code class="descname">actionsLike</code><span class="sig-paren">(</span><em>clas</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.actionsLike" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the current actions of given class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.create_insert_action">
+<code class="descname">create_insert_action</code><span class="sig-paren">(</span><em>name</em>, <em>val</em>, <em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.create_insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the specified item in the actionlist.</p>
+<p>If the requested item is not in the actionlist, -1 is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.insertItems">
+<code class="descname">insertItems</code><span class="sig-paren">(</span><em>items</em>, <em>before=None</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.insertItems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a list of items in the menu.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>items</cite>: a list of menuitem tuples. Each item is a tuple of two
+or three elements: (text, action, options):<ul>
+<li><cite>text</cite>: the text that will be displayed in the menu item.
+It is stored in a normalized way: all lower case and with
+&#8216;&amp;&#8217; removed.</li>
+<li><cite>action</cite>: can be any of the following:<ul>
+<li>a Python function or instance method : it will be called when the
+item is selected,</li>
+<li>a string with the name of a function/method,</li>
+<li>a list of Menu Items: a popup Menu will be created that will
+appear when the item is selected,</li>
+<li>an existing Menu,</li>
+<li>None : this will create a separator item with no action.</li>
+</ul>
+</li>
+<li><cite>options</cite>: optional dictionary with following honoured fields:<ul>
+<li><cite>icon</cite>: the name of an icon to be displayed with the item text.
+This name should be that of one of the icons in the pyFormex
+configured icon dirs.</li>
+<li><cite>shortcut</cite>: is an optional key combination to select the item.</li>
+<li><cite>tooltip</cite>: a text that is displayed as popup help.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><cite>before</cite>: if specified, should be the text <em>or</em> the action of one
+of the items in the Menu (not the items list!): the new list of
+items will be inserted before the specified item.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.insert_action">
+<code class="descname">insert_action</code><span class="sig-paren">(</span><em>action</em>, <em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.insert_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.insert_menu">
+<code class="descname">insert_menu</code><span class="sig-paren">(</span><em>menu</em>, <em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.insert_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an existing menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.insert_sep">
+<code class="descname">insert_sep</code><span class="sig-paren">(</span><em>before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.insert_sep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and insert a separator</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.item">
+<code class="descname">item</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the item with specified text.</p>
+<p>For a normal action or a separator, an action is returned.
+For a menu action, a menu is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.nextitem">
+<code class="descname">nextitem</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.nextitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the next item.</p>
+<p>This can be used to replace the current item with another menu.
+If the item is the last, None is returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.removeItem">
+<code class="descname">removeItem</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.removeItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an item from this menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.MenuBar.subMenus">
+<code class="descname">subMenus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.MenuBar.subMenus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list with the submenus</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.menu.DAction">
+<em class="property">class </em><code class="descclassname">gui.menu.</code><code class="descname">DAction</code><span class="sig-paren">(</span><em>name</em>, <em>icon=None</em>, <em>data=None</em>, <em>signal=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.DAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A DAction is a QAction that emits a signal with a string parameter.</p>
+<p>When triggered, this action sends a signal (default &#8216;CLICKED&#8217;) with a
+custom string as parameter. The connected slot can then act depending
+on this parameter.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.menu.ActionList">
+<em class="property">class </em><code class="descclassname">gui.menu.</code><code class="descname">ActionList</code><span class="sig-paren">(</span><em>actions=[]</em>, <em>function=None</em>, <em>menu=None</em>, <em>toolbar=None</em>, <em>icons=None</em>, <em>text=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.ActionList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Menu and toolbar with named actions.</p>
+<p>An action list is a list of strings, each connected to some action.
+The actions can be presented in a menu and/or a toolbar.
+On activating one of the menu or toolbar buttons, a given signal is
+emitted with the button string as parameter. A fixed function can be
+connected to this signal to act dependent on the string value.</p>
+<dl class="method">
+<dt id="gui.menu.ActionList.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>name</em>, <em>icon=None</em>, <em>text=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.ActionList.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new name to the actions list and create a matching DAction.</p>
+<p>If the actions list has an associated menu or toolbar,
+a matching button will be inserted in each of these.
+If an icon is specified, it will be used on the menu and toolbar.
+The icon is either a filename or a QIcon object.
+If text is specified, it is displayed instead of the action&#8217;s name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.ActionList.names">
+<code class="descname">names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.ActionList.names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an ordered list of names of the action items.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.menu.ActionList.toolbar">
+<code class="descname">toolbar</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.ActionList.toolbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new toolbar corresponding to the menu.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-gui-menu">
+<h2>27.2. Functions defined in module gui.menu<a class="headerlink" href="#functions-defined-in-module-gui-menu" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gui.menu.resetWarnings">
+<code class="descclassname">gui.menu.</code><code class="descname">resetWarnings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.resetWarnings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the warning filters to the default.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.menu.createMenuData">
+<code class="descclassname">gui.menu.</code><code class="descname">createMenuData</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.menu.createMenuData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the default pyFormex GUI menu data.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -169,7 +625,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

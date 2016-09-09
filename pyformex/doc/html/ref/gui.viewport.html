@@ -99,6 +99,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">29. <code class="docutils literal"><span class="pre">gui.viewport</span></code> &#8212; Interactive OpenGL Canvas embedded in a Qt4 widget.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-gui-viewport">29.1. Classes defined in module gui.viewport</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-gui-viewport">29.2. Functions defined in module gui.viewport</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="gui.colorscale.html"
@@ -136,8 +145,1153 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="gui-viewport-interactive-opengl-canvas-embedded-in-a-qt4-widget">
-<span id="sec-ref-gui-viewport"></span><h1>29. <code class="xref py py-mod docutils literal"><span class="pre">gui.viewport</span></code> &#8212; Interactive OpenGL Canvas embedded in a Qt4 widget.<a class="headerlink" href="#gui-viewport-interactive-opengl-canvas-embedded-in-a-qt4-widget" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-gui.viewport">
+<span id="gui-viewport-interactive-opengl-canvas-embedded-in-a-qt4-widget"></span><span id="sec-ref-gui-viewport"></span><h1>29. <a class="reference internal" href="#module-gui.viewport" title="gui.viewport: Interactive OpenGL Canvas embedded in a Qt4 widget."><code class="xref py py-mod docutils literal"><span class="pre">gui.viewport</span></code></a> &#8212; Interactive OpenGL Canvas embedded in a Qt4 widget.<a class="headerlink" href="#module-gui.viewport" title="Permalink to this headline">¶</a></h1>
+<p>This module implements user interaction with the OpenGL canvas defined in
+module <code class="xref py py-mod docutils literal"><span class="pre">canvas</span></code>.
+<cite>QtCanvas</cite> is a single interactive OpenGL canvas, while <cite>MultiCanvas</cite>
+implements a dynamic array of multiple canvases.</p>
+<div class="section" id="classes-defined-in-module-gui-viewport">
+<h2>29.1. Classes defined in module gui.viewport<a class="headerlink" href="#classes-defined-in-module-gui-viewport" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.viewport.CursorShapeHandler">
+<em class="property">class </em><code class="descclassname">gui.viewport.</code><code class="descname">CursorShapeHandler</code><span class="sig-paren">(</span><em>widget</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.CursorShapeHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for handling the mouse cursor shape on the Canvas.</p>
+<dl class="method">
+<dt id="gui.viewport.CursorShapeHandler.setCursorShape">
+<code class="descname">setCursorShape</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.CursorShapeHandler.setCursorShape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the cursor shape to shape</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.CursorShapeHandler.setCursorShapeFromFunc">
+<code class="descname">setCursorShapeFromFunc</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.CursorShapeHandler.setCursorShapeFromFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the cursor shape to shape</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.viewport.CanvasMouseHandler">
+<em class="property">class </em><code class="descclassname">gui.viewport.</code><code class="descname">CanvasMouseHandler</code><a class="headerlink" href="#gui.viewport.CanvasMouseHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for handling the mouse events on the Canvas.</p>
+<dl class="method">
+<dt id="gui.viewport.CanvasMouseHandler.getMouseFunc">
+<code class="descname">getMouseFunc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.CanvasMouseHandler.getMouseFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the mouse function bound to self.button and self.mod</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.viewport.QtCanvas">
+<em class="property">class </em><code class="descclassname">gui.viewport.</code><code class="descname">QtCanvas</code><span class="sig-paren">(</span><em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>A canvas for OpenGL rendering.</p>
+<p>This class provides interactive functionality for the OpenGL canvas
+provided by the <code class="xref py py-class docutils literal"><span class="pre">canvas.Canvas</span></code> class.</p>
+<p>Interactivity is highly dependent on Qt4. Putting the interactive
+functions in a separate class makes it esier to use the Canvas class
+in non-interactive situations or combining it with other GUI toolsets.</p>
+<p>The QtCanvas constructor may have positional and keyword arguments. The
+positional arguments are passed to the QtOpenGL.QGLWidget constructor,
+while the keyword arguments are passed to the canvas.Canvas constructor.</p>
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.getSize">
+<code class="descname">getSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.getSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the size of this canvas</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.saneSize">
+<code class="descname">saneSize</code><span class="sig-paren">(</span><em>width=0</em>, <em>height=0</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.saneSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a cleverly resized canvas size.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>width</cite>: int: requested width in pixels. Set automatically if &lt;= 0.</li>
+<li><cite>height</cite>: int: requested height in pixels. Set automatically if &lt;= 0.</li>
+</ul>
+<p>Returns a tuple of positive integers (width,height).</p>
+<p>If both specified values are positive, returns the values unchanged.
+If only one of the values is positive, returns that value unchanged,
+while the other one is determined automatically from the aspect ratio
+of the current canvas.
+If both values are &lt;=0, returns the current canvas size.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.changeSize">
+<code class="descname">changeSize</code><span class="sig-paren">(</span><em>width</em>, <em>height</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.changeSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize the canvas to (width x height).</p>
+<p>If a negative value is given for either width or height,
+the corresponding size is set equal to the maximum visible size
+(the size of the central widget of the main window).</p>
+<p>Note that this may not have the expected result when multiple
+viewports are used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.image">
+<code class="descname">image</code><span class="sig-paren">(</span><em>w=None</em>, <em>h=None</em>, <em>remove_alpha=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current OpenGL rendering in an image format.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>w</cite>, <cite>h</cite>: requested size (in pixels) of the image. The default
+is to use the current canvas size. If only one is specified,
+the aspect ratio of the current canvas is kept.</li>
+<li><cite>remove_alpha</cite>: bool. If True (default), the alpha channel is
+removed from the image.</li>
+</ul>
+<p>Returns the current OpenGL rendering as a QImage of the specified
+size.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.rgb">
+<code class="descname">rgb</code><span class="sig-paren">(</span><em>w=None</em>, <em>h=None</em>, <em>remove_alpha=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.rgb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current OpenGL rendering in an array format.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>w</cite>, <cite>h</cite>: requested size (in pixels) of the image. The default
+is to use the current canvas size. If only one is specified,
+the aspect ratio of the current canvas is kept.</li>
+<li><cite>remove_alpha</cite>: bool. If True (default), the alpha channel is
+removed from the image.</li>
+</ul>
+<p>Returns the current OpenGL rendering as a numpy array of
+type uint and shape (w,h,3) if remove_alpha is True (default)
+or shape (w,h,4) if remove_alpha is False.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.outline">
+<code class="descname">outline</code><span class="sig-paren">(</span><em>size=(0</em>, <em>0)</em>, <em>profile='luminance'</em>, <em>level=0.5</em>, <em>bgcolor=None</em>, <em>nproc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.outline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the outline of the current rendering</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>size</cite>: a tuple of ints (w,h) specifying the size of the image to
+be used in outline detection. A non-positive value will be set
+automatically from the current canvas size or aspect ratio.</li>
+<li><cite>profile</cite>: the function used to translate pixel colors into a single
+value. The default is to use the luminance of the pixel color.</li>
+<li><cite>level</cite>: isolevel at which to construct the outline.</li>
+<li><cite>bgcolor</cite>: a color that is to be interpreted as background color
+and will get a pixel value -0.5.</li>
+<li><cite>nproc</cite>: number of processors to be used in the image processing.
+Default is to use as many as available.</li>
+</ul>
+<p>Returns the outline as a Formex of plexitude 2.</p>
+<p>Note:</p>
+<ul class="simple">
+<li>&#8216;luminance&#8217; is currently the only profile implemented.</li>
+<li><cite>bgcolor</cite> is currently experimental.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setCursorShape">
+<code class="descname">setCursorShape</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setCursorShape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the cursor shape to shape</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setCursorShapeFromFunc">
+<code class="descname">setCursorShapeFromFunc</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setCursorShapeFromFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the cursor shape to shape</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.getMouseFunc">
+<code class="descname">getMouseFunc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.getMouseFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the mouse function bound to self.button and self.mod</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.mouse_rectangle">
+<code class="descname">mouse_rectangle</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.mouse_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process mouse events during interactive rectangle zooming.</p>
+<p>On PRESS, record the mouse position.
+On MOVE, create a rectangular zoom window.
+On RELEASE, zoom to the picked rectangle.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.start_selection">
+<code class="descname">start_selection</code><span class="sig-paren">(</span><em>mode</em>, <em>filter</em>, <em>pickable=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.start_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start an interactive picking mode.</p>
+<p>If selection mode was already started, mode is disregarded and
+this can be used to change the filter method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.wait_selection">
+<code class="descname">wait_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.wait_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for the user to interactively make a selection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.finish_selection">
+<code class="descname">finish_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.finish_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>End an interactive picking mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.accept_selection">
+<code class="descname">accept_selection</code><span class="sig-paren">(</span><em>clear=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.accept_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept or cancel an interactive picking mode.</p>
+<p>If clear == True, the current selection is cleared.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.cancel_selection">
+<code class="descname">cancel_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.cancel_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel an interactive picking mode and clear the selection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.pick">
+<code class="descname">pick</code><span class="sig-paren">(</span><em>mode='actor'</em>, <em>oneshot=False</em>, <em>func=None</em>, <em>filter=None</em>, <em>pickable=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.pick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interactively pick objects from the viewport.</p>
+<ul>
+<li><p class="first"><cite>mode</cite>: defines what to pick : one of
+<code class="docutils literal"><span class="pre">['actor','element','point','number','edge']</span></code></p>
+</li>
+<li><p class="first"><cite>oneshot</cite>: if True, the function returns as soon as the user ends
+a picking operation. The default is to let the user
+modify his selection and only to return after an explicit
+cancel (ESC or right mouse button).</p>
+</li>
+<li><p class="first"><cite>func</cite>: if specified, this function will be called after each
+atomic pick operation. The Collection with the currently selected
+objects is passed as an argument. This can e.g. be used to highlight
+the selected objects during picking.</p>
+</li>
+<li><p class="first"><cite>filter</cite>: defines what elements to retain from the selection: one of
+<code class="docutils literal"><span class="pre">[None,'single','closest,'connected']</span></code>.</p>
+<ul>
+<li><p class="first">None (default) will return the complete selection.</p>
+</li>
+<li><p class="first">&#8216;closest&#8217; will only keep the element closest to the user.</p>
+</li>
+<li><p class="first">&#8216;connected&#8217; will only keep elements connected to</p>
+<ul class="simple">
+<li>the closest element (set picked)</li>
+<li>what is already in the selection (add picked).</li>
+</ul>
+<p>Currently this only works when picking mode is &#8216;element&#8217; and
+for Actors having a partitionByConnection method.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Returns a (possibly empty) Collection with the picked items.
+After return, the value of the pf.canvas.selection_accepted variable
+can be tested to find how the picking operation was exited:
+True means accepted (right mouse click, ENTER key, or OK button),
+False means canceled (ESC key, or Cancel button). In the latter case,
+the returned Collection is always empty</p>
+<p>Small bugs:
+- if oneshot=True the pf.canvas.selection_accepted is always True, even if you ESC
+- the first time you pick the ESC does not work. You need at least to left click before.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.pickNumbers">
+<code class="descname">pickNumbers</code><span class="sig-paren">(</span><em>*args</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.pickNumbers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Go into number picking mode and return the selection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.idraw">
+<code class="descname">idraw</code><span class="sig-paren">(</span><em>mode='point'</em>, <em>npoints=-1</em>, <em>zplane=0.0</em>, <em>func=None</em>, <em>coords=None</em>, <em>preview=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.idraw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interactively draw on the canvas.</p>
+<p>This function allows the user to interactively create points in 3D
+space and collects the subsequent points in a Coords object. The
+interpretation of these points is left to the caller.</p>
+<ul class="simple">
+<li><cite>mode</cite>: one of the drawing modes, specifying the kind of objects you
+want to draw. This is passed to the specified <cite>func</cite>.</li>
+<li><cite>npoints</cite>: If -1, the user can create any number of points. When &gt;=0,
+the function will return when the total number of points in the
+collection reaches the specified value.</li>
+<li><cite>zplane</cite>: the depth of the z-plane on which the 2D drawing is done.</li>
+<li><cite>func</cite>: a function that is called after each atomic drawing
+operation. It is typically used to draw a preview using the current
+set of points. The function is passed the current Coords and the
+<cite>mode</cite> as arguments.</li>
+<li><cite>coords</cite>: an initial set of coordinates to which the newly created
+points should be added. If specified, <cite>npoints</cite> also counts these
+initial points.</li>
+<li><cite>preview</cite>: <strong>Experimental</strong> If True, the preview funcion will also
+be called during mouse movement with a pressed button, allowing to
+preview the result before a point is created.</li>
+</ul>
+<p>The drawing operation is finished when the number of requested points
+has been reached, or when the user clicks the right mouse button or
+hits &#8216;ENTER&#8217;.
+The return value is a (n,3) shaped Coords array.
+To know in which way the drawing was finished check the pf.canvas.draw_accepted:
+True means mouse right click / ENTER, False means ESC button on keyboard.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.start_draw">
+<code class="descname">start_draw</code><span class="sig-paren">(</span><em>mode</em>, <em>zplane</em>, <em>coords</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.start_draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start an interactive drawing mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.finish_draw">
+<code class="descname">finish_draw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.finish_draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>End an interactive drawing mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.accept_draw">
+<code class="descname">accept_draw</code><span class="sig-paren">(</span><em>clear=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.accept_draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel an interactive drawing mode.</p>
+<p>If clear == True, the current drawing is cleared.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.cancel_draw">
+<code class="descname">cancel_draw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.cancel_draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel an interactive drawing mode and clear the drawing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.mouse_draw">
+<code class="descname">mouse_draw</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.mouse_draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process mouse events during interactive drawing.</p>
+<p>On PRESS, do nothing.
+On MOVE, do nothing.
+On RELEASE, add the point to the point list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.drawLinesInter">
+<code class="descname">drawLinesInter</code><span class="sig-paren">(</span><em>mode='line'</em>, <em>oneshot=False</em>, <em>func=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.drawLinesInter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interactively draw lines on the canvas.</p>
+<ul class="simple">
+<li>oneshot: if True, the function returns as soon as the user ends
+a drawing operation. The default is to let the user
+draw multiple lines and only to return after an explicit
+cancel (ESC or right mouse button).</li>
+<li>func: if specified, this function will be called after each
+atomic drawing operation. The current drawing is passed as
+an argument. This can e.g. be used to show the drawing.</li>
+</ul>
+<p>When the drawing operation is finished, the drawing is returned.
+The return value is a (n,2,2) shaped array.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.start_drawing">
+<code class="descname">start_drawing</code><span class="sig-paren">(</span><em>mode</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.start_drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start an interactive line drawing mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.wait_drawing">
+<code class="descname">wait_drawing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.wait_drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for the user to interactively draw a line.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.finish_drawing">
+<code class="descname">finish_drawing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.finish_drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>End an interactive drawing mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.accept_drawing">
+<code class="descname">accept_drawing</code><span class="sig-paren">(</span><em>clear=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.accept_drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel an interactive drawing mode.</p>
+<p>If clear == True, the current drawing is cleared.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.cancel_drawing">
+<code class="descname">cancel_drawing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.cancel_drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel an interactive drawing mode and clear the drawing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.edit_drawing">
+<code class="descname">edit_drawing</code><span class="sig-paren">(</span><em>mode</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.edit_drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edit an interactive drawing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.dynarot">
+<code class="descname">dynarot</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.dynarot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform dynamic rotation operation.</p>
+<p>This function processes mouse button events controlling a dynamic
+rotation operation. The action is one of PRESS, MOVE or RELEASE.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.dynapan">
+<code class="descname">dynapan</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.dynapan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform dynamic pan operation.</p>
+<p>This function processes mouse button events controlling a dynamic
+pan operation. The action is one of PRESS, MOVE or RELEASE.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.dynazoom">
+<code class="descname">dynazoom</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.dynazoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform dynamic zoom operation.</p>
+<p>This function processes mouse button events controlling a dynamic
+zoom operation. The action is one of PRESS, MOVE or RELEASE.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.wheel_zoom">
+<code class="descname">wheel_zoom</code><span class="sig-paren">(</span><em>delta</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.wheel_zoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoom by rotating a wheel over an angle delta</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.emit_done">
+<code class="descname">emit_done</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.emit_done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emit a DONE event by clicking the mouse.</p>
+<p>This is equivalent to pressing the ENTER button.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.emit_cancel">
+<code class="descname">emit_cancel</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.emit_cancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emit a CANCEL event by clicking the mouse.</p>
+<p>This is equivalent to pressing the ESC button.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.draw_state_rect">
+<code class="descname">draw_state_rect</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.draw_state_rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store the pos and draw a rectangle to it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.mouse_pick">
+<code class="descname">mouse_pick</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.mouse_pick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process mouse events during interactive picking.</p>
+<p>On PRESS, record the mouse position.
+On MOVE, create a rectangular picking window.
+On RELEASE, pick the objects inside the rectangle.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.draw_state_line">
+<code class="descname">draw_state_line</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.draw_state_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store the pos and draw a line to it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.mouse_draw_line">
+<code class="descname">mouse_draw_line</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.mouse_draw_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process mouse events during interactive drawing.</p>
+<p>On PRESS, record the mouse position.
+On MOVE, draw a line.
+On RELEASE, add the line to the drawing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.mousePressEvent">
+<code class="descname">mousePressEvent</code><span class="sig-paren">(</span><em>e</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process a mouse press event.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.mouseMoveEvent">
+<code class="descname">mouseMoveEvent</code><span class="sig-paren">(</span><em>e</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process a mouse move event.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.mouseReleaseEvent">
+<code class="descname">mouseReleaseEvent</code><span class="sig-paren">(</span><em>e</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process a mouse release event.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.wheelEvent">
+<code class="descname">wheelEvent</code><span class="sig-paren">(</span><em>e</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.wheelEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process a wheel event.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.begin_2D_drawing">
+<code class="descname">begin_2D_drawing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.begin_2D_drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up the canvas for 2D drawing on top of 3D canvas.</p>
+<p>The 2D drawing operation should be ended by calling end_2D_drawing.
+It is assumed that you will not try to change/refresh the normal
+3D drawing cycle during this operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.clearCanvas">
+<code class="descname">clearCanvas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.clearCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the canvas to the background color.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.createBackground">
+<code class="descname">createBackground</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.createBackground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the background object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.display">
+<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.display" title="Permalink to this definition">¶</a></dt>
+<dd><p>(Re)display all the actors in the scene.</p>
+<p>This should e.g. be used when actors are added to the scene,
+or after changing  camera position/orientation or lens.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.do_alphablend">
+<code class="descname">do_alphablend</code><span class="sig-paren">(</span><em>state</em>, <em>oldstate</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.do_alphablend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggle alphablend on/off.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.do_lighting">
+<code class="descname">do_lighting</code><span class="sig-paren">(</span><em>state</em>, <em>oldstate</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.do_lighting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggle lights on/off.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.do_wiremode">
+<code class="descname">do_wiremode</code><span class="sig-paren">(</span><em>state</em>, <em>oldstate</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.do_wiremode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the wiremode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.draw_cursor">
+<code class="descname">draw_cursor</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.draw_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>draw the cursor</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.draw_focus_rectangle">
+<code class="descname">draw_focus_rectangle</code><span class="sig-paren">(</span><em>ofs=0</em>, <em>color=(1.0</em>, <em>0.2</em>, <em>0.4)</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.draw_focus_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the focus rectangle.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.draw_sorted_objects">
+<code class="descname">draw_sorted_objects</code><span class="sig-paren">(</span><em>objects</em>, <em>alphablend</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.draw_sorted_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a list of sorted objects through the fixed pipeline.</p>
+<p>If alphablend is True, objects are separated in opaque
+and transparent ones, and the opaque are drawn first.
+Inside each group, ordering is preserved.
+Else, the objects are drawn in the order submitted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.end_2D_drawing">
+<code class="descname">end_2D_drawing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.end_2D_drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel the 2D drawing mode initiated by begin_2D_drawing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.glinit">
+<code class="descname">glinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.glinit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the rendering engine.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.glupdate">
+<code class="descname">glupdate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.glupdate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flush all OpenGL commands, making sure the display is updated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.hasTriade">
+<code class="descname">hasTriade</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.hasTriade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the canvas has a Triade displayed.</p>
+<p>Return True if the Triade is currently displayed.
+The Triade is a reserved Actor displaying the orientation of
+the global axes.
+See also: <a class="reference internal" href="#gui.viewport.QtCanvas.setTriade" title="gui.viewport.QtCanvas.setTriade"><code class="xref py py-meth docutils literal"><span class="pre">setTriade()</span></code></a>, <a class="reference internal" href="#gui.viewport.QtCanvas.removeTriade" title="gui.viewport.QtCanvas.removeTriade"><code class="xref py py-meth docutils literal"><span class="pre">removeTriade()</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.highlightActors">
+<code class="descname">highlightActors</code><span class="sig-paren">(</span><em>K</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.highlightActors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Highlight a selection of actors on the canvas.</p>
+<p>K is Collection of actors as returned by the pick() method.
+colormap is a list of two colors, for the actors not in, resp. in
+the Collection K.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.overrideMode">
+<code class="descname">overrideMode</code><span class="sig-paren">(</span><em>mode</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.overrideMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override some settings</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.pick_actors">
+<code class="descname">pick_actors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.pick_actors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actors inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.pick_edges">
+<code class="descname">pick_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.pick_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actor edges inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.pick_elements">
+<code class="descname">pick_elements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.pick_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actor elements inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.pick_faces">
+<code class="descname">pick_faces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.pick_faces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actor faces inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.pick_numbers">
+<code class="descname">pick_numbers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.pick_numbers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.pick_parts">
+<code class="descname">pick_parts</code><span class="sig-paren">(</span><em>obj_type</em>, <em>store_closest=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.pick_parts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actor parts inside the pick_window.</p>
+<p>obj_type can be &#8216;element&#8217;, &#8216;face&#8217;, &#8216;edge&#8217; or &#8216;point&#8217;.
+&#8216;face&#8217; and &#8216;edge&#8217; are only available for Mesh type geometry.</p>
+<p>The picked object numbers are stored in self.picked.
+If store_closest==True, the closest picked object is stored in as a
+tuple ( [actor,object] ,distance) in self.picked_closest</p>
+<p>A list of actors from which can be picked may be given.
+If so, the resulting keys are indices in this list.
+By default, the full actor list is used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.pick_points">
+<code class="descname">pick_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.pick_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actor points inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.project">
+<code class="descname">project</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em>, <em>locked=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map the object coordinates (x,y,z) to window coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.removeHighlight">
+<code class="descname">removeHighlight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.removeHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a highlight or a list thereof from the 3D scene.</p>
+<p>Without argument, removes all highlights from the scene.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.removeTriade">
+<code class="descname">removeTriade</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.removeTriade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the Triade from the canvas.</p>
+<p>Remove the Triade from the current viewport.
+The Triade is a reserved Actor displaying the orientation of
+the global axes. It has special methods to draw/undraw it.
+See also: <a class="reference internal" href="#gui.viewport.QtCanvas.setTriade" title="gui.viewport.QtCanvas.setTriade"><code class="xref py py-meth docutils literal"><span class="pre">setTriade()</span></code></a>, <a class="reference internal" href="#gui.viewport.QtCanvas.hasTriade" title="gui.viewport.QtCanvas.hasTriade"><code class="xref py py-meth docutils literal"><span class="pre">hasTriade()</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the rendering engine.</p>
+<p>The rendering machine is initialized according to self.settings:
+- self.rendermode: one of
+- self.lighting</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.resetDefaults">
+<code class="descname">resetDefaults</code><span class="sig-paren">(</span><em>dict={}</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.resetDefaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all the settings to their default values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.resetLighting">
+<code class="descname">resetLighting</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.resetLighting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the light parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.resetOptions">
+<code class="descname">resetOptions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.resetOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the Drawing options to some defaults</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.saveBuffer">
+<code class="descname">saveBuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.saveBuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the current OpenGL buffer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.sceneBbox">
+<code class="descname">sceneBbox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.sceneBbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bbox of all actors in the scene</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setAmbient">
+<code class="descname">setAmbient</code><span class="sig-paren">(</span><em>ambient</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setAmbient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the global ambient lighting for the canvas</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setBackground">
+<code class="descname">setBackground</code><span class="sig-paren">(</span><em>color=None</em>, <em>image=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setBackground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the color(s) and image.</p>
+<p>Change the background settings according to the specified parameters
+and set the canvas background accordingly. Only (and all) the specified
+parameters get a new value.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>color</cite>: either a single color, a list of two colors or a list of
+four colors.</li>
+<li><cite>image</cite>: an image to be set.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setCamera">
+<code class="descname">setCamera</code><span class="sig-paren">(</span><em>bbox=None</em>, <em>angles=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setCamera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the camera looking under angles at bbox.</p>
+<p>This function sets the camera parameters to view the specified
+bbox volume from the specified viewing direction.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>bbox</cite>: the bbox of the volume looked at</li>
+<li><cite>angles</cite>: the camera angles specifying the viewing direction.
+It can also be a string, the key of one of the predefined
+camera directions</li>
+</ul>
+<p>If no angles are specified, the viewing direction remains constant.
+The scene center (camera focus point), camera distance, fovy and
+clipping planes are adjusted to make the whole bbox viewed from the
+specified direction fit into the screen.</p>
+<p>If no bbox is specified, the following remain constant:
+the center of the scene, the camera distance, the lens opening
+and aspect ratio, the clipping planes. In other words the camera
+is moving on a spherical surface and keeps focusing on the same
+point.</p>
+<p>If both are specified, then first the scene center is set,
+then the camera angles, and finally the camera distance.</p>
+<p>In the current implementation, the lens fovy and aspect are not
+changed by this function. Zoom adjusting is performed solely by
+changing the camera distance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setDefaults">
+<code class="descname">setDefaults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setDefaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Activate the canvas settings in the GL machine.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setFgColor">
+<code class="descname">setFgColor</code><span class="sig-paren">(</span><em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setFgColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default foreground color.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setLineStipple">
+<code class="descname">setLineStipple</code><span class="sig-paren">(</span><em>repeat</em>, <em>pattern</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setLineStipple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the linestipple for line rendering.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setLineWidth">
+<code class="descname">setLineWidth</code><span class="sig-paren">(</span><em>lw</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setLineWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the linewidth for line rendering.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setMaterial">
+<code class="descname">setMaterial</code><span class="sig-paren">(</span><em>matname</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setMaterial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default material light properties for the canvas</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setOptions">
+<code class="descname">setOptions</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Drawing options to some values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setPointSize">
+<code class="descname">setPointSize</code><span class="sig-paren">(</span><em>sz</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setPointSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the size for point drawing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setRenderMode">
+<code class="descname">setRenderMode</code><span class="sig-paren">(</span><em>mode</em>, <em>lighting=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setRenderMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the rendering mode.</p>
+<p>This sets or changes the rendermode and lighting attributes.
+If lighting is not specified, it is set depending on the rendermode.</p>
+<p>If the canvas has not been initialized, this merely sets the
+attributes self.rendermode and self.settings.lighting.
+If the canvas was already initialized (it has a camera), and one of
+the specified settings is different from the existing, the new mode
+is set, the canvas is re-initialized according to the newly set mode,
+and everything is redrawn with the new mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setSlColor">
+<code class="descname">setSlColor</code><span class="sig-paren">(</span><em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setSlColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the highlight color.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setToggle">
+<code class="descname">setToggle</code><span class="sig-paren">(</span><em>attr</em>, <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setToggle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set or toggle a boolean settings attribute</p>
+<p>Furthermore, if a Canvas method do_ATTR is defined, it will be called
+with the old and new toggle state as a parameter.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setTriade">
+<code class="descname">setTriade</code><span class="sig-paren">(</span><em>pos='lb'</em>, <em>siz=100</em>, <em>triade=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setTriade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Triade for this canvas.</p>
+<p>Display the Triade on the current viewport.
+The Triade is a reserved Actor displaying the orientation of
+the global axes. It has special methods to show/hide it.
+See also: <a class="reference internal" href="#gui.viewport.QtCanvas.removeTriade" title="gui.viewport.QtCanvas.removeTriade"><code class="xref py py-meth docutils literal"><span class="pre">removeTriade()</span></code></a>, <a class="reference internal" href="#gui.viewport.QtCanvas.hasTriade" title="gui.viewport.QtCanvas.hasTriade"><code class="xref py py-meth docutils literal"><span class="pre">hasTriade()</span></code></a></p>
+<p>Parameters:</p>
+<ul>
+<li><p class="first"><cite>pos</cite>: string of two characters. The characters define the horizontal
+(one of &#8216;l&#8217;, &#8216;c&#8217;, or &#8216;r&#8217;) and vertical (one of &#8216;t&#8217;, &#8216;c&#8217;, &#8216;b&#8217;) position
+on the camera&#8217;s viewport. Default is left-bottom.</p>
+</li>
+<li><p class="first"><cite>siz</cite>: float: intended size (in pixels) of the triade.</p>
+</li>
+<li><p class="first"><cite>triade</cite>: None or Geometry: defines the Geometry to be used for
+representing the global axes.</p>
+<p>If None, use the previously set triade, or set a default if no
+previous.</p>
+<p>If Geometry, use this to represent the axes. To be useful and properly
+displayed, the Geometry&#8217;s bbox should be around [(-1,-1,-1),(1,1,1)].
+Drawing attributes may be set on the Geometry to influence
+the appearence. This allows to fully customize the Triade.</p>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.setWireMode">
+<code class="descname">setWireMode</code><span class="sig-paren">(</span><em>state</em>, <em>mode=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.setWireMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the wire mode.</p>
+<p>This toggles the drawing of edges on top of 2D and 3D geometry.
+State is either True or False, mode is 1, 2 or 3 to switch:</p>
+<p>1: all edges
+2: feature edges
+3: border edges</p>
+<p>If no mode is specified, the current wiremode is used. A negative
+value inverses the state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.showBuffer">
+<code class="descname">showBuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.showBuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the saved buffer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.unproject">
+<code class="descname">unproject</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em>, <em>locked=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.unproject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map the window coordinates (x,y,z) to object coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.zoom">
+<code class="descname">zoom</code><span class="sig-paren">(</span><em>f</em>, <em>dolly=True</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.zoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dolly zooming.</p>
+<p>Zooms in with a factor <cite>f</cite> by moving the camera closer
+to the scene. This does noet change the camera&#8217;s FOV setting.
+It will change the perspective view though.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.zoomAll">
+<code class="descname">zoomAll</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.zoomAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rectangle zoom to make full scene visible.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.zoomCentered">
+<code class="descname">zoomCentered</code><span class="sig-paren">(</span><em>w</em>, <em>h</em>, <em>x=None</em>, <em>y=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.zoomCentered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rectangle zooming with specified center.</p>
+<p>This is like zoomRectangle, but the zoom rectangle is specified
+by its center and size, which may be more appropriate when using
+off-center zooming.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.QtCanvas.zoomRectangle">
+<code class="descname">zoomRectangle</code><span class="sig-paren">(</span><em>x0</em>, <em>y0</em>, <em>x1</em>, <em>y1</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.QtCanvas.zoomRectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rectangle zooming.</p>
+<p>Zooms in/out by changing the area and position of the visible
+part of the lens.
+Unlike zoom(), this does not change the perspective view.</p>
+<p><cite>x0,y0,x1,y1</cite> are pixel coordinates of the lower left and upper right
+corners of the area of the lens that will be mapped on the
+canvas viewport.
+Specifying values that lead to smaller width/height will zoom in.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.viewport.NewiMultiCanvas">
+<em class="property">class </em><code class="descclassname">gui.viewport.</code><code class="descname">NewiMultiCanvas</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.NewiMultiCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>An OpenGL canvas with multiple viewports and QT interaction.</p>
+<p>The MultiCanvas implements a central QT widget containing one or more
+QtCanvas widgets.</p>
+<dl class="method">
+<dt id="gui.viewport.NewiMultiCanvas.changeLayout">
+<code class="descname">changeLayout</code><span class="sig-paren">(</span><em>nvps=None</em>, <em>ncols=None</em>, <em>nrows=None</em>, <em>pos=None</em>, <em>rstretch=None</em>, <em>cstretch=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.NewiMultiCanvas.changeLayout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the lay-out of the viewports on the OpenGL widget.</p>
+<p>nvps: number of viewports
+ncols: number of columns
+nrows: number of rows
+pos: list holding the position and span of each viewport
+[[row,col,rowspan,colspan],...]
+rstretch: list holding the stretch factor for each row
+cstretch: list holding the stretch factor for each column
+(rows/columns with a higher stretch factor take more of the
+available space)
+Each of this parameters is optional.</p>
+<p>If pos is given, it specifies all viewports and nvps, nrows and ncols
+are disregarded.</p>
+<p>Else:</p>
+<p>If nvps is given, it specifies the number of viewports in the layout.
+Else, nvps will be set to the current number of viewports.</p>
+<p>If ncols is an int, viewports are laid out rowwise over ncols
+columns and nrows is ignored. If ncols is None and nrows is an int,
+viewports are laid out columnwise over nrows rows.</p>
+<p>If nvps is not equal to the current number of viewports, viewports
+will be added or removed to match the requested number.</p>
+<p>By default they are laid out rowwise over two columns.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.NewiMultiCanvas.createView">
+<code class="descname">createView</code><span class="sig-paren">(</span><em>shared=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.NewiMultiCanvas.createView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new viewport</p>
+<p>If another QtCanvas instance is passed, both will share the same
+display lists and textures.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.NewiMultiCanvas.addView">
+<code class="descname">addView</code><span class="sig-paren">(</span><em>view</em>, <em>row</em>, <em>col</em>, <em>rowspan=1</em>, <em>colspan=1</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.NewiMultiCanvas.addView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new viewport and make it visible</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.NewiMultiCanvas.removeView">
+<code class="descname">removeView</code><span class="sig-paren">(</span><em>view=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.NewiMultiCanvas.removeView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a view from the canvas</p>
+<p>If view is None, the last one is removed.
+You can not remove a view when there is only one left.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.NewiMultiCanvas.setCurrent">
+<code class="descname">setCurrent</code><span class="sig-paren">(</span><em>view</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.NewiMultiCanvas.setCurrent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the specified viewport the current one.</p>
+<p>view can be either a viewport or viewport number.
+The current viewport is the one that will be used for drawing
+operations. This may be different from the viewport having GUI
+focus (pf.canvas).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.NewiMultiCanvas.setStretch">
+<code class="descname">setStretch</code><span class="sig-paren">(</span><em>rowstretch</em>, <em>colstretch</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.NewiMultiCanvas.setStretch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the row and column stretch factors.</p>
+<p>rowstretch and colstretch are lists of stretch factors to be applied
+on the subsequent rows/columns. If the lists are shorter than the
+number of rows/columns, the</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.NewiMultiCanvas.link">
+<code class="descname">link</code><span class="sig-paren">(</span><em>vp</em>, <em>to</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.NewiMultiCanvas.link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Link viewport vp to to</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.viewport.FramedGridLayout">
+<em class="property">class </em><code class="descclassname">gui.viewport.</code><code class="descname">FramedGridLayout</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.FramedGridLayout" title="Permalink to this definition">¶</a></dt>
+<dd><p>A QtGui.QGridLayout where each added widget is framed.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.viewport.MultiCanvas">
+<em class="property">class </em><code class="descclassname">gui.viewport.</code><code class="descname">MultiCanvas</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.MultiCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>An OpenGL canvas with multiple viewports and QT interaction.</p>
+<p>The MultiCanvas implements a central QT widget containing one or more
+QtCanvas widgets.</p>
+<dl class="method">
+<dt id="gui.viewport.MultiCanvas.newView">
+<code class="descname">newView</code><span class="sig-paren">(</span><em>shared=None</em>, <em>settings=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.MultiCanvas.newView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new viewport</p>
+<p>If another QtCanvas instance is passed, both will share the same
+display lists and textures.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.MultiCanvas.addView">
+<code class="descname">addView</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.MultiCanvas.addView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new viewport to the widget</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.MultiCanvas.setCurrent">
+<code class="descname">setCurrent</code><span class="sig-paren">(</span><em>canv</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.MultiCanvas.setCurrent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the specified viewport the current one.</p>
+<p>canv can be either a viewport or viewport number.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.MultiCanvas.viewIndex">
+<code class="descname">viewIndex</code><span class="sig-paren">(</span><em>view</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.MultiCanvas.viewIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the specified view</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.MultiCanvas.showWidget">
+<code class="descname">showWidget</code><span class="sig-paren">(</span><em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.MultiCanvas.showWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the view w.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.MultiCanvas.changeLayout">
+<code class="descname">changeLayout</code><span class="sig-paren">(</span><em>nvps=None</em>, <em>ncols=None</em>, <em>nrows=None</em>, <em>pos=None</em>, <em>rstretch=None</em>, <em>cstretch=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.MultiCanvas.changeLayout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the lay-out of the viewports on the OpenGL widget.</p>
+<p>nvps: number of viewports
+ncols: number of columns
+nrows: number of rows
+pos: list holding the position and span of each viewport
+[[row,col,rowspan,colspan],...]
+rstretch: list holding the stretch factor for each row
+cstretch: list holding the stretch factor for each column
+(rows/columns with a higher stretch factor take more of the
+available space)
+Each of this parameters is optional.</p>
+<p>If a number of viewports is given, viewports will be added
+or removed to match the requested number.
+By default they are laid out rowwise over two columns.</p>
+<p>If ncols is an int, viewports are laid out rowwise over ncols
+columns and nrows is ignored. If ncols is None and nrows is an int,
+viewports are laid out columnwise over nrows rows. Alternatively,
+the pos argument can be used to specify the layout of the viewports.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.viewport.MultiCanvas.link">
+<code class="descname">link</code><span class="sig-paren">(</span><em>vp</em>, <em>to</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.MultiCanvas.link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Link viewport vp to to</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-gui-viewport">
+<h2>29.2. Functions defined in module gui.viewport<a class="headerlink" href="#functions-defined-in-module-gui-viewport" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gui.viewport.dotpr">
+<code class="descclassname">gui.viewport.</code><code class="descname">dotpr</code><span class="sig-paren">(</span><em>v</em>, <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.dotpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dot product of vectors v and w</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.length">
+<code class="descclassname">gui.viewport.</code><code class="descname">length</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the length of the vector v</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.projection">
+<code class="descclassname">gui.viewport.</code><code class="descname">projection</code><span class="sig-paren">(</span><em>v</em>, <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.projection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the (signed) length of the projection of vector v on vector w.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.setOpenGLFormat">
+<code class="descclassname">gui.viewport.</code><code class="descname">setOpenGLFormat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.setOpenGLFormat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the correct OpenGL format.</p>
+<p>On a correctly installed system, the default should do well.
+The default OpenGL format can be changed by command line options:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">dri</span>   <span class="p">:</span> <span class="n">use</span> <span class="n">the</span> <span class="n">Direct</span> <span class="n">Rendering</span> <span class="n">Infrastructure</span><span class="p">,</span> <span class="k">if</span> <span class="n">available</span>
+<span class="o">--</span><span class="n">nodri</span> <span class="p">:</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">use</span> <span class="n">the</span> <span class="n">DRI</span>
+<span class="o">--</span><span class="n">opengl</span> <span class="p">:</span> <span class="nb">set</span> <span class="n">the</span> <span class="n">opengl</span> <span class="n">version</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.OpenGLSupportedVersions">
+<code class="descclassname">gui.viewport.</code><code class="descname">OpenGLSupportedVersions</code><span class="sig-paren">(</span><em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.OpenGLSupportedVersions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the supported OpenGL version.</p>
+<p>flags is the return value of QGLFormat.OpenGLVersionFlag()</p>
+<p>Returns a list with tuple (k,v) where k is a string describing an Opengl
+version and v is True or False.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.OpenGLFormat">
+<code class="descclassname">gui.viewport.</code><code class="descname">OpenGLFormat</code><span class="sig-paren">(</span><em>fmt=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.OpenGLFormat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Some information about the OpenGL format.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.drawDot">
+<code class="descclassname">gui.viewport.</code><code class="descname">drawDot</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.drawDot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a dot at canvas coordinates (x,y).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.drawLine">
+<code class="descclassname">gui.viewport.</code><code class="descname">drawLine</code><span class="sig-paren">(</span><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.drawLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a straight line from (x1,y1) to (x2,y2) in canvas coordinates.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.drawGrid">
+<code class="descclassname">gui.viewport.</code><code class="descname">drawGrid</code><span class="sig-paren">(</span><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em>, <em>nx</em>, <em>ny</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.drawGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a rectangular grid of lines</p>
+<p>The rectangle has (x1,y1) and and (x2,y2) as opposite corners.
+There are (nx,ny) subdivisions along the (x,y)-axis. So the grid
+has (nx+1) * (ny+1) lines. nx=ny=1 draws a rectangle.
+nx=0 draws 1 vertical line (at x1). nx=-1 draws no vertical lines.
+ny=0 draws 1 horizontal line (at y1). ny=-1 draws no horizontal lines.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gui.viewport.drawRect">
+<code class="descclassname">gui.viewport.</code><code class="descname">drawRect</code><span class="sig-paren">(</span><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.viewport.drawRect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the circumference of a rectangle.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -169,7 +1323,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

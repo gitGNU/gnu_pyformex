@@ -1,1 +1,1 @@
-../../../pyformex/template.py
+../../../pyformex/data/template.py

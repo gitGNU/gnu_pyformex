@@ -159,8 +159,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="cha-tutorial">
-<span id="id1"></span><h1>pyFormex tutorial<a class="headerlink" href="#cha-tutorial" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="pyformex-tutorial">
+<span id="cha-tutorial"></span><h1>pyFormex tutorial<a class="headerlink" href="#pyformex-tutorial" title="Permalink to this headline">¶</a></h1>
 <div class="topic">
 <p class="topic-title first">Abstract</p>
 <p>This tutorial will guide you step by step through the most important
@@ -200,7 +200,7 @@ building is illustrated in figure <a class="reference internal" href="#fig-scall
 domes were created with the same script, but with different values
 of some parameters.</li>
 </ul>
-<div class="figure align-center" id="id2">
+<div class="figure align-center" id="id1">
 <span id="fig-scallopdomes"></span><img alt="Three scallop domes" src="_images/scallopdomes.png" />
 <p class="caption"><span class="caption-text">Same script, different domes</span></p>
 </div>
@@ -223,19 +223,178 @@ you&#8217;re reading right now should be enough.</li>
 </div>
 <div class="section" id="getting-started">
 <span id="sec-getting-started"></span><h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Start the pyFormex GUI by entering the command <code class="docutils literal"><span class="pre">pyformex</span></code> in a
+<ul>
+<li><p class="first">Start the pyFormex GUI by entering the command <code class="docutils literal"><span class="pre">pyformex</span></code> in a
 terminal. Depending on your instalation, there may also be a menu
 item in the application menu to start pyFormex, or even a quickstart button
 in the panel. Using the terminal however can still be useful,
 especially in the case of errors, because otherwise the GUI might
 suppress some of the error messages that normally are sent to the
-terminal.</li>
-<li>Create a new pyFormex script using the
+terminal.</p>
+</li>
+<li><p class="first">Create a new pyFormex script using the
 <span class="menuselection">File‣Create new script</span> option. This will open a file
 dialog: enter a filename <code class="docutils literal"><span class="pre">example0.py</span></code> (be sure to be in a directory
 where you have write permissions). Pressing the <code class="docutils literal"><span class="pre">Save</span></code> button will open
-up your favorite editor with a pyFormex script template like the one below.</li>
+up your favorite editor with a pyFormex script template like the one below.</p>
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1">##</span>
+<span class="c1">##  Copyright (C) 2011 John Doe (j.doe@somewhere.org)</span>
+<span class="c1">##  Distributed under the GNU General Public License version 3 or later.</span>
+<span class="c1">##</span>
+<span class="c1">##  This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">##  it under the terms of the GNU General Public License as published by</span>
+<span class="c1">##  the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">##  (at your option) any later version.</span>
+<span class="c1">##</span>
+<span class="c1">##  This program is distributed in the hope that it will be useful,</span>
+<span class="c1">##  but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">##  GNU General Public License for more details.</span>
+<span class="c1">##</span>
+<span class="c1">##  You should have received a copy of the GNU General Public License</span>
+<span class="c1">##  along with this program.  If not, see http://www.gnu.org/licenses/.</span>
+<span class="c1">##</span>
+
+<span class="sd">&quot;&quot;&quot;pyFormex Script/App Template</span>
+
+<span class="sd">This is a template file to show the general layout of a pyFormex</span>
+<span class="sd">script or app.</span>
+
+<span class="sd">A pyFormex script is just any simple Python source code file with</span>
+<span class="sd">extension &#39;.py&#39; and is fully read and execution at once.</span>
+
+<span class="sd">A pyFormex app can be a &#39;.py&#39; of &#39;.pyc&#39; file, and should define a function</span>
+<span class="sd">&#39;run()&#39; to be executed by pyFormex. Also, the app should import anything that</span>
+<span class="sd">it needs.</span>
+
+<span class="sd">This template is a common structure that allows the file to be used both as</span>
+<span class="sd">a script or as an app, with almost identical behavior.</span>
+
+<span class="sd">For more details, see the user guide under the `Scripting` section.</span>
+
+<span class="sd">The script starts by preference with a docstring (like this),</span>
+<span class="sd">composed of a short first line, then a blank line and</span>
+<span class="sd">one or more lines explaining the intention of the script.</span>
+
+<span class="sd">If you distribute your script/app, you should set the copyright holder</span>
+<span class="sd">at the start of the file and make sure that you (the copyright holder) has</span>
+<span class="sd">the intention/right to distribute the software under the specified</span>
+<span class="sd">copyright license (GPL3 or later).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># This helps in getting same code working with both Python2 and Python3</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># The pyFormex modeling language is defined by everything in</span>
+<span class="c1"># the gui.draw module (if you use the GUI). For execution without</span>
+<span class="c1"># the GUI, you should import from pyformex.script instead.</span>
+<span class="kn">from</span> <span class="nn">pyformex.gui.draw</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="c1"># Definitions</span>
+<span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Main function.</span>
+
+<span class="sd">    This is automatically executed on each run of an app.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is the pyFormex template script/app&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Code in the outer scope:</span>
+<span class="c1"># - for an app, this is only executed on loading (module initialization).</span>
+<span class="c1"># - for a script, this is executed on each run.</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is the initialization code of the pyFormex template script/app&quot;</span><span class="p">)</span>
+
+<span class="c1"># The following is to make script and app behavior alike</span>
+<span class="c1"># When executing a script in GUI mode, the global variable __name__ is set</span>
+<span class="c1"># to &#39;draw&#39;, thus the run method defined above will be executed.</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__draw__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running as a script&quot;</span><span class="p">)</span>
+    <span class="n">run</span><span class="p">()</span>
+
+
+<span class="c1"># End</span>
+</pre></div>
+</td></tr></table></div>
+</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -524,14 +683,14 @@ defined as a collection of points.  The number of points of an object
 is called the <em>plexitude</em> of the object.</p>
 <p id="index-2">A Formex is a collection of geometrical objects of the same plexitude. The
 objects in the collection are called the <em>elements</em> of the <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code>. A
-<code class="xref py py-class docutils literal"><span class="pre">Formex</span></code> whose elements have plexitude <span class="math">n</span> is also called an
-<span class="math">n</span>-plex <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code>. Internally, the coordinates of the points are
+<code class="xref py py-class docutils literal"><span class="pre">Formex</span></code> whose elements have plexitude <img class="math" src="_images/math/e11f2701c4a39c7fe543a6c4150b421d50f1c159.png" alt="n"/> is also called an
+<img class="math" src="_images/math/e11f2701c4a39c7fe543a6c4150b421d50f1c159.png" alt="n"/>-plex <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code>. Internally, the coordinates of the points are
 stored in a NumPy <code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code>  with three dimensions. The coordinates of a
 single point are stored along the last axis (2) of the <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code>; all the
 points of an element are stored along the second axis (1); different elements
 are stored along the first axis (0) of the <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code>. The figure
 <a class="reference internal" href="#fig-formex"><span class="std std-ref">The structure of a Formex</span></a> schematizes the structure of a <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code>.</p>
-<div class="figure align-center" id="id3">
+<div class="figure align-center" id="id2">
 <span id="fig-formex"></span><img alt="The structure of a Formex" src="_images/Formex.png" />
 <p class="caption"><span class="caption-text">The structure of a Formex</span></p>
 </div>
@@ -546,15 +705,15 @@ axis of a Formex.</p>
 only deals with 3D geometry. This means that the third axis of a
 <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code> always has length 3. You can however import 2D
 geometry: all points will be given a third coordinate
-<span class="math">z=0.0</span>. If you restrict your operations to transformations in
-the <span class="math">(x,y)</span>-plane, it suffices to extract just the first two
+<img class="math" src="_images/math/aec852a1ae502fd5feb94eb958d734acd596338d.png" alt="z=0.0"/>. If you restrict your operations to transformations in
+the <img class="math" src="_images/math/497184a5e83d0159a4bf15b0bb89dc5aa40cce7d.png" alt="(x,y)"/>-plane, it suffices to extract just the first two
 coordinates to get the transformed 2D geometry.</p>
-<p>The <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code> object <code class="docutils literal"><span class="pre">F</span></code> can be indexed just like a <span class="math">NumPy</span>
-numerical array: <code class="docutils literal"><span class="pre">F[i]</span></code> returns the element with index <span class="math">i</span> (counting
-from <span class="math">0</span>). For a <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code> with plexitude <span class="math">n</span>, the result will
-be an array with shape <span class="math">(n,3)</span>, containing all the points of the element.
-Further, <code class="docutils literal"><span class="pre">F[i][j]</span></code> will be a <span class="math">(3,)</span>-shaped array containing the
-coordinates of point <span class="math">j</span> of element <span class="math">i</span>. Finally, <code class="docutils literal"><span class="pre">F[i][j][k]</span></code> is
+<p>The <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code> object <code class="docutils literal"><span class="pre">F</span></code> can be indexed just like a <img class="math" src="_images/math/721956835829f3a969bdd2b300d56f247a3ef292.png" alt="NumPy"/>
+numerical array: <code class="docutils literal"><span class="pre">F[i]</span></code> returns the element with index <img class="math" src="_images/math/df0deb143e5ac127f00bd248ee8001ecae572adc.png" alt="i"/> (counting
+from <img class="math" src="_images/math/532f3248d6552e7ac6b785bd935f404ad593e6a9.png" alt="0"/>). For a <code class="xref py py-class docutils literal"><span class="pre">Formex</span></code> with plexitude <img class="math" src="_images/math/e11f2701c4a39c7fe543a6c4150b421d50f1c159.png" alt="n"/>, the result will
+be an array with shape <img class="math" src="_images/math/6b3259e2fe52714398f72a45759b0c5b40619427.png" alt="(n,3)"/>, containing all the points of the element.
+Further, <code class="docutils literal"><span class="pre">F[i][j]</span></code> will be a <img class="math" src="_images/math/21db36a1f6033ebb43178732705edf62b747f8bd.png" alt="(3,)"/>-shaped array containing the
+coordinates of point <img class="math" src="_images/math/6b21e0b0899a0d2879d3b8019087fa630bab4ea2.png" alt="j"/> of element <img class="math" src="_images/math/df0deb143e5ac127f00bd248ee8001ecae572adc.png" alt="i"/>. Finally, <code class="docutils literal"><span class="pre">F[i][j][k]</span></code> is
 a single floating point value representing one coordinate of that point.</p>
 <p>In the following sections of this tutorial, we will first learn you
 how to create simple geometry using the Formex data model and how to
@@ -630,7 +789,7 @@ with the default. Go back to the <code class="docutils literal"><span class="pre
 </div>
 <p>Save the script and execute it in pyFormex. You will see the following picture
 appear in the canvas.</p>
-<div class="figure align-center" id="id4">
+<div class="figure align-center" id="id3">
 <span id="fig-parallel"></span><img alt="Two parallel lines" src="_images/parallel.png" />
 <p class="caption"><span class="caption-text">Two parallel lines</span></p>
 </div>
@@ -642,13 +801,13 @@ appear in the canvas.</p>
 <p>With the same data we have now created a 4-plex Formex with only one element.
 Execute the script again (do not forget to save it first) and you will see
 a square. Note that the draw command allows you to specify a color.</p>
-<div class="figure align-center" id="id5">
+<div class="figure align-center" id="id4">
 <span id="fig-square"></span><img alt="A square" src="_images/square.png" />
 <p class="caption"><span class="caption-text">A square.</span></p>
 </div>
 <p>But wait a minute! Does this represent a square surface, or just the four lines constituting the circumference of the square? Actually, it is a square surface, but since the pyFormex GUI by default displays in wireframe mode, unless you have changed it, you will only see the border of the square. You can make surfaces and solids get fully rendered by selecting the <span class="menuselection">Viewport ‣ Render Mode ‣ Flat</span> option or using the shortcut <img alt="button-flat" src="_images/flat.png" /> button in the toolbar.
 You will then see</p>
-<div class="figure align-center" id="id6">
+<div class="figure align-center" id="id5">
 <span id="fig-square-filled"></span><img alt="A filled square" src="_images/square_filled.png" />
 <p class="caption"><span class="caption-text">The square in smooth rendering.</span></p>
 </div>
@@ -709,7 +868,7 @@ represents a pyramid defined by four points (a tetrahedron):</p>
 </div>
 <p>Depending on your current rendering mode, this will produce an image
 like one of the following:</p>
-<div class="figure align-center" id="id7">
+<div class="figure align-center" id="id6">
 <span id="fig-tetraeder"></span><img alt="The tetrahedron in wireframe and smoothwire rendering" src="_images/tetraeder.png" />
 <p class="caption"><span class="caption-text">The tetrahedron in wireframe and smoothwire (transparent) rendering</span></p>
 </div>
@@ -731,8 +890,8 @@ menu or the <img alt="button-front" src="_images/front.png" /> button.</p>
 <code class="docutils literal"><span class="pre">Front</span></code>, <code class="docutils literal"><span class="pre">Back</span></code>, <code class="docutils literal"><span class="pre">Left</span></code>, <code class="docutils literal"><span class="pre">Right</span></code>, <code class="docutils literal"><span class="pre">Top</span></code>, <code class="docutils literal"><span class="pre">Bottom</span></code> and
 <code class="docutils literal"><span class="pre">Iso</span></code>. They can be set from the <span class="menuselection">Views</span> menu items or
 the corresponding view buttons in the toolbar.  The default <code class="docutils literal"><span class="pre">Front</span></code>
-corresponds to the camera looking in the <span class="math">-z</span> direction, with
-the <span class="math">x</span> axis oriented to the right and the <span class="math">y</span> axis
+corresponds to the camera looking in the <img class="math" src="_images/math/814e386f4be87435ac754e2ba5c8fc9146c34bae.png" alt="-z"/> direction, with
+the <img class="math" src="_images/math/a59f68a4202623bb859a7093f0316bf466e6f75d.png" alt="x"/> axis oriented to the right and the <img class="math" src="_images/math/276f7e256cbddeb81eee42e1efc348f3cb4ab5f8.png" alt="y"/> axis
 upward.</p>
 <p>We explicitely added the element type <code class="docutils literal"><span class="pre">tet4</span></code> when creating the
 pyramid. Without it, pyFormex would have interpreted the 4-plex Formex
@@ -835,7 +994,7 @@ Formex is initialized by a string without modifier field, the &#8216;l:&#8217;
 is silently added.</p>
 </div>
 <p>Figure <a class="reference internal" href="#fig-patterns"><span class="std std-ref">Images generated from the patterns &#8216;127&#8217;, &#8216;11722&#8217; and &#8216;22584433553388&#8217;</span></a> shows some more examples.</p>
-<div class="figure align-center" id="id8">
+<div class="figure align-center" id="id7">
 <span id="fig-patterns"></span><img alt="Images generated from patterns" src="_images/patterns.png" />
 <p class="caption"><span class="caption-text">Images generated from the patterns &#8216;127&#8217;, &#8216;11722&#8217; and &#8216;22584433553388&#8217;</span></p>
 </div>
@@ -848,7 +1007,7 @@ ready for use.  These pattern strings are stacked in a dictionary called
 F = Formex(Pattern[&#8216;cube&#8217;])
 print(F.shape)
 draw(F,color=blue,view=&#8217;iso&#8217;)</div></blockquote>
-<div class="figure align-center" id="id9">
+<div class="figure align-center" id="id8">
 <span id="fig-cube"></span><img alt="A wireframe cube" src="_images/cube.png" />
 <p class="caption"><span class="caption-text">A wireframe cube</span></p>
 </div>
@@ -890,7 +1049,7 @@ scripts) the text file <code class="docutils literal"><span class="pre">square.t
 </pre></div>
 </div>
 <p>It will generate two squares, as shown in the figure <a class="reference internal" href="#fig-twosquares"><span class="std std-ref">Two squares with coordinates read from a file</span></a>.</p>
-<div class="figure align-center" id="id10">
+<div class="figure align-center" id="id9">
 <span id="fig-twosquares"></span><img alt="Two squares read from file" src="_images/twosquares.png" />
 <p class="caption"><span class="caption-text">Two squares with coordinates read from a file</span></p>
 </div>
@@ -959,7 +1118,7 @@ them in a list:</p>
 </div>
 <p>This draws the circumference of a unit square (F: plexitude 2) and the
 center point of the square (G: plexitude 1), both in red.</p>
-<div class="figure align-center" id="id11">
+<div class="figure align-center" id="id10">
 <span id="fig-square-center"></span><img alt="A square and its center point" src="_images/square_center.png" />
 <p class="caption"><span class="caption-text">A square and its center point.</span></p>
 </div>
@@ -1019,7 +1178,7 @@ specify any other and larger colorset to be used for drawing the
 property colors. The following figure shows different renderings
 of the structure created by the above script. The <code class="xref py py-func docutils literal"><span class="pre">drawNumbers()</span></code>
 function draws the element numbers (starting from 0).</p>
-<div class="figure align-center" id="id12">
+<div class="figure align-center" id="id11">
 <span id="fig-props"></span><img alt="A Formex with properties drawn as colors" src="_images/props.png" />
 <p class="caption"><span class="caption-text">A Formex with property numbers drawn as colors. From left to right:
 wireframe, flat, flat (transparent), flatwire (transparent).</span></p>
@@ -1122,9 +1281,7 @@ fill in the file name and click the <span class="guilabel">Save</span> buttton.
 You can specify the file format by using the appropriate extension in
 the file name. The default and recommended format is <code class="docutils literal"><span class="pre">png</span></code>, but
 pyFormex can save in commonly used bitmap formats like <code class="docutils literal"><span class="pre">jpg</span></code> or
-<code class="docutils literal"><span class="pre">gif</span></code> as well.
-If you have installed <code class="docutils literal"><span class="pre">gl2ps</span></code> (see <a class="reference internal" href="install.html#subsec-development-version"><span class="std std-ref">Install additional software</span></a>), you can even save in a number of
-vector formats, such as <code class="docutils literal"><span class="pre">eps</span></code> or <code class="docutils literal"><span class="pre">svg</span></code>.</p>
+<code class="docutils literal"><span class="pre">gif</span></code> as well.</p>
 <p>But you can also create the images from inside your script. Just
 import the <code class="docutils literal"><span class="pre">image</span></code> module and call the <code class="docutils literal"><span class="pre">image.save()</span></code> function:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gui.image</span>
@@ -1225,7 +1382,7 @@ Examples</span>.</p>
 automatically. Select the <span class="menuselection">Examples ‣ Level ‣
 Beginner ‣ Helix</span> example. You will see an image of a complex
 helical frame structure:</p>
-<div class="figure align-center" id="id13">
+<div class="figure align-center" id="id12">
 <span id="fig-helix"></span><img alt="A helical frame structure" src="_images/helix.png" />
 <p class="caption"><span class="caption-text">A helical frame structure (Helix example)</span></p>
 </div>
@@ -1283,7 +1440,7 @@ Setting the <code class="docutils literal"><span class="pre">clear=True</span></
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">F</span> <span class="o">=</span> <span class="n">Formex</span><span class="p">(</span><span class="s1">&#39;l:164&#39;</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="figure align-center" id="id14">
+<div class="figure align-center" id="id13">
 <span id="fig-helix-000"></span><img alt="The basic Formex" src="_images/helix-000.png" />
 <p class="caption"><span class="caption-text">The basic Formex</span></p>
 </div>
@@ -1292,7 +1449,7 @@ of the horizontal edge of the triangle) in the 0 direction:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">replic</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="figure align-center" id="id15">
+<div class="figure align-center" id="id14">
 <span id="fig-helix-001"></span><img alt="Replicated in x-direction" src="_images/helix-001.png" />
 <p class="caption"><span class="caption-text">Replicated in x-direction</span></p>
 </div>
@@ -1301,7 +1458,7 @@ is copied <code class="docutils literal"><span class="pre">n</span></code> times
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">replic</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="figure align-center" id="id16">
+<div class="figure align-center" id="id15">
 <span id="fig-helix-002"></span><img alt="Replicated in y-direction" src="_images/helix-002.png" />
 <p class="caption"><span class="caption-text">Replicated in y-direction</span></p>
 </div>
@@ -1435,7 +1592,7 @@ arrays are the same, within a small tolerance.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

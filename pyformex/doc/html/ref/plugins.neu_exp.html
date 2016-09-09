@@ -99,6 +99,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">50. <code class="docutils literal"><span class="pre">plugins.neu_exp</span></code> &#8212; Gambit neutral file exporter.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-neu-exp">50.1. Classes defined in module plugins.neu_exp</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-neu-exp">50.2. Functions defined in module plugins.neu_exp</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.lima.html"
@@ -136,8 +145,110 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="plugins-neu-exp-gambit-neutral-file-exporter">
-<span id="sec-ref-plugins-neu-exp"></span><h1>50. <code class="xref py py-mod docutils literal"><span class="pre">plugins.neu_exp</span></code> &#8212; Gambit neutral file exporter.<a class="headerlink" href="#plugins-neu-exp-gambit-neutral-file-exporter" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-plugins.neu_exp">
+<span id="plugins-neu-exp-gambit-neutral-file-exporter"></span><span id="sec-ref-plugins-neu-exp"></span><h1>50. <a class="reference internal" href="#module-plugins.neu_exp" title="plugins.neu_exp: Gambit neutral file exporter."><code class="xref py py-mod docutils literal"><span class="pre">plugins.neu_exp</span></code></a> &#8212; Gambit neutral file exporter.<a class="headerlink" href="#module-plugins.neu_exp" title="Permalink to this headline">¶</a></h1>
+<p>This module contains some functions to export
+pyFormex mesh models to Gambit neutral files.</p>
+<div class="section" id="classes-defined-in-module-plugins-neu-exp">
+<h2>50.1. Classes defined in module plugins.neu_exp<a class="headerlink" href="#classes-defined-in-module-plugins-neu-exp" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-plugins-neu-exp">
+<h2>50.2. Functions defined in module plugins.neu_exp<a class="headerlink" href="#functions-defined-in-module-plugins-neu-exp" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.neu_exp.writeHeading">
+<code class="descclassname">plugins.neu_exp.</code><code class="descname">writeHeading</code><span class="sig-paren">(</span><em>fil</em>, <em>nodes</em>, <em>elems</em>, <em>nbsets=0</em>, <em>heading=''</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.neu_exp.writeHeading" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the heading of the Gambit neutral file.</p>
+<p><cite>nbsets</cite>: number of boundary condition sets (border patches).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.neu_exp.writeNodes">
+<code class="descclassname">plugins.neu_exp.</code><code class="descname">writeNodes</code><span class="sig-paren">(</span><em>fil</em>, <em>nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.neu_exp.writeNodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write nodal coordinates.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.neu_exp.writeElems">
+<code class="descclassname">plugins.neu_exp.</code><code class="descname">writeElems</code><span class="sig-paren">(</span><em>fil</em>, <em>elems</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.neu_exp.writeElems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write element connectivity.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.neu_exp.writeGroup">
+<code class="descclassname">plugins.neu_exp.</code><code class="descname">writeGroup</code><span class="sig-paren">(</span><em>fil</em>, <em>elems</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.neu_exp.writeGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write group of elements.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.neu_exp.writeBCsets">
+<code class="descclassname">plugins.neu_exp.</code><code class="descname">writeBCsets</code><span class="sig-paren">(</span><em>fil</em>, <em>bcsets</em>, <em>elgeotype</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.neu_exp.writeBCsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write boundary condition sets of faces.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>bcsets</cite>: a dict where the values are BorderFace arrays (see below).</li>
+<li><cite>elgeotype</cite>: element geometry type: 4 for hexahedrons, 6 for
+tetrahedrons.</li>
+</ul>
+<p>BorderFace array: A set of border faces defined as a (n,2) shaped int
+array: echo row contains an element number (enr) and face number (fnr).</p>
+<p>There are 2 ways to construct the BorderFace arrays:</p>
+<p># find border both as mesh and enr/fnr and keep correspondence:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>  brde, brdfaces = M.getFreeEntities(level=-1,return_indices=True)
+  brd = Mesh(M.coords, brde)
+
+.. note: This needs further explanation. Gianluca?
+</pre></div>
+</div>
+<dl class="docutils">
+<dt># matchFaces: Given a volume mesh M and a surface meshes S, being</dt>
+<dd><p class="first">(part of) the border of M, BorderFace array for the surface S can
+be obtained from:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">bf</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">matchFaces</span><span class="p">(</span><span class="n">S</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>To define other boundary types:
+Value - Boundary Entity Type,</p>
+<p>0 UNSPECIFIED, 1 AXIS, 2 CONJUGATE, 3 CONVECTION, 4 CYCLIC,
+5 DEAD, 6 ELEMENT_SIDE, 7 ESPECIES, 8 EXHAUST_FAN, 9 FAN,
+10 FREE_SURFACE, 11 GAP, 12 INFLOW, 13 INLET, 14 INLET_VENT,
+15 INTAKE_FAN, 16 INTERFACE, 17 INTERIOR, 18 INTERNAL, 19 LIVE,
+20 MASS_FLOW_INLET, 21 MELT, 22 MELT_INTERFACE,
+23 MOVING_BOUNDARY, 24 NODE, 25 OUTFLOW, 26 OUTLET,
+27 OUTLET_VENT, 28 PERIODIC, 29 PLOT, 30 POROUS, 31 POROUS_JUMP,
+32 PRESSURE, 33 PRESSURE_FAR_FIELD, 34 PRESSURE_INFLOW,
+35 PRESSURE_INLET, 36 PRESSURE_OUTFLOW, 37 PRESSURE_OUTLET,
+38 RADIATION, 39 RADIATOR , 40 RECIRCULATION_INLET, 41 RECIRCULATION_OUTLET,
+42 SLIP, 43 SREACTION, 44 SURFACE, 45 SYMMETRY, 46 TRACTION, 47 TRAJECTORY,
+48 VELOCITY, 49 VELOCITY_INLET, 50 VENT, 51 WALL, 52 SPRING</p>
+<p>See also
+<a class="reference external" href="http://combust.hit.edu.cn:8080/fluent/Gambit13_help/modeling_guide/mg0b.htm#mg0b01">http://combust.hit.edu.cn:8080/fluent/Gambit13_help/modeling_guide/mg0b.htm#mg0b01</a>
+for the description of the neu file syntax.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.neu_exp.read_tetgen">
+<code class="descclassname">plugins.neu_exp.</code><code class="descname">read_tetgen</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.neu_exp.read_tetgen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a tetgen tetraedral model.</p>
+<p>filename is the base of the path of the input files.
+For a filename &#8216;proj&#8217;, nodes are expected in &#8216;proj.1.node&#8217;  and
+elems are in file &#8216;proj.1.ele&#8217;.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.neu_exp.write_neu">
+<code class="descclassname">plugins.neu_exp.</code><code class="descname">write_neu</code><span class="sig-paren">(</span><em>fil</em>, <em>mesh</em>, <em>bcsets=None</em>, <em>heading='generated with pyFormex'</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.neu_exp.write_neu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a mesh as .neu file (For use in Gambit/Fluent)</p>
+<ul class="simple">
+<li><cite>fil</cite>: file name</li>
+<li><cite>mesh</cite>: pyFormex Mesh</li>
+<li><cite>heading</cite>: heading text to be shown in the gambit header</li>
+<li><cite>bcsets</cite>: dictionary of 2D arrays: {&#8216;name1&#8217;: brdfaces1, ...}, see writeBCsets</li>
+</ul>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -169,7 +280,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

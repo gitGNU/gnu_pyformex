@@ -99,6 +99,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">60. <code class="docutils literal"><span class="pre">plugins.section2d</span></code> &#8212; Some functions operating on 2D structures.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-section2d">60.1. Classes defined in module plugins.section2d</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-section2d">60.2. Functions defined in module plugins.section2d</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.pyformex_gts.html"
@@ -136,8 +145,79 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="plugins-section2d-some-functions-operating-on-2d-structures">
-<span id="sec-ref-plugins-section2d"></span><h1>60. <code class="xref py py-mod docutils literal"><span class="pre">plugins.section2d</span></code> &#8212; Some functions operating on 2D structures.<a class="headerlink" href="#plugins-section2d-some-functions-operating-on-2d-structures" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-plugins.section2d">
+<span id="plugins-section2d-some-functions-operating-on-2d-structures"></span><span id="sec-ref-plugins-section2d"></span><h1>60. <a class="reference internal" href="#module-plugins.section2d" title="plugins.section2d: Some functions operating on 2D structures."><code class="xref py py-mod docutils literal"><span class="pre">plugins.section2d</span></code></a> &#8212; Some functions operating on 2D structures.<a class="headerlink" href="#module-plugins.section2d" title="Permalink to this headline">¶</a></h1>
+<p>This is a plugin for pyFormex.
+(C) 2002 Benedict Verhegghe</p>
+<p>See the Section2D example for an example of its use.</p>
+<div class="section" id="classes-defined-in-module-plugins-section2d">
+<h2>60.1. Classes defined in module plugins.section2d<a class="headerlink" href="#classes-defined-in-module-plugins-section2d" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="plugins.section2d.PlaneSection">
+<em class="property">class </em><code class="descclassname">plugins.section2d.</code><code class="descname">PlaneSection</code><span class="sig-paren">(</span><em>F</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.section2d.PlaneSection" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class describing a general 2D section.</p>
+<p>The 2D section is the area inside a closed curve in the (x,y) plane.
+The curve is decribed by a finite number of points and by straight
+segments connecting them.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-plugins-section2d">
+<h2>60.2. Functions defined in module plugins.section2d<a class="headerlink" href="#functions-defined-in-module-plugins-section2d" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.section2d.sectionChar">
+<code class="descclassname">plugins.section2d.</code><code class="descname">sectionChar</code><span class="sig-paren">(</span><em>F</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.section2d.sectionChar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute characteristics of plane sections.</p>
+<p>The plane sections are described by their circumference, consisting of a
+sequence of straight segments.
+The segment end point data are gathered in a plex-2 Formex.
+The segments should form a closed curve.
+The z-value of the coordinates does not have to be specified,
+and will be ignored if it is.
+The resulting path through the points should rotate positively around the
+z axis to yield a positive surface.</p>
+<p>The return value is a dict with the following characteristics:</p>
+<ul class="simple">
+<li><cite>L</cite>   : circumference,</li>
+<li><cite>A</cite>   : enclosed surface,</li>
+<li><cite>Sx</cite>  : first area moment around global x-axis</li>
+<li><cite>Sy</cite>  : first area moment around global y-axis</li>
+<li><cite>Ixx</cite> : second area moment around global x-axis</li>
+<li><cite>Iyy</cite> : second area moment around global y-axis</li>
+<li><cite>Ixy</cite> : product moment of area around global x,y-axes</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.section2d.extendedSectionChar">
+<code class="descclassname">plugins.section2d.</code><code class="descname">extendedSectionChar</code><span class="sig-paren">(</span><em>S</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.section2d.extendedSectionChar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes extended section characteristics for the given section.</p>
+<p>S is a dict with section basic section characteristics as returned by
+sectionChar().
+This function computes and returns a dict with the following:</p>
+<ul class="simple">
+<li><cite>xG</cite>, <cite>yG</cite> : coordinates of the center of gravity G of the plane section</li>
+<li><cite>IGxx</cite>, <cite>IGyy</cite>, <cite>IGxy</cite> : second area moments and product around axes
+through G and  parallel with the global x,y-axes</li>
+<li><cite>alpha</cite> : angle(in radians) between the global x,y axes and the principal
+axes (X,Y) of the section (X and Y always pass through G)</li>
+<li><cite>IXX</cite>, <cite>IYY</cite> : principal second area moments around X,Y respectively. (The
+second area product is always zero.)</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.section2d.princTensor2D">
+<code class="descclassname">plugins.section2d.</code><code class="descname">princTensor2D</code><span class="sig-paren">(</span><em>Ixx</em>, <em>Iyy</em>, <em>Ixy</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.section2d.princTensor2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the principal values and directions of a 2D tensor.</p>
+<p>Returns a tuple with three values:</p>
+<ul class="simple">
+<li><cite>alpha</cite> : angle (in radians) from x-axis to principal X-axis</li>
+<li><cite>IXX,IYY</cite> : principal values of the tensor</li>
+</ul>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -169,7 +249,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

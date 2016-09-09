@@ -43,8 +43,8 @@ at the start of the file and make sure that you (the copyright holder) has
 the intention/right to distribute the software under the specified
 copyright license (GPL3 or later).
 """
-# This helps in getting used to future Python print syntax
-from __future__ import print_function
+# This helps in getting same code working with both Python2 and Python3
+from __future__ import absolute_import, division, print_function
 
 # The pyFormex modeling language is defined by everything in
 # the gui.draw module (if you use the GUI). For execution without

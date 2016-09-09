@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>69. opengl.canvas — This implements an OpenGL drawing widget for painting 3D scenes. &mdash; pyFormex 1.0.2-a6 documentation</title>
+    <title>70. opengl.canvas — This implements an OpenGL drawing widget for painting 3D scenes. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -53,8 +53,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="70. opengl.decors — Decorations for the OpenGL canvas." href="opengl.decors.html" />
-    <link rel="prev" title="68. opengl.camera — OpenGL camera handling" href="opengl.camera.html" />
+    <link rel="next" title="71. opengl.decors — Decorations for the OpenGL canvas." href="opengl.decors.html" />
+    <link rel="prev" title="69. opengl.camera — OpenGL camera handling" href="opengl.camera.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,10 +77,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="opengl.decors.html" title="70. opengl.decors — Decorations for the OpenGL canvas."
+          <a href="opengl.decors.html" title="71. opengl.decors — Decorations for the OpenGL canvas."
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="opengl.camera.html" title="68. opengl.camera — OpenGL camera handling"
+          <a href="opengl.camera.html" title="69. opengl.camera — OpenGL camera handling"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
           <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -99,13 +99,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">70. <code class="docutils literal"><span class="pre">opengl.canvas</span></code> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-opengl-canvas">70.1. Classes defined in module opengl.canvas</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-opengl-canvas">70.2. Functions defined in module opengl.canvas</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="opengl.camera.html"
-                        title="previous chapter">68. <code class="docutils literal"><span class="pre">opengl.camera</span></code> &#8212; OpenGL camera handling</a></p>
+                        title="previous chapter">69. <code class="docutils literal"><span class="pre">opengl.camera</span></code> &#8212; OpenGL camera handling</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="opengl.decors.html"
-                        title="next chapter">70. <code class="docutils literal"><span class="pre">opengl.decors</span></code> &#8212; Decorations for the OpenGL canvas.</a></p>
+                        title="next chapter">71. <code class="docutils literal"><span class="pre">opengl.decors</span></code> &#8212; Decorations for the OpenGL canvas.</a></p>
   
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
@@ -136,8 +145,616 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="opengl-canvas-this-implements-an-opengl-drawing-widget-for-painting-3d-scenes">
-<span id="sec-ref-opengl-canvas"></span><h1>69. <code class="xref py py-mod docutils literal"><span class="pre">opengl.canvas</span></code> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.<a class="headerlink" href="#opengl-canvas-this-implements-an-opengl-drawing-widget-for-painting-3d-scenes" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-opengl.canvas">
+<span id="opengl-canvas-this-implements-an-opengl-drawing-widget-for-painting-3d-scenes"></span><span id="sec-ref-opengl-canvas"></span><h1>70. <a class="reference internal" href="#module-opengl.canvas" title="opengl.canvas: This implements an OpenGL drawing widget for painting 3D scenes."><code class="xref py py-mod docutils literal"><span class="pre">opengl.canvas</span></code></a> &#8212; This implements an OpenGL drawing widget for painting 3D scenes.<a class="headerlink" href="#module-opengl.canvas" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes-defined-in-module-opengl-canvas">
+<h2>70.1. Classes defined in module opengl.canvas<a class="headerlink" href="#classes-defined-in-module-opengl-canvas" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="opengl.canvas.Light">
+<em class="property">class </em><code class="descclassname">opengl.canvas.</code><code class="descname">Light</code><span class="sig-paren">(</span><em>ambient=0.0, diffuse=0.0, specular=0.0, position=[0.0, 0.0, 1.0], enabled=True</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Light" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class representing an OpenGL light.</p>
+<p>The light can emit 3 types of light: ambient, diffuse and specular,
+which can have different color and are all off by default.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="opengl.canvas.LightProfile">
+<em class="property">class </em><code class="descclassname">opengl.canvas.</code><code class="descname">LightProfile</code><span class="sig-paren">(</span><em>ambient</em>, <em>lights</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.LightProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>A lightprofile contains all the lighting parameters.</p>
+<p>Currently this consists off:
+- <cite>ambient</cite>: the global ambient lighting (currently a float)
+- <cite>lights</cite>: a list of 1 to 4 Lights</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="opengl.canvas.CanvasSettings">
+<em class="property">class </em><code class="descclassname">opengl.canvas.</code><code class="descname">CanvasSettings</code><span class="sig-paren">(</span><em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.CanvasSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>A collection of settings for an OpenGL Canvas.</p>
+<p>The canvas settings are a collection of settings and default values
+affecting the rendering in an individual viewport. There are two type of
+settings:</p>
+<ul class="simple">
+<li>mode settings are set during the initialization of the canvas and
+can/should not be changed during the drawing of actors and decorations;</li>
+<li>default settings can be used as default values but may be changed during
+the drawing of actors/decorations: they are reset before each individual
+draw instruction.</li>
+</ul>
+<p>Currently the following mode settings are defined:</p>
+<ul class="simple">
+<li>bgmode: the viewport background color mode</li>
+<li>bgcolor: the viewport background color: a single color or a list of
+colors (max. 4 are used).</li>
+<li>bgimage: background image filename</li>
+<li>slcolor: the highlight color</li>
+<li>alphablend: boolean (transparency on/off)</li>
+</ul>
+<p>The list of default settings includes:</p>
+<ul class="simple">
+<li>fgcolor: the default drawing color</li>
+<li>bkcolor: the default backface color</li>
+<li>colormap: the default color map to be used if color is an index</li>
+<li>bklormap: the default color map to be used if bkcolor is an index</li>
+<li>smooth: boolean (smooth/flat shading)</li>
+<li>lighting: boolean (lights on/off)</li>
+<li>culling: boolean</li>
+<li>transparency: float (0.0..1.0)</li>
+<li>avgnormals: boolean</li>
+<li>wiremode: integer -3..3</li>
+<li>pointsize: the default size for drawing points</li>
+<li>marksize: the default size for drawing markers</li>
+<li>linewidth: the default width for drawing lines</li>
+</ul>
+<p>Any of these values can be set in the constructor using a keyword argument.
+All items that are not set, will get their value from the configuration
+file(s).</p>
+<dl class="method">
+<dt id="opengl.canvas.CanvasSettings.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><em>d={}</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.CanvasSettings.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the CanvasSettings to its defaults.</p>
+<p>The default values are taken from the configuration files.
+An optional dictionary may be specified to override (some of) these defaults.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.CanvasSettings.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>d</em>, <em>strict=True</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.CanvasSettings.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update current values with the specified settings</p>
+<p>Returns the sanitized update values.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="opengl.canvas.CanvasSettings.checkDict">
+<em class="property">classmethod </em><code class="descname">checkDict</code><span class="sig-paren">(</span><em>clas</em>, <em>dict</em>, <em>strict=True</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.CanvasSettings.checkDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform a dict to acceptable settings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.CanvasSettings.activate">
+<code class="descname">activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.CanvasSettings.activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Activate the default canvas settings in the GL machine.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.CanvasSettings.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>key</em>, <em>default</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.CanvasSettings.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value for key or a default.</p>
+<p>This is the equivalent of the dict get method, except that it
+returns only the default value if the key was not found in self,
+and there is no _default_ method or it raised a KeyError.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.CanvasSettings.setdefault">
+<code class="descname">setdefault</code><span class="sig-paren">(</span><em>key</em>, <em>default</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.CanvasSettings.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces the setdefault function of a normal dictionary.</p>
+<p>This is the same as the get method, except that it also sets the
+default value if get found a KeyError.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="opengl.canvas.Canvas">
+<em class="property">class </em><code class="descclassname">opengl.canvas.</code><code class="descname">Canvas</code><span class="sig-paren">(</span><em>settings={}</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>A canvas for OpenGL rendering.</p>
+<p>The Canvas is a class holding all global data of an OpenGL scene rendering.
+This includes colors, line types, rendering mode.
+It also keeps lists of the actors and decorations in the scene.
+The canvas has a Camera object holding important viewing parameters.
+Finally, it stores the lighting information.</p>
+<p>It does not however contain the viewport size and position.</p>
+<dl class="method">
+<dt id="opengl.canvas.Canvas.sceneBbox">
+<code class="descname">sceneBbox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.sceneBbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bbox of all actors in the scene</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.resetDefaults">
+<code class="descname">resetDefaults</code><span class="sig-paren">(</span><em>dict={}</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.resetDefaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all the settings to their default values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setAmbient">
+<code class="descname">setAmbient</code><span class="sig-paren">(</span><em>ambient</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setAmbient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the global ambient lighting for the canvas</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setMaterial">
+<code class="descname">setMaterial</code><span class="sig-paren">(</span><em>matname</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setMaterial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default material light properties for the canvas</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.resetLighting">
+<code class="descname">resetLighting</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.resetLighting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the light parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.resetOptions">
+<code class="descname">resetOptions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.resetOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the Drawing options to some defaults</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setOptions">
+<code class="descname">setOptions</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Drawing options to some values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setRenderMode">
+<code class="descname">setRenderMode</code><span class="sig-paren">(</span><em>mode</em>, <em>lighting=None</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setRenderMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the rendering mode.</p>
+<p>This sets or changes the rendermode and lighting attributes.
+If lighting is not specified, it is set depending on the rendermode.</p>
+<p>If the canvas has not been initialized, this merely sets the
+attributes self.rendermode and self.settings.lighting.
+If the canvas was already initialized (it has a camera), and one of
+the specified settings is different from the existing, the new mode
+is set, the canvas is re-initialized according to the newly set mode,
+and everything is redrawn with the new mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setWireMode">
+<code class="descname">setWireMode</code><span class="sig-paren">(</span><em>state</em>, <em>mode=None</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setWireMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the wire mode.</p>
+<p>This toggles the drawing of edges on top of 2D and 3D geometry.
+State is either True or False, mode is 1, 2 or 3 to switch:</p>
+<p>1: all edges
+2: feature edges
+3: border edges</p>
+<p>If no mode is specified, the current wiremode is used. A negative
+value inverses the state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setToggle">
+<code class="descname">setToggle</code><span class="sig-paren">(</span><em>attr</em>, <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setToggle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set or toggle a boolean settings attribute</p>
+<p>Furthermore, if a Canvas method do_ATTR is defined, it will be called
+with the old and new toggle state as a parameter.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.do_wiremode">
+<code class="descname">do_wiremode</code><span class="sig-paren">(</span><em>state</em>, <em>oldstate</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.do_wiremode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the wiremode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.do_alphablend">
+<code class="descname">do_alphablend</code><span class="sig-paren">(</span><em>state</em>, <em>oldstate</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.do_alphablend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggle alphablend on/off.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.do_lighting">
+<code class="descname">do_lighting</code><span class="sig-paren">(</span><em>state</em>, <em>oldstate</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.do_lighting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggle lights on/off.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setLineWidth">
+<code class="descname">setLineWidth</code><span class="sig-paren">(</span><em>lw</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setLineWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the linewidth for line rendering.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setLineStipple">
+<code class="descname">setLineStipple</code><span class="sig-paren">(</span><em>repeat</em>, <em>pattern</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setLineStipple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the linestipple for line rendering.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setPointSize">
+<code class="descname">setPointSize</code><span class="sig-paren">(</span><em>sz</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setPointSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the size for point drawing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setBackground">
+<code class="descname">setBackground</code><span class="sig-paren">(</span><em>color=None</em>, <em>image=None</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setBackground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the color(s) and image.</p>
+<p>Change the background settings according to the specified parameters
+and set the canvas background accordingly. Only (and all) the specified
+parameters get a new value.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>color</cite>: either a single color, a list of two colors or a list of
+four colors.</li>
+<li><cite>image</cite>: an image to be set.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.createBackground">
+<code class="descname">createBackground</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.createBackground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the background object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setFgColor">
+<code class="descname">setFgColor</code><span class="sig-paren">(</span><em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setFgColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default foreground color.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setSlColor">
+<code class="descname">setSlColor</code><span class="sig-paren">(</span><em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setSlColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the highlight color.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setTriade">
+<code class="descname">setTriade</code><span class="sig-paren">(</span><em>pos='lb'</em>, <em>siz=100</em>, <em>triade=None</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setTriade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Triade for this canvas.</p>
+<p>Display the Triade on the current viewport.
+The Triade is a reserved Actor displaying the orientation of
+the global axes. It has special methods to show/hide it.
+See also: <a class="reference internal" href="#opengl.canvas.Canvas.removeTriade" title="opengl.canvas.Canvas.removeTriade"><code class="xref py py-meth docutils literal"><span class="pre">removeTriade()</span></code></a>, <a class="reference internal" href="#opengl.canvas.Canvas.hasTriade" title="opengl.canvas.Canvas.hasTriade"><code class="xref py py-meth docutils literal"><span class="pre">hasTriade()</span></code></a></p>
+<p>Parameters:</p>
+<ul>
+<li><p class="first"><cite>pos</cite>: string of two characters. The characters define the horizontal
+(one of &#8216;l&#8217;, &#8216;c&#8217;, or &#8216;r&#8217;) and vertical (one of &#8216;t&#8217;, &#8216;c&#8217;, &#8216;b&#8217;) position
+on the camera&#8217;s viewport. Default is left-bottom.</p>
+</li>
+<li><p class="first"><cite>siz</cite>: float: intended size (in pixels) of the triade.</p>
+</li>
+<li><p class="first"><cite>triade</cite>: None or Geometry: defines the Geometry to be used for
+representing the global axes.</p>
+<p>If None, use the previously set triade, or set a default if no
+previous.</p>
+<p>If Geometry, use this to represent the axes. To be useful and properly
+displayed, the Geometry&#8217;s bbox should be around [(-1,-1,-1),(1,1,1)].
+Drawing attributes may be set on the Geometry to influence
+the appearence. This allows to fully customize the Triade.</p>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.removeTriade">
+<code class="descname">removeTriade</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.removeTriade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the Triade from the canvas.</p>
+<p>Remove the Triade from the current viewport.
+The Triade is a reserved Actor displaying the orientation of
+the global axes. It has special methods to draw/undraw it.
+See also: <a class="reference internal" href="#opengl.canvas.Canvas.setTriade" title="opengl.canvas.Canvas.setTriade"><code class="xref py py-meth docutils literal"><span class="pre">setTriade()</span></code></a>, <a class="reference internal" href="#opengl.canvas.Canvas.hasTriade" title="opengl.canvas.Canvas.hasTriade"><code class="xref py py-meth docutils literal"><span class="pre">hasTriade()</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.hasTriade">
+<code class="descname">hasTriade</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.hasTriade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the canvas has a Triade displayed.</p>
+<p>Return True if the Triade is currently displayed.
+The Triade is a reserved Actor displaying the orientation of
+the global axes.
+See also: <a class="reference internal" href="#opengl.canvas.Canvas.setTriade" title="opengl.canvas.Canvas.setTriade"><code class="xref py py-meth docutils literal"><span class="pre">setTriade()</span></code></a>, <a class="reference internal" href="#opengl.canvas.Canvas.removeTriade" title="opengl.canvas.Canvas.removeTriade"><code class="xref py py-meth docutils literal"><span class="pre">removeTriade()</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.clearCanvas">
+<code class="descname">clearCanvas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.clearCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the canvas to the background color.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setDefaults">
+<code class="descname">setDefaults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setDefaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Activate the canvas settings in the GL machine.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.overrideMode">
+<code class="descname">overrideMode</code><span class="sig-paren">(</span><em>mode</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.overrideMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override some settings</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the rendering engine.</p>
+<p>The rendering machine is initialized according to self.settings:
+- self.rendermode: one of
+- self.lighting</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.glinit">
+<code class="descname">glinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.glinit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the rendering engine.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.glupdate">
+<code class="descname">glupdate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.glupdate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flush all OpenGL commands, making sure the display is updated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.draw_sorted_objects">
+<code class="descname">draw_sorted_objects</code><span class="sig-paren">(</span><em>objects</em>, <em>alphablend</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.draw_sorted_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a list of sorted objects through the fixed pipeline.</p>
+<p>If alphablend is True, objects are separated in opaque
+and transparent ones, and the opaque are drawn first.
+Inside each group, ordering is preserved.
+Else, the objects are drawn in the order submitted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.display">
+<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.display" title="Permalink to this definition">¶</a></dt>
+<dd><p>(Re)display all the actors in the scene.</p>
+<p>This should e.g. be used when actors are added to the scene,
+or after changing  camera position/orientation or lens.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.begin_2D_drawing">
+<code class="descname">begin_2D_drawing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.begin_2D_drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up the canvas for 2D drawing on top of 3D canvas.</p>
+<p>The 2D drawing operation should be ended by calling end_2D_drawing.
+It is assumed that you will not try to change/refresh the normal
+3D drawing cycle during this operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.end_2D_drawing">
+<code class="descname">end_2D_drawing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.end_2D_drawing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel the 2D drawing mode initiated by begin_2D_drawing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.setCamera">
+<code class="descname">setCamera</code><span class="sig-paren">(</span><em>bbox=None</em>, <em>angles=None</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.setCamera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the camera looking under angles at bbox.</p>
+<p>This function sets the camera parameters to view the specified
+bbox volume from the specified viewing direction.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>bbox</cite>: the bbox of the volume looked at</li>
+<li><cite>angles</cite>: the camera angles specifying the viewing direction.
+It can also be a string, the key of one of the predefined
+camera directions</li>
+</ul>
+<p>If no angles are specified, the viewing direction remains constant.
+The scene center (camera focus point), camera distance, fovy and
+clipping planes are adjusted to make the whole bbox viewed from the
+specified direction fit into the screen.</p>
+<p>If no bbox is specified, the following remain constant:
+the center of the scene, the camera distance, the lens opening
+and aspect ratio, the clipping planes. In other words the camera
+is moving on a spherical surface and keeps focusing on the same
+point.</p>
+<p>If both are specified, then first the scene center is set,
+then the camera angles, and finally the camera distance.</p>
+<p>In the current implementation, the lens fovy and aspect are not
+changed by this function. Zoom adjusting is performed solely by
+changing the camera distance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.project">
+<code class="descname">project</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em>, <em>locked=False</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map the object coordinates (x,y,z) to window coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.unproject">
+<code class="descname">unproject</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em>, <em>locked=False</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.unproject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map the window coordinates (x,y,z) to object coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.zoom">
+<code class="descname">zoom</code><span class="sig-paren">(</span><em>f</em>, <em>dolly=True</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.zoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dolly zooming.</p>
+<p>Zooms in with a factor <cite>f</cite> by moving the camera closer
+to the scene. This does noet change the camera&#8217;s FOV setting.
+It will change the perspective view though.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.zoomRectangle">
+<code class="descname">zoomRectangle</code><span class="sig-paren">(</span><em>x0</em>, <em>y0</em>, <em>x1</em>, <em>y1</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.zoomRectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rectangle zooming.</p>
+<p>Zooms in/out by changing the area and position of the visible
+part of the lens.
+Unlike zoom(), this does not change the perspective view.</p>
+<p><cite>x0,y0,x1,y1</cite> are pixel coordinates of the lower left and upper right
+corners of the area of the lens that will be mapped on the
+canvas viewport.
+Specifying values that lead to smaller width/height will zoom in.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.zoomCentered">
+<code class="descname">zoomCentered</code><span class="sig-paren">(</span><em>w</em>, <em>h</em>, <em>x=None</em>, <em>y=None</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.zoomCentered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rectangle zooming with specified center.</p>
+<p>This is like zoomRectangle, but the zoom rectangle is specified
+by its center and size, which may be more appropriate when using
+off-center zooming.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.zoomAll">
+<code class="descname">zoomAll</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.zoomAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rectangle zoom to make full scene visible.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.saveBuffer">
+<code class="descname">saveBuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.saveBuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the current OpenGL buffer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.showBuffer">
+<code class="descname">showBuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.showBuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the saved buffer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.draw_focus_rectangle">
+<code class="descname">draw_focus_rectangle</code><span class="sig-paren">(</span><em>ofs=0</em>, <em>color=(1.0</em>, <em>0.2</em>, <em>0.4)</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.draw_focus_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the focus rectangle.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.draw_cursor">
+<code class="descname">draw_cursor</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.draw_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>draw the cursor</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.pick_actors">
+<code class="descname">pick_actors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.pick_actors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actors inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.pick_parts">
+<code class="descname">pick_parts</code><span class="sig-paren">(</span><em>obj_type</em>, <em>store_closest=False</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.pick_parts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actor parts inside the pick_window.</p>
+<p>obj_type can be &#8216;element&#8217;, &#8216;face&#8217;, &#8216;edge&#8217; or &#8216;point&#8217;.
+&#8216;face&#8217; and &#8216;edge&#8217; are only available for Mesh type geometry.</p>
+<p>The picked object numbers are stored in self.picked.
+If store_closest==True, the closest picked object is stored in as a
+tuple ( [actor,object] ,distance) in self.picked_closest</p>
+<p>A list of actors from which can be picked may be given.
+If so, the resulting keys are indices in this list.
+By default, the full actor list is used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.pick_elements">
+<code class="descname">pick_elements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.pick_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actor elements inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.pick_points">
+<code class="descname">pick_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.pick_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actor points inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.pick_edges">
+<code class="descname">pick_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.pick_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actor edges inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.pick_faces">
+<code class="descname">pick_faces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.pick_faces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the list of actor faces inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.pick_numbers">
+<code class="descname">pick_numbers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.pick_numbers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the numbers inside the pick_window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.highlightActors">
+<code class="descname">highlightActors</code><span class="sig-paren">(</span><em>K</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.highlightActors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Highlight a selection of actors on the canvas.</p>
+<p>K is Collection of actors as returned by the pick() method.
+colormap is a list of two colors, for the actors not in, resp. in
+the Collection K.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="opengl.canvas.Canvas.removeHighlight">
+<code class="descname">removeHighlight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.Canvas.removeHighlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a highlight or a list thereof from the 3D scene.</p>
+<p>Without argument, removes all highlights from the scene.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-opengl-canvas">
+<h2>70.2. Functions defined in module opengl.canvas<a class="headerlink" href="#functions-defined-in-module-opengl-canvas" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="opengl.canvas.gl_pickbuffer">
+<code class="descclassname">opengl.canvas.</code><code class="descname">gl_pickbuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.gl_pickbuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the 2nd numbers in the openGL pick buffer.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.canvas.glLineStipple">
+<code class="descclassname">opengl.canvas.</code><code class="descname">glLineStipple</code><span class="sig-paren">(</span><em>factor</em>, <em>pattern</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.glLineStipple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the line stipple pattern.</p>
+<p>When drawing lines, OpenGl can use a stipple pattern. The stipple
+is defined by two values: a pattern (on/off) of maximum 16 bits,
+used on the pixel level, and a multiplier factor for each bit.</p>
+<p>If factor &lt;= 0, the stippling is disabled.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.canvas.glSmooth">
+<code class="descclassname">opengl.canvas.</code><code class="descname">glSmooth</code><span class="sig-paren">(</span><em>smooth=True</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.glSmooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable smooth shading</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.canvas.glFlat">
+<code class="descclassname">opengl.canvas.</code><code class="descname">glFlat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.glFlat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disable smooth shading</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.canvas.onOff">
+<code class="descclassname">opengl.canvas.</code><code class="descname">onOff</code><span class="sig-paren">(</span><em>onoff</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.onOff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert On/Off strings to a boolean</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.canvas.glEnable">
+<code class="descclassname">opengl.canvas.</code><code class="descname">glEnable</code><span class="sig-paren">(</span><em>facility</em>, <em>onoff</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.glEnable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/Disable an OpenGL facility, depending on onoff value</p>
+<p>facility is an OpenGL facility.
+onoff can be True or False to enable, resp. disable the facility, or
+None to leave it unchanged.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="opengl.canvas.extractCanvasSettings">
+<code class="descclassname">opengl.canvas.</code><code class="descname">extractCanvasSettings</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.canvas.extractCanvasSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a dict in canvas settings and other items.</p>
+<p>Returns a tuple of two dicts: the first one contains the items
+that are canvas settings, the second one the rest.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -156,10 +773,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="opengl.decors.html" title="70. opengl.decors — Decorations for the OpenGL canvas."
+          <a href="opengl.decors.html" title="71. opengl.decors — Decorations for the OpenGL canvas."
              >next</a> |</li>
         <li class="right" >
-          <a href="opengl.camera.html" title="68. opengl.camera — OpenGL camera handling"
+          <a href="opengl.camera.html" title="69. opengl.camera — OpenGL camera handling"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
           <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -169,7 +786,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

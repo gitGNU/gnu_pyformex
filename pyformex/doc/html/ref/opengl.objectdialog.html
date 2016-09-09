@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>73. opengl.objectdialog — Interactive modification of the rendered scene &mdash; pyFormex 1.0.2-a6 documentation</title>
+    <title>74. opengl.objectdialog — Interactive modification of the rendered scene &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -53,8 +53,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
     <link rel="up" title="pyFormex reference manual" href="../refman.html" />
-    <link rel="next" title="74. opengl.renderer — opengl/renderer.py" href="opengl.renderer.html" />
-    <link rel="prev" title="72. opengl.matrix — opengl/matrix.py" href="opengl.matrix.html" />
+    <link rel="next" title="75. opengl.renderer — opengl/renderer.py" href="opengl.renderer.html" />
+    <link rel="prev" title="73. opengl.matrix — opengl/matrix.py" href="opengl.matrix.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -77,10 +77,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="opengl.renderer.html" title="74. opengl.renderer — opengl/renderer.py"
+          <a href="opengl.renderer.html" title="75. opengl.renderer — opengl/renderer.py"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="opengl.matrix.html" title="72. opengl.matrix — opengl/matrix.py"
+          <a href="opengl.matrix.html" title="73. opengl.matrix — opengl/matrix.py"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
           <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
@@ -99,13 +99,22 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">74. <code class="docutils literal"><span class="pre">opengl.objectdialog</span></code> &#8212; Interactive modification of the rendered scene</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-opengl-objectdialog">74.1. Classes defined in module opengl.objectdialog</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-opengl-objectdialog">74.2. Functions defined in module opengl.objectdialog</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="opengl.matrix.html"
-                        title="previous chapter">72. <code class="docutils literal"><span class="pre">opengl.matrix</span></code> &#8212; opengl/matrix.py</a></p>
+                        title="previous chapter">73. <code class="docutils literal"><span class="pre">opengl.matrix</span></code> &#8212; opengl/matrix.py</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="opengl.renderer.html"
-                        title="next chapter">74. <code class="docutils literal"><span class="pre">opengl.renderer</span></code> &#8212; opengl/renderer.py</a></p>
+                        title="next chapter">75. <code class="docutils literal"><span class="pre">opengl.renderer</span></code> &#8212; opengl/renderer.py</a></p>
   
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
@@ -136,8 +145,26 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="opengl-objectdialog-interactive-modification-of-the-rendered-scene">
-<span id="sec-ref-opengl-objectdialog"></span><h1>73. <code class="xref py py-mod docutils literal"><span class="pre">opengl.objectdialog</span></code> &#8212; Interactive modification of the rendered scene<a class="headerlink" href="#opengl-objectdialog-interactive-modification-of-the-rendered-scene" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-opengl.objectdialog">
+<span id="opengl-objectdialog-interactive-modification-of-the-rendered-scene"></span><span id="sec-ref-opengl-objectdialog"></span><h1>74. <a class="reference internal" href="#module-opengl.objectdialog" title="opengl.objectdialog: Interactive modification of the rendered scene"><code class="xref py py-mod docutils literal"><span class="pre">opengl.objectdialog</span></code></a> &#8212; Interactive modification of the rendered scene<a class="headerlink" href="#module-opengl.objectdialog" title="Permalink to this headline">¶</a></h1>
+<p>This module contains some tools that can be used to interactively
+modify the rendered scene.</p>
+<div class="section" id="classes-defined-in-module-opengl-objectdialog">
+<h2>74.1. Classes defined in module opengl.objectdialog<a class="headerlink" href="#classes-defined-in-module-opengl-objectdialog" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-opengl-objectdialog">
+<h2>74.2. Functions defined in module opengl.objectdialog<a class="headerlink" href="#functions-defined-in-module-opengl-objectdialog" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="opengl.objectdialog.objectDialog">
+<code class="descclassname">opengl.objectdialog.</code><code class="descname">objectDialog</code><span class="sig-paren">(</span><em>obj=None</em>, <em>unlike='object_'</em><span class="sig-paren">)</span><a class="headerlink" href="#opengl.objectdialog.objectDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an interactive object dialog for drawn objects</p>
+<p>obj is a single drawn object or a list thereof.
+If no objects are specified, the current scene actors are
+used.
+A drawn object is the return value of a draw() function call.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -156,10 +183,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="opengl.renderer.html" title="74. opengl.renderer — opengl/renderer.py"
+          <a href="opengl.renderer.html" title="75. opengl.renderer — opengl/renderer.py"
              >next</a> |</li>
         <li class="right" >
-          <a href="opengl.matrix.html" title="72. opengl.matrix — opengl/matrix.py"
+          <a href="opengl.matrix.html" title="73. opengl.matrix — opengl/matrix.py"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
           <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
@@ -169,7 +196,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

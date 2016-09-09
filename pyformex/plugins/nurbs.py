@@ -1630,7 +1630,7 @@ def frenet(d1,d2,d3=None):
     - `k`: curvature of the curve at `npts` points
     - `t`: (only if `d3` was specified) torsion of the curve at `npts` points
 
-    Curvature is found from  | d1 x d2 | / |d1|**3
+    Curvature is found from  `| d1 x d2 | / |d1|**3`
 
     """
     l = at.length(d1)

@@ -99,6 +99,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">51. <code class="docutils literal"><span class="pre">plugins.nurbs</span></code> &#8212; Using NURBS in pyFormex.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-nurbs">51.1. Classes defined in module plugins.nurbs</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-nurbs">51.2. Functions defined in module plugins.nurbs</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.neu_exp.html"
@@ -136,8 +145,887 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="plugins-nurbs-using-nurbs-in-pyformex">
-<span id="sec-ref-plugins-nurbs"></span><h1>51. <code class="xref py py-mod docutils literal"><span class="pre">plugins.nurbs</span></code> &#8212; Using NURBS in pyFormex.<a class="headerlink" href="#plugins-nurbs-using-nurbs-in-pyformex" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-plugins.nurbs">
+<span id="plugins-nurbs-using-nurbs-in-pyformex"></span><span id="sec-ref-plugins-nurbs"></span><h1>51. <a class="reference internal" href="#module-plugins.nurbs" title="plugins.nurbs: Using NURBS in pyFormex."><code class="xref py py-mod docutils literal"><span class="pre">plugins.nurbs</span></code></a> &#8212; Using NURBS in pyFormex.<a class="headerlink" href="#module-plugins.nurbs" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">nurbs</span></code> module defines functions and classes to manipulate
+NURBS curves and surface in pyFormex.</p>
+<div class="section" id="classes-defined-in-module-plugins-nurbs">
+<h2>51.1. Classes defined in module plugins.nurbs<a class="headerlink" href="#classes-defined-in-module-plugins-nurbs" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="plugins.nurbs.Coords4">
+<em class="property">class </em><code class="descclassname">plugins.nurbs.</code><code class="descname">Coords4</code><a class="headerlink" href="#plugins.nurbs.Coords4" title="Permalink to this definition">¶</a></dt>
+<dd><p>A collection of points represented by their homogeneous coordinates.</p>
+<p>While most of the pyFormex implementation is based on the 3D Cartesian
+coordinates class <code class="xref py py-class docutils literal"><span class="pre">Coords</span></code>, some applications may benefit from using
+homogeneous coordinates. The class <a class="reference internal" href="#plugins.nurbs.Coords4" title="plugins.nurbs.Coords4"><code class="xref py py-class docutils literal"><span class="pre">Coords4</span></code></a> provides some basic
+functions and conversion to and from cartesian coordinates.
+Through the conversion, all other pyFormex functions, such as
+transformations, are available.</p>
+<p><a class="reference internal" href="#plugins.nurbs.Coords4" title="plugins.nurbs.Coords4"><code class="xref py py-class docutils literal"><span class="pre">Coords4</span></code></a> is implemented as a float type <code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code>
+whose last axis has a length equal to 4.
+Each set of 4 values (x,y,z,w) along the last axis represents a
+single point in 3D space. The cartesian coordinates of the point
+are obtained by dividing the first three values by the fourth:
+(x/w, y/w, z/w). A zero w-value represents a point at infinity.
+Converting such points to <code class="xref py py-class docutils literal"><span class="pre">Coords</span></code> will result in Inf or NaN
+values in the resulting object.</p>
+<p>The float datatype is only checked at creation time. It is the
+responsibility of the user to keep this consistent throughout the
+lifetime of the object.</p>
+<p>Just like <code class="xref py py-class docutils literal"><span class="pre">Coords</span></code>, the class <a class="reference internal" href="#plugins.nurbs.Coords4" title="plugins.nurbs.Coords4"><code class="xref py py-class docutils literal"><span class="pre">Coords4</span></code></a> is derived from
+<code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code>.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt><cite>data</cite>: array_like</dt>
+<dd>If specified, data should evaluate to an array of floats, with the
+length of its last axis not larger than 4. When equal to four, each
+tuple along the last axis represents a ingle point in homogeneous
+coordinates.
+If smaller than four, the last axis will be expanded to four by adding
+values zero in the second and third position and values 1 in the last
+position.
+If no data are given, a single point (0.,0.,0.) will be created.</dd>
+<dt><cite>w</cite>: array_like</dt>
+<dd>If specified, the w values are used to denormalize the homogeneous
+data such that the last component becomes w.</dd>
+<dt><cite>dtyp</cite>: data-type</dt>
+<dd>The datatype to be used. It not specified, the datatype of <cite>data</cite>
+is used, or the default <code class="xref py py-data docutils literal"><span class="pre">Float</span></code> (which is equivalent to
+<code class="xref py py-data docutils literal"><span class="pre">numpy.float32</span></code>).</dd>
+<dt><cite>copy</cite>: boolean</dt>
+<dd>If <code class="docutils literal"><span class="pre">True</span></code>, the data are copied. By default, the original data are
+used if possible, e.g. if a correctly shaped and typed
+<code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code> is specified.</dd>
+</dl>
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.normalize">
+<code class="descname">normalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the homogeneous coordinates.</p>
+<p>Two sets of homogeneous coordinates that differ only by a
+multiplicative constant refer to the same points in cartesian space.
+Normalization of the coordinates is a way to make the representation
+of a single point unique. Normalization is done so that the last
+component (w) is equal to 1.</p>
+<p>The normalization of the coordinates is done in place.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Normalizing points at infinity will result in Inf or
+NaN values.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.deNormalize">
+<code class="descname">deNormalize</code><span class="sig-paren">(</span><em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.deNormalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Denormalizes the homogeneous coordinates.</p>
+<p>This multiplies the homogeneous coordinates with the values w.
+w normally is a constant or an array with shape
+self.shape[:-1] + (1,).
+It then multiplies all 4 coordinates of a point with the same
+value, thus resulting in a denormalization while keeping the
+position of the point unchanged.</p>
+<p>The denormalization of the coordinates is done in place.
+If the Coords4 object was normalized, it will have precisely w as
+its 4-th coordinate value after the call.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.toCoords">
+<code class="descname">toCoords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.toCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert homogeneous coordinates to cartesian coordinates.</p>
+<p>Returns:</p>
+<p>A <code class="xref py py-class docutils literal"><span class="pre">Coords</span></code> object with the cartesian coordinates
+of the points. Points at infinity (w=0) will result in
+Inf or NaN value. If there are no points at infinity, the
+resulting <code class="xref py py-class docutils literal"><span class="pre">Coords</span></code> point set is equivalent to the
+<a class="reference internal" href="#plugins.nurbs.Coords4" title="plugins.nurbs.Coords4"><code class="xref py py-class docutils literal"><span class="pre">Coords4</span></code></a> one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.npoints">
+<code class="descname">npoints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.npoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the total number of points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.ncoords">
+<code class="descname">ncoords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.ncoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the total number of points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.x">
+<code class="descname">x</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the x-plane</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.y">
+<code class="descname">y</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the y-plane</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.z">
+<code class="descname">z</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the z-plane</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.w">
+<code class="descname">w</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the w-plane</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.bbox">
+<code class="descname">bbox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bounding box of a set of points.</p>
+<p>Returns the bounding box of the cartesian coordinates of
+the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.Coords4.actor">
+<code class="descname">actor</code><span class="sig-paren">(</span><em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.Coords4.actor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Graphical representation</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plugins.nurbs.Geometry4">
+<em class="property">class </em><code class="descclassname">plugins.nurbs.</code><code class="descname">Geometry4</code><a class="headerlink" href="#plugins.nurbs.Geometry4" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a preliminary class intended to provide some transforms in 4D</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="plugins.nurbs.KnotVector">
+<em class="property">class </em><code class="descclassname">plugins.nurbs.</code><code class="descname">KnotVector</code><span class="sig-paren">(</span><em>data=None</em>, <em>val=None</em>, <em>mul=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.KnotVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>A knot vector</p>
+<p>A knot vector is sequence of float values sorted in ascending order.
+Values can occur multiple times. In they typical use case for this
+class (Nurbs) most values do indeed occur multiple times, and the
+multiplicity of the values is an important quantity.
+Therefore, the knot vector is stored in two arrays of the same length:</p>
+<ul class="simple">
+<li><cite>v</cite>: the unique float values, a strictly ascending sequence</li>
+<li><cite>m</cite>: the multiplicity of each of the values</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">K</span> <span class="o">=</span> <span class="n">KnotVector</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+<span class="go">[ 0.   0.5  1. ]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">mul</span><span class="p">)</span>
+<span class="go">[3 2 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+<span class="go">KnotVector: 0.0(3), 0.5(2), 1.0(3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">knots</span><span class="p">())</span>
+<span class="go">[(0.0, 3), (0.5, 2), (1.0, 3)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="go">[ 0.   0.   0.   0.5  0.5  1.   1.   1. ]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">K</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">K</span><span class="o">.</span><span class="n">span</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">K</span><span class="o">.</span><span class="n">mult</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">K</span><span class="o">.</span><span class="n">mult</span><span class="p">(</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">K</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">K</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">(0.5, 1.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">K</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="go">array([ 0.5,  1. ], dtype=float32)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="plugins.nurbs.KnotVector.nknots">
+<code class="descname">nknots</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.KnotVector.nknots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the total number of knots</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.KnotVector.knots">
+<code class="descname">knots</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.KnotVector.knots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the knots as a list of tuples (value,multiplicity)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.KnotVector.values">
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.KnotVector.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the full list of knot values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.KnotVector.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.KnotVector.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the index of knot value u.</p>
+<p>If the value does not exist, a ValueError is raised.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.KnotVector.mult">
+<code class="descname">mult</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.KnotVector.mult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the multiplicity of knot value u.</p>
+<p>Returns an int with the multiplicity of the knot value u, or 0 if
+the value is not in the KNotVector.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.KnotVector.span">
+<code class="descname">span</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.KnotVector.span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the (first) index of knot value u in the full knot values vector.</p>
+<p>If the value does not exist, a ValueError is raised.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.KnotVector.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.KnotVector.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the KnotVector.</p>
+<p>Changing the copy will not change the original.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.KnotVector.reverse">
+<code class="descname">reverse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.KnotVector.reverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the reverse knot vector.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">KnotVector</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="go">[ 0.  0.  0.  2.  2.  5.  7.  8.  8.  8.]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plugins.nurbs.NurbsCurve">
+<em class="property">class </em><code class="descclassname">plugins.nurbs.</code><code class="descname">NurbsCurve</code><span class="sig-paren">(</span><em>control</em>, <em>degree=None</em>, <em>wts=None</em>, <em>knots=None</em>, <em>closed=False</em>, <em>blended=True</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>A NURBS curve</p>
+<p>The Nurbs curve is defined by nctrl control points, a degree (&gt;= 1) and
+a knot vector with nknots = nctrl+degree+1 parameter values.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>control</cite>: Coords-like (nctrl,3): the vertices of the control polygon.</li>
+<li><cite>degree</cite>: int: the degree of the Nurbs curve. If not specified, it is
+derived from the length of the knot vector (<cite>knots</cite>).</li>
+<li><cite>wts</cite>: float array (nctrl): weights to be attributed to the control
+points. Default is to attribute a weight 1.0 to all points. Using
+different weights allows for more versatile modeling (like perfect
+circles and arcs.)</li>
+<li><cite>knots</cite>: KnotVector or an ascending list of nknots float values.
+The values are only defined upon a multiplicative constant and will
+be normalized to set the last value to 1.
+If <cite>degree</cite> is specified, default values are constructed automatically
+by calling <a class="reference internal" href="#plugins.nurbs.genKnotVector" title="plugins.nurbs.genKnotVector"><code class="xref py py-func docutils literal"><span class="pre">genKnotVector()</span></code></a>.
+If no knots are given and no degree is specified, the degree is set to
+the nctrl-1 if the curve is blended. If not blended, the degree is not
+set larger than 3.</li>
+<li><cite>closed</cite>: bool: determines whether the curve is closed. Default
+False. The use of closed NurbsCurves is currently very limited.</li>
+<li><cite>blended</cite>: bool: determines that the curve is blended. Default is True.
+Set blended==False to define a nonblended curve.
+A nonblended curve is a chain of independent curves, Bezier curves if the
+weights are all ones. See also <a class="reference internal" href="#plugins.nurbs.NurbsCurve.decompose" title="plugins.nurbs.NurbsCurve.decompose"><code class="xref py py-meth docutils literal"><span class="pre">decompose()</span></code></a>.
+The number of control points should be a multiple of the degree, plus one.      This parameter is only used if no knots are specified.</li>
+</ul>
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.nctrl">
+<code class="descname">nctrl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.nctrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of control points</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.nknots">
+<code class="descname">nknots</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.nknots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of knots</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.order">
+<code class="descname">order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the order of the Nurbs curve</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.urange">
+<code class="descname">urange</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.urange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the parameter range on which the curve is defined.</p>
+<p>Returns a (2,) float array with the minimum and maximum parameter
+value for which the curve is defined.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.isClamped">
+<code class="descname">isClamped</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.isClamped" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the NurbsCurve uses a clamped knot vector.</p>
+<p>A clamped knot vector has a multiplicity p+1 for the first and
+last knot. All our generated knot vectors are clamped.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.isUniform">
+<code class="descname">isUniform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.isUniform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the NurbsCurve has a uniform knot vector.</p>
+<p>A uniform knot vector has a constant spacing between the knot values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.isRational">
+<code class="descname">isRational</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.isRational" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the NurbsCurve is rational.</p>
+<p>The curve is rational if the weights are not constant.
+The curve is polygonal if the weights are constant.</p>
+<p>Returns True for a rational curve, False for a polygonal curve.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.isBlended">
+<code class="descname">isBlended</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.isBlended" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the NurbsCurve is blended.</p>
+<p>An clamped NurbsCurve is unblended (or decomposed) if it consists
+of a chain of independent Bezier curves.
+Such a curve has multiplicity p for all internal knots and p+1
+for the end knots of an open curve.
+Any other NurbsCurve is blended.</p>
+<p>Returns True for a blended curve, False for an unblended one.</p>
+<p>Note: for testing whether an unclamped curve is blended or not,
+first clamp it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.bbox">
+<code class="descname">bbox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bounding box of the NURBS curve.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a (deep) copy of self.</p>
+<p>Changing the copy will not change the original.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.pointsAt">
+<code class="descname">pointsAt</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.pointsAt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the points on the Nurbs curve at given parametric values.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>u</cite>: (nu,) shaped float array, parametric values at which a point
+is to be placed. Note that valid points are only obtained for
+parameter values in the range self.range().</li>
+</ul>
+<p>Returns (nu,3) shaped Coords with nu points at the specified
+parametric values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.derivs">
+<code class="descname">derivs</code><span class="sig-paren">(</span><em>u</em>, <em>d=1</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.derivs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the points and derivatives up to d at parameter values u</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>u</cite>: either of:<ul>
+<li>int: number of points (npts) at which to evaluate the points
+and derivatives. The points will be equally spaced in parameter
+space.</li>
+<li>float array (npts): parameter values at which to compute points
+and derivatives.</li>
+</ul>
+</li>
+<li><cite>d</cite>: int: highest derivative to compute.</li>
+</ul>
+<p>Returns a float array of shape (d+1,npts,3).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.frenet">
+<code class="descname">frenet</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.frenet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Frenet vectors, curvature and torsion at parameter values u</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>u</cite>: either of:<ul>
+<li>int: number of points (npts) at which to evaluate the points
+and derivatives. The points will be equally spaced in parameter
+space.</li>
+<li>float array (npts): parameter values at which to compute points
+and derivatives.</li>
+</ul>
+</li>
+</ul>
+<p>Returns a float array of shape (d+1,npts,3).</p>
+<p>Returns a tuple of arrays at nu parameter values u:</p>
+<ul class="simple">
+<li><cite>T</cite>: normalized tangent vector (nu,3)</li>
+<li><cite>N</cite>: normalized normal vector (nu,3)</li>
+<li><cite>B</cite>: normalized binormal vector (nu,3)</li>
+<li><cite>k</cite>: curvature of the curve (nu)</li>
+<li><cite>t</cite>: torsion of the curve (nu)</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.curvature">
+<code class="descname">curvature</code><span class="sig-paren">(</span><em>u</em>, <em>torsion=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.curvature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Frenet vectors, curvature and torsion at parameter values u</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>u</cite>: either of:<ul>
+<li>int: number of points (npts) at which to evaluate the points
+and derivatives. The points will be equally spaced in parameter
+space.</li>
+<li>float array (npts): parameter values at which to compute points
+and derivatives.</li>
+</ul>
+</li>
+<li><cite>torsion</cite>: bool. If True, also returns the torsion in the curve.</li>
+</ul>
+<p>If <cite>torsion</cite> is False (default), returns a float array with the
+curvature at parameter values <cite>u</cite>.
+If <cite>torsion</cite> is True, also returns a float array with the
+torsion at parameter values <cite>u</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.knotPoints">
+<code class="descname">knotPoints</code><span class="sig-paren">(</span><em>multiple=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.knotPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the points at the knot values.</p>
+<p>If multiple is True, points are returned with their multiplicity.
+The default is to return all points just once.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.insertKnots">
+<code class="descname">insertKnots</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.insertKnots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a set of knots in the Nurbs curve.</p>
+<p>u is a vector with knot parameter values to be inserted into the
+curve. The control points are adapted to keep the curve unchanged.</p>
+<p>Returns:</p>
+<p>A Nurbs curve equivalent with the original but with the
+specified knot values inserted in the knot vector, and the control
+points adapted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.requireKnots">
+<code class="descname">requireKnots</code><span class="sig-paren">(</span><em>val</em>, <em>mul</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.requireKnots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert knots until the required multiplicity reached.</p>
+<p>Inserts knot values only if they are currently not there or their
+multiplicity is lower than the required one.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>val</cite>: list of float (nval): knot values required in the knot vector.</li>
+<li><cite>mul</cite>: list of int (nval): multiplicities required for the knot values <cite>u</cite>.</li>
+</ul>
+<p>Returns:</p>
+<p>A Nurbs curve equivalent with the original but where the knot vector
+is guaranteed to contain the values in <cite>u</cite> with at least the
+corresponding multiplicity in <cite>m</cite>. If all requirements were already
+fulfilled at the beginning, returns self.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.subCurve">
+<code class="descname">subCurve</code><span class="sig-paren">(</span><em>u1</em>, <em>u2</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.subCurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the subcurve between parameter values u1 and u2</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>u1</cite>, <cite>u2</cite>: two parameter values (u1 &lt; u2), delimiting the part of the
+curve to extract. These values do not have to be knot values.</li>
+</ul>
+<p>Returns a NurbsCurve containing only the part between u1 and u2.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.clamp">
+<code class="descname">clamp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.clamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clamp the knot vector of the curve.</p>
+<p>A clamped knot vector starts and ends with multiplicities p-1.
+See also <a class="reference internal" href="#plugins.nurbs.NurbsCurve.isClamped" title="plugins.nurbs.NurbsCurve.isClamped"><code class="xref py py-meth docutils literal"><span class="pre">isClamped()</span></code></a>.</p>
+<p>Returns self if the curve is already clamped, else returns an
+equivalent curve with clamped knot vector.</p>
+<p>Note: The use of unclamped knot vectors is deprecated.
+This method is provided only as a convenient method to import
+curves from legacy systems using unclamped knot vectors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.unclamp">
+<code class="descname">unclamp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.unclamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unclamp the knot vector of the curve.</p>
+<p>An unclamped knot vector starts and ends with multiplicities p-1.
+See also <a class="reference internal" href="#plugins.nurbs.NurbsCurve.isClamped" title="plugins.nurbs.NurbsCurve.isClamped"><code class="xref py py-meth docutils literal"><span class="pre">isClamped()</span></code></a>.</p>
+<p>Returns self if the curve is already clamped, else returns an
+equivalent curve with clamped knot vector.</p>
+<p>Note: The use of unclamped knot vectors is deprecated.
+This method is provided as a convenient method to export
+curves to legacy systems that only handle unclamped knot vectors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.unblend">
+<code class="descname">unblend</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.unblend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decomposes a curve in subsequent Bezier curves.</p>
+<p>Returns an equivalent unblended Nurbs.</p>
+<p>See also <a class="reference internal" href="#plugins.nurbs.NurbsCurve.toBezier" title="plugins.nurbs.NurbsCurve.toBezier"><code class="xref py py-meth docutils literal"><span class="pre">toBezier()</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.decompose">
+<code class="descname">decompose</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.decompose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decomposes a curve in subsequent Bezier curves.</p>
+<p>Returns an equivalent unblended Nurbs.</p>
+<p>See also <a class="reference internal" href="#plugins.nurbs.NurbsCurve.toBezier" title="plugins.nurbs.NurbsCurve.toBezier"><code class="xref py py-meth docutils literal"><span class="pre">toBezier()</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.toCurve">
+<code class="descname">toCurve</code><span class="sig-paren">(</span><em>force_Bezier=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.toCurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a (nonrational) NurbsCurve to a BezierSpline or PolyLine.</p>
+<p>This decomposes the curve in a chain of Bezier curves and converts
+the chain to a BezierSpline or PolyLine.</p>
+<p>This only works for nonrational NurbsCurves, as the
+BezierSpline and PolyLine classes do not allow homogeneous
+coordinates required for rational curves.</p>
+<p>Returns a BezierSpline or PolyLine (if degree is 1) that is equivalent
+with the NurbsCurve.</p>
+<p>See also <a class="reference internal" href="#plugins.nurbs.NurbsCurve.unblend" title="plugins.nurbs.NurbsCurve.unblend"><code class="xref py py-meth docutils literal"><span class="pre">unblend()</span></code></a> which decomposes both rational and
+nonrational NurbsCurves.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.toBezier">
+<code class="descname">toBezier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.toBezier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a (nonrational) NurbsCurve to a BezierSpline.</p>
+<p>This is equivalent with toCurve(force_Bezier=True) and returns
+a BezierSpline in all cases.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.removeKnot">
+<code class="descname">removeKnot</code><span class="sig-paren">(</span><em>u</em>, <em>m</em>, <em>tol=1e-05</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.removeKnot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a knot from the knot vector of the Nurbs curve.</p>
+<p>u: knot value to remove
+m: how many times to remove (if negative, remove maximally)</p>
+<p>Returns:</p>
+<p>A Nurbs curve equivalent with the original but with a knot vector
+where the specified value has been removed m times, if possible,
+or else as many times as possible. The control points are adapted
+accordingly.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.removeAllKnots">
+<code class="descname">removeAllKnots</code><span class="sig-paren">(</span><em>tol=1e-05</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.removeAllKnots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all removable knots</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>tol</cite>: float: acceptable error (distance between old and new curve).</li>
+</ul>
+<p>Returns an equivalent (if tol is small) NurbsCurve with all
+extraneous knots removed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.blend">
+<code class="descname">blend</code><span class="sig-paren">(</span><em>tol=1e-05</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.blend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all removable knots</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>tol</cite>: float: acceptable error (distance between old and new curve).</li>
+</ul>
+<p>Returns an equivalent (if tol is small) NurbsCurve with all
+extraneous knots removed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.elevateDegree">
+<code class="descname">elevateDegree</code><span class="sig-paren">(</span><em>t=1</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.elevateDegree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Elevate the degree of the Nurbs curve.</p>
+<p>t: how much to elevate the degree</p>
+<p>Returns:</p>
+<p>A Nurbs curve equivalent with the original but of a higher degree.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.reduceDegree">
+<code class="descname">reduceDegree</code><span class="sig-paren">(</span><em>t=1</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.reduceDegree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the degree of the Nurbs curve.</p>
+<p>t: how much to reduce the degree (max. = degree-1)</p>
+<p>Returns:</p>
+<p>A Nurbs curve approximating the original but of a lower degree.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.projectPoint">
+<code class="descname">projectPoint</code><span class="sig-paren">(</span><em>P</em>, <em>eps1=1e-05</em>, <em>eps2=1e-05</em>, <em>maxit=20</em>, <em>nseed=20</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.projectPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project a given point on the Nurbs curve.</p>
+<p>This can also be used to determine the parameter value of a point
+lying on the curve.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>P</cite>: Coords-like (npts,3): one or more points is space.</li>
+</ul>
+<p>Returns a tuple (u,X):</p>
+<ul class="simple">
+<li><cite>u</cite>: float: parameter value of the base point X of the projection
+of P on the NurbsCurve.</li>
+<li><cite>X</cite>: Coords (3,): the base point of the projection of P
+on the NurbsCurve.</li>
+</ul>
+<p>The algorithm is based on the from The Nurbs Book.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.approx">
+<code class="descname">approx</code><span class="sig-paren">(</span><em>ndiv=None</em>, <em>nseg=None</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a PolyLine approximation of the Nurbs curve</p>
+<p>If no <cite>nseg</cite> is given, the curve is approximated by a PolyLine
+through equidistant <cite>ndiv+1</cite> point in parameter space. These points
+may be far from equidistant in Cartesian space.</p>
+<p>If <cite>nseg</cite> is given, a second approximation is computed with <cite>nseg</cite>
+straight segments of nearly equal length. The lengths are computed
+based on the first approximation with <cite>ndiv</cite> segments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.actor">
+<code class="descname">actor</code><span class="sig-paren">(</span><em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.actor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Graphical representation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsCurve.reverse">
+<code class="descname">reverse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCurve.reverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the reversed Nurbs curve.</p>
+<p>The reversed curve is geometrically identical, but start and en point
+are interchanged and parameter values increase in the opposite direction.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plugins.nurbs.NurbsSurface">
+<em class="property">class </em><code class="descclassname">plugins.nurbs.</code><code class="descname">NurbsSurface</code><span class="sig-paren">(</span><em>control</em>, <em>degree=(None</em>, <em>None)</em>, <em>wts=None</em>, <em>knots=(None</em>, <em>None)</em>, <em>closed=(False</em>, <em>False)</em>, <em>blended=(True</em>, <em>True)</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsSurface" title="Permalink to this definition">¶</a></dt>
+<dd><p>A NURBS surface</p>
+<p>The Nurbs surface is defined as a tensor product of NURBS curves in two
+parametrical directions u and v. The control points form a grid of
+(nctrlu,nctrlv) points. The other data are like those for a NURBS curve,
+but need to be specified as a tuple for the (u,v) directions.</p>
+<p>The knot values are only defined upon a multiplicative constant, equal to
+the largest value. Sensible default values are constructed automatically
+by a call to the <a class="reference internal" href="#plugins.nurbs.genKnotVector" title="plugins.nurbs.genKnotVector"><code class="xref py py-func docutils literal"><span class="pre">genKnotVector()</span></code></a> function.</p>
+<p>If no knots are given and no degree is specified, the degree is set to
+the number of control points - 1 if the curve is blended. If not blended,
+the degree is not set larger than 3.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is a class under development!</p>
+</div>
+<dl class="method">
+<dt id="plugins.nurbs.NurbsSurface.bbox">
+<code class="descname">bbox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsSurface.bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bounding box of the NURBS surface.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsSurface.pointsAt">
+<code class="descname">pointsAt</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsSurface.pointsAt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the points on the Nurbs surface at given parametric values.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>u</cite>: (nu,2) shaped float array: <cite>nu</cite> parametric values (u,v) at which
+a point is to be placed.</li>
+</ul>
+<p>Returns (nu,3) shaped Coords with <cite>nu</cite> points at the specified
+parametric values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsSurface.derivs">
+<code class="descname">derivs</code><span class="sig-paren">(</span><em>u</em>, <em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsSurface.derivs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return points and derivatives at given parametric values.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>u</cite>: (nu,2) shaped float array: <cite>nu</cite> parametric values (u,v) at which
+the points and derivatives are evaluated.</li>
+<li><cite>m</cite>: tuple of two int values (mu,mv). The points and derivatives up
+to order mu in u direction and mv in v direction are returned.</li>
+</ul>
+<p>Returns:</p>
+<p>(nu+1,nv+1,nu,3) shaped Coords with <cite>nu</cite> points at the
+specified parametric values. The slice (0,0,:,:) contains the
+points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.nurbs.NurbsSurface.actor">
+<code class="descname">actor</code><span class="sig-paren">(</span><em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsSurface.actor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Graphical representation</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions-defined-in-module-plugins-nurbs">
+<h2>51.2. Functions defined in module plugins.nurbs<a class="headerlink" href="#functions-defined-in-module-plugins-nurbs" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.nurbs.genKnotVector">
+<code class="descclassname">plugins.nurbs.</code><code class="descname">genKnotVector</code><span class="sig-paren">(</span><em>nctrl</em>, <em>degree</em>, <em>blended=True</em>, <em>closed=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.genKnotVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute sensible knot vector for a Nurbs curve.</p>
+<p>A knot vector is a sequence of non-decreasing parametric values. These
+values define the <cite>knots</cite>, i.e. the points where the analytical expression
+of the Nurbs curve may change. The knot values are only meaningful upon a
+multiplicative constant, and they are usually normalized to the range
+[0.0..1.0].</p>
+<p>A Nurbs curve with <code class="docutils literal"><span class="pre">nctrl</span></code> points and of given <code class="docutils literal"><span class="pre">degree</span></code> needs a knot
+vector with <code class="docutils literal"><span class="pre">nknots</span> <span class="pre">=</span> <span class="pre">nctrl+degree+1</span></code> values. A <code class="docutils literal"><span class="pre">degree</span></code> curve needs
+at least <code class="docutils literal"><span class="pre">nctrl</span> <span class="pre">=</span> <span class="pre">degree+1</span></code> control points, and thus at least
+<code class="docutils literal"><span class="pre">nknots</span> <span class="pre">=</span> <span class="pre">2*(degree+1)</span></code> knot values.</p>
+<p>To make an open curve start and end in its end points, it needs knots with
+multiplicity <code class="docutils literal"><span class="pre">degree+1</span></code> at its ends. Thus, for an open blended curve, the
+default policy is to set the knot values at the ends to 0.0, resp. 1.0,
+both with multiplicity <code class="docutils literal"><span class="pre">degree+1</span></code>, and to spread the remaining
+<code class="docutils literal"><span class="pre">nctrl</span> <span class="pre">-</span> <span class="pre">degree</span> <span class="pre">-</span> <span class="pre">1</span></code> values equally over the interval.</p>
+<p>For a closed (blended) curve, the knots are equally spread over the
+interval, all having a multiplicity 1 for maximum continuity of the curve.</p>
+<p>For an open unblended curve, all internal knots get multiplicity <code class="docutils literal"><span class="pre">degree</span></code>.
+This results in a curve that is only one time continuously derivable at
+the knots, thus the curve is smooth, but the curvature may be discontinuous.
+There is an extra requirement in this case: <code class="docutils literal"><span class="pre">nctrl</span></code> should be a multiple
+of <code class="docutils literal"><span class="pre">degree</span></code> plus 1.</p>
+<p>Returns a KnotVector instance.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">genKnotVector</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">KnotVector: 0.0(4), 0.25(1), 0.5(1), 0.75(1), 1.0(4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">genKnotVector</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">blended</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="go">KnotVector: 0.0(4), 1.0(3), 2.0(4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">genKnotVector</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="go">KnotVector: 0.0(1), 0.2(1), 0.4(1), 0.6(1), 0.8(1), 1.0(1)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.nurbs.globalInterpolationCurve">
+<code class="descclassname">plugins.nurbs.</code><code class="descname">globalInterpolationCurve</code><span class="sig-paren">(</span><em>Q</em>, <em>degree=3</em>, <em>strategy=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.globalInterpolationCurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a global interpolation NurbsCurve.</p>
+<p>Given an ordered set of points Q, the globalInterpolationCurve
+is a NURBS curve of the given degree, passing through all the
+points.</p>
+<p>Returns:</p>
+<p>A NurbsCurve through the given point set. The number of
+control points is the same as the number of input points.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Currently there is the limitation that two consecutive
+points should not coincide. If they do, a warning is shown and
+the double points will be removed.</p>
+</div>
+<p>The procedure works by computing the control points that will
+produce a NurbsCurve with the given points occurring at predefined
+parameter values. The strategy to set this values uses a parameter
+as exponent. Different values produce (slighly) different curves.
+Typical values are:</p>
+<p>0.0: equally spaced (not recommended)
+0.5: centripetal (default, recommended)
+1.0: chord length (often used)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.nurbs.NurbsCircle">
+<code class="descclassname">plugins.nurbs.</code><code class="descname">NurbsCircle</code><span class="sig-paren">(</span><em>O=[0.0, 0.0, 0.0], r=1.0, X=[1.0, 0.0, 0.0], Y=[0.0, 1.0, 0.0], ths=0.0, the=360.0</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.NurbsCircle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a NurbsCurve representing a perfect circle or arc.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>O</cite>: float (3,): center of the circle</li>
+<li><cite>r</cite>: float: radius</li>
+<li><cite>X</cite>: unit vector in the plane of the circle</li>
+<li>&#8216;Y&#8217;: unit vector in the plane of the circle and perpendicular to <cite>X</cite></li>
+<li><cite>ths</cite>: start angle, measured from the X axis, coungerclockwise in X-Y plane</li>
+<li><cite>the</cite>: end angle, measured from the X axis</li>
+</ul>
+<p>Returns a NurbsCurve that is a perfect circle or arc.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.nurbs.toCoords4">
+<code class="descclassname">plugins.nurbs.</code><code class="descname">toCoords4</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.toCoords4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert cartesian coordinates to homogeneous</p>
+<dl class="docutils">
+<dt><cite>x</cite>: <code class="xref py py-class docutils literal"><span class="pre">Coords</span></code></dt>
+<dd>Array with cartesian coordinates.</dd>
+</dl>
+<p>Returns a Coords4 object corresponding to the input cartesian coordinates.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.nurbs.pointsOnBezierCurve">
+<code class="descclassname">plugins.nurbs.</code><code class="descname">pointsOnBezierCurve</code><span class="sig-paren">(</span><em>P</em>, <em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.pointsOnBezierCurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute points on a Bezier curve</p>
+<p>Parameters:</p>
+<p>P is an array with n+1 points defining a Bezier curve of degree n.
+u is a vector with nu parameter values between 0 and 1.</p>
+<p>Returns:</p>
+<p>An array with the nu points of the Bezier curve corresponding with the
+specified parametric values.
+ERROR: currently u is a single paramtric value!</p>
+<p>See also:
+examples BezierCurve, Casteljau</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.nurbs.deCasteljau">
+<code class="descclassname">plugins.nurbs.</code><code class="descname">deCasteljau</code><span class="sig-paren">(</span><em>P</em>, <em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.deCasteljau" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute points on a Bezier curve using deCasteljau algorithm</p>
+<p>Parameters:</p>
+<p>P is an array with n+1 points defining a Bezier curve of degree n.
+u is a single parameter value between 0 and 1.</p>
+<p>Returns:</p>
+<p>A list with point sets obtained in the subsequent deCasteljau
+approximations. The first one is the set of control points, the last one
+is the point on the Bezier curve.</p>
+<p>This function works with Coords as well as Coords4 points.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.nurbs.splitBezierCurve">
+<code class="descclassname">plugins.nurbs.</code><code class="descname">splitBezierCurve</code><span class="sig-paren">(</span><em>P</em>, <em>u</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.splitBezierCurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a Bezier curve at parametric values</p>
+<p>Parameters:</p>
+<p>P is an array with n+1 points defining a Bezier curve of degree n.
+u is a single parameter value between 0 and 1.</p>
+<p>Returns two arrays of n+1 points, defining the Bezier curves of degree n
+obtained by splitting the input curve at parametric value u. These results
+can be used with the control argument of BezierSpline to create the
+corresponding curve.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.nurbs.frenet">
+<code class="descclassname">plugins.nurbs.</code><code class="descname">frenet</code><span class="sig-paren">(</span><em>d1</em>, <em>d2</em>, <em>d3=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.nurbs.frenet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Frenet vectors, curvature and torsion.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><cite>d1</cite>: first derivative at <cite>npts</cite> points of a nurbs curve</li>
+<li><cite>d2</cite>: second derivative at <cite>npts</cite> points of a nurbs curve</li>
+<li><cite>d3</cite>: (optional) third derivative at <cite>npts</cite> points of a nurbs curve</li>
+</ul>
+<p>The derivatives of the nurbs curve are normally obtained from
+<code class="xref py py-func docutils literal"><span class="pre">NurbsCurve.deriv()</span></code>.</p>
+<p>Returns:</p>
+<ul class="simple">
+<li><cite>T</cite>: normalized tangent vector to the curve at <cite>npts</cite> points</li>
+<li><cite>N</cite>: normalized normal vector to the curve at <cite>npts</cite> points</li>
+<li><cite>B</cite>: normalized binormal vector to the curve at <cite>npts</cite> points</li>
+<li><cite>k</cite>: curvature of the curve at <cite>npts</cite> points</li>
+<li><cite>t</cite>: (only if <cite>d3</cite> was specified) torsion of the curve at <cite>npts</cite> points</li>
+</ul>
+<p>Curvature is found from  <cite>| d1 x d2 | / |d1|**3</cite></p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -169,7 +1057,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

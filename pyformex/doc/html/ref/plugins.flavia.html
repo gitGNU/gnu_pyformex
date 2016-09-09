@@ -99,6 +99,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">45. <code class="docutils literal"><span class="pre">plugins.flavia</span></code> &#8212;</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-flavia">45.1. Classes defined in module plugins.flavia</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-flavia">45.2. Functions defined in module plugins.flavia</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.fe_post.html"
@@ -136,8 +145,61 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="plugins-flavia">
-<span id="sec-ref-plugins-flavia"></span><h1>45. <code class="xref py py-mod docutils literal"><span class="pre">plugins.flavia</span></code> &#8212;<a class="headerlink" href="#plugins-flavia" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-plugins.flavia">
+<span id="plugins-flavia"></span><span id="sec-ref-plugins-flavia"></span><h1>45. <a class="reference internal" href="#module-plugins.flavia" title="plugins.flavia"><code class="xref py py-mod docutils literal"><span class="pre">plugins.flavia</span></code></a> &#8212;<a class="headerlink" href="#module-plugins.flavia" title="Permalink to this headline">¶</a></h1>
+<ol class="upperalpha simple" start="3">
+<li>2010 Benedict Verhegghe.</li>
+</ol>
+<div class="section" id="classes-defined-in-module-plugins-flavia">
+<h2>45.1. Classes defined in module plugins.flavia<a class="headerlink" href="#classes-defined-in-module-plugins-flavia" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-plugins-flavia">
+<h2>45.2. Functions defined in module plugins.flavia<a class="headerlink" href="#functions-defined-in-module-plugins-flavia" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.flavia.readMesh">
+<code class="descclassname">plugins.flavia.</code><code class="descname">readMesh</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.flavia.readMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a flavia mesh file.</p>
+<p>Returns a list of Meshes if succesful.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.flavia.readCoords">
+<code class="descclassname">plugins.flavia.</code><code class="descname">readCoords</code><span class="sig-paren">(</span><em>fil</em>, <em>ndim</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.flavia.readCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a set of coordinates from a flavia file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.flavia.readElems">
+<code class="descclassname">plugins.flavia.</code><code class="descname">readElems</code><span class="sig-paren">(</span><em>fil</em>, <em>nplex</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.flavia.readElems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a set of coordinates from a flavia file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.flavia.readResults">
+<code class="descclassname">plugins.flavia.</code><code class="descname">readResults</code><span class="sig-paren">(</span><em>fn</em>, <em>nnodes</em>, <em>ndim</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.flavia.readResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a flavia results file for an ndim mesh.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.flavia.readResult">
+<code class="descclassname">plugins.flavia.</code><code class="descname">readResult</code><span class="sig-paren">(</span><em>fil</em>, <em>nvalues</em>, <em>nres</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.flavia.readResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a set of results from a flavia file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.flavia.createFeResult">
+<code class="descclassname">plugins.flavia.</code><code class="descname">createFeResult</code><span class="sig-paren">(</span><em>model</em>, <em>results</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.flavia.createFeResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an FeResult from meshes and results</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.flavia.readFlavia">
+<code class="descclassname">plugins.flavia.</code><code class="descname">readFlavia</code><span class="sig-paren">(</span><em>meshfile</em>, <em>resfile</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.flavia.readFlavia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read flavia results files</p>
+<p>Currently we only read matching pairs of meshfile,resfile files.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -169,7 +231,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

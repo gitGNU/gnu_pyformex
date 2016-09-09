@@ -1,5 +1,5 @@
 .. $Id$
-  
+
 ..
   This file is part of pyFormex 1.0.2  (Thu Jun 18 15:35:31 CEST 2015)
   pyFormex is a tool for generating, manipulating and transforming 3D
@@ -8,21 +8,21 @@
   Project page:  http://savannah.nongnu.org/projects/pyformex/
   Copyright 2004-2015 (C) Benedict Verhegghe (benedict.verhegghe@feops.com)
   Distributed under the GNU General Public License version 3 or later.
-  
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see http://www.gnu.org/licenses/.
-  
-  
+
+
 .. include:: defines.inc
 .. include:: gui.inc
 .. include:: links.inc
@@ -1048,8 +1048,8 @@ You can specify the file format by using the appropriate extension in
 the file name. The default and recommended format is ``png``, but
 pyFormex can save in commonly used bitmap formats like ``jpg`` or
 ``gif`` as well.
-If you have installed ``gl2ps`` (see :ref:`subsec:development-version`), you can even save in a number of
-vector formats, such as ``eps`` or ``svg``.
+
+.. If you have installed ``gl2ps`` (see :ref:`subsec:development-version`), you can even save in a number of vector formats, such as ``eps`` or ``svg``.
 
 But you can also create the images from inside your script. Just
 import the ``image`` module and call the ``image.save()`` function::

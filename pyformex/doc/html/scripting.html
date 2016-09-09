@@ -217,7 +217,164 @@ be imported by the module.</p>
 <p>The template below is a common structure that allows this source to be used both
 as a script or as an app, and with almost identical behavior.</p>
 <blockquote>
-<div></div></blockquote>
+<div><div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1">##</span>
+<span class="c1">##  Copyright (C) 2011 John Doe (j.doe@somewhere.org)</span>
+<span class="c1">##  Distributed under the GNU General Public License version 3 or later.</span>
+<span class="c1">##</span>
+<span class="c1">##  This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">##  it under the terms of the GNU General Public License as published by</span>
+<span class="c1">##  the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">##  (at your option) any later version.</span>
+<span class="c1">##</span>
+<span class="c1">##  This program is distributed in the hope that it will be useful,</span>
+<span class="c1">##  but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">##  GNU General Public License for more details.</span>
+<span class="c1">##</span>
+<span class="c1">##  You should have received a copy of the GNU General Public License</span>
+<span class="c1">##  along with this program.  If not, see http://www.gnu.org/licenses/.</span>
+<span class="c1">##</span>
+
+<span class="sd">&quot;&quot;&quot;pyFormex Script/App Template</span>
+
+<span class="sd">This is a template file to show the general layout of a pyFormex</span>
+<span class="sd">script or app.</span>
+
+<span class="sd">A pyFormex script is just any simple Python source code file with</span>
+<span class="sd">extension &#39;.py&#39; and is fully read and execution at once.</span>
+
+<span class="sd">A pyFormex app can be a &#39;.py&#39; of &#39;.pyc&#39; file, and should define a function</span>
+<span class="sd">&#39;run()&#39; to be executed by pyFormex. Also, the app should import anything that</span>
+<span class="sd">it needs.</span>
+
+<span class="sd">This template is a common structure that allows the file to be used both as</span>
+<span class="sd">a script or as an app, with almost identical behavior.</span>
+
+<span class="sd">For more details, see the user guide under the `Scripting` section.</span>
+
+<span class="sd">The script starts by preference with a docstring (like this),</span>
+<span class="sd">composed of a short first line, then a blank line and</span>
+<span class="sd">one or more lines explaining the intention of the script.</span>
+
+<span class="sd">If you distribute your script/app, you should set the copyright holder</span>
+<span class="sd">at the start of the file and make sure that you (the copyright holder) has</span>
+<span class="sd">the intention/right to distribute the software under the specified</span>
+<span class="sd">copyright license (GPL3 or later).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># This helps in getting same code working with both Python2 and Python3</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># The pyFormex modeling language is defined by everything in</span>
+<span class="c1"># the gui.draw module (if you use the GUI). For execution without</span>
+<span class="c1"># the GUI, you should import from pyformex.script instead.</span>
+<span class="kn">from</span> <span class="nn">pyformex.gui.draw</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="c1"># Definitions</span>
+<span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Main function.</span>
+
+<span class="sd">    This is automatically executed on each run of an app.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is the pyFormex template script/app&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Code in the outer scope:</span>
+<span class="c1"># - for an app, this is only executed on loading (module initialization).</span>
+<span class="c1"># - for a script, this is executed on each run.</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is the initialization code of the pyFormex template script/app&quot;</span><span class="p">)</span>
+
+<span class="c1"># The following is to make script and app behavior alike</span>
+<span class="c1"># When executing a script in GUI mode, the global variable __name__ is set</span>
+<span class="c1"># to &#39;draw&#39;, thus the run method defined above will be executed.</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__draw__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running as a script&quot;</span><span class="p">)</span>
+    <span class="n">run</span><span class="p">()</span>
+
+
+<span class="c1"># End</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
 <p>The script/app source starts by preference with a docstring, consisting of a
 short first line, then a blank line and one or more lines explaining the
 intention and working of the script/app.</p>
@@ -253,7 +410,7 @@ intention and working of the script/app.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

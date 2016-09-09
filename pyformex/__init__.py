@@ -226,6 +226,7 @@ console = None     # alternate Python console
 
 class options:
     debuglevel = 0  # Make sure we can use
+    uselib = False # initial default to keep sphinx happy
 
 
 

@@ -99,6 +99,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">53. <code class="docutils literal"><span class="pre">plugins.partition</span></code> &#8212; Partitioning tools</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-partition">53.1. Classes defined in module plugins.partition</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-partition">53.2. Functions defined in module plugins.partition</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.objects.html"
@@ -136,8 +145,53 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="plugins-partition-partitioning-tools">
-<span id="sec-ref-plugins-partition"></span><h1>53. <code class="xref py py-mod docutils literal"><span class="pre">plugins.partition</span></code> &#8212; Partitioning tools<a class="headerlink" href="#plugins-partition-partitioning-tools" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-plugins.partition">
+<span id="plugins-partition-partitioning-tools"></span><span id="sec-ref-plugins-partition"></span><h1>53. <a class="reference internal" href="#module-plugins.partition" title="plugins.partition: Partitioning tools"><code class="xref py py-mod docutils literal"><span class="pre">plugins.partition</span></code></a> &#8212; Partitioning tools<a class="headerlink" href="#module-plugins.partition" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes-defined-in-module-plugins-partition">
+<h2>53.1. Classes defined in module plugins.partition<a class="headerlink" href="#classes-defined-in-module-plugins-partition" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-plugins-partition">
+<h2>53.2. Functions defined in module plugins.partition<a class="headerlink" href="#functions-defined-in-module-plugins-partition" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.partition.prepare">
+<code class="descclassname">plugins.partition.</code><code class="descname">prepare</code><span class="sig-paren">(</span><em>V</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.partition.prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the surface for slicing operation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.partition.colorCut">
+<code class="descclassname">plugins.partition.</code><code class="descname">colorCut</code><span class="sig-paren">(</span><em>F</em>, <em>P</em>, <em>N</em>, <em>prop</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.partition.colorCut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Color a Formex in two by a plane (P,N)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.partition.splitProp">
+<code class="descclassname">plugins.partition.</code><code class="descname">splitProp</code><span class="sig-paren">(</span><em>G</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.partition.splitProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partition a Formex according to its prop values and export the results.</p>
+<p>If G has property numbers, the structure is split and according
+to the property values, and the (compacted) parts are exported
+with names &#8216;name-propnumber&#8217;.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.partition.partition">
+<code class="descclassname">plugins.partition.</code><code class="descname">partition</code><span class="sig-paren">(</span><em>Fin</em>, <em>prop=0</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.partition.partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interactively partition a Formex.</p>
+<p>By default, the parts will get properties 0,1,...
+If prop &gt;= 0, the parts will get incremental props starting from prop.</p>
+<dl class="docutils">
+<dt>Returns the cutplanes in an array with shape (ncuts,2,3), where</dt>
+<dd>(i,0,:) is a point in the plane i and
+(i,1,:) is the normal vector on the plane i .</dd>
+</dl>
+<p>As a side effect, the properties of the input Formex will be changed
+to flag the parts between successive cut planes by incrementing
+property values.
+If you wish to restore the original properties, you should copy them
+(or the input Formex) before calling this function.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -169,7 +223,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

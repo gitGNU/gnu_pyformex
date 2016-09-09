@@ -33,7 +33,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plugins.calpy_itf — Calpy interface for pyFormex. &mdash; pyFormex 1.0.2-a6 documentation</title>
+    <title>68. plugins.calpy_itf — Calpy interface for pyFormex. &mdash; pyFormex 1.0.2-a6 documentation</title>
 
     
     <link rel="stylesheet" href="../_static/pyformex.css" type="text/css" />
@@ -52,6 +52,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="pyFormex 1.0.2-a6 documentation" href="../index.html" />
+    <link rel="up" title="pyFormex reference manual" href="../refman.html" />
+    <link rel="next" title="69. opengl.camera — OpenGL camera handling" href="opengl.camera.html" />
+    <link rel="prev" title="67. plugins.webgl — View and manipulate 3D models in your browser." href="plugins.webgl.html" />
 <link rel="icon" type="image/png" href="_static/pyformex_fav.png" />
 
   </head>
@@ -73,7 +76,14 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li> 
+        <li class="right" >
+          <a href="opengl.camera.html" title="69. opengl.camera — OpenGL camera handling"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plugins.webgl.html" title="67. plugins.webgl — View and manipulate 3D models in your browser."
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" accesskey="U">pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -91,14 +101,20 @@
    
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#"><code class="docutils literal"><span class="pre">plugins.calpy_itf</span></code> &#8212; Calpy interface for pyFormex.</a><ul>
-<li><a class="reference internal" href="#classes-defined-in-module-plugins-calpy-itf">Classes defined in module plugins.calpy_itf</a></li>
-<li><a class="reference internal" href="#functions-defined-in-module-plugins-calpy-itf">Functions defined in module plugins.calpy_itf</a></li>
+<li><a class="reference internal" href="#">68. <code class="docutils literal"><span class="pre">plugins.calpy_itf</span></code> &#8212; Calpy interface for pyFormex.</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-calpy-itf">68.1. Classes defined in module plugins.calpy_itf</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-calpy-itf">68.2. Functions defined in module plugins.calpy_itf</a></li>
 </ul>
 </li>
 </ul>
 
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="plugins.webgl.html"
+                        title="previous chapter">67. <code class="docutils literal"><span class="pre">plugins.webgl</span></code> &#8212; View and manipulate 3D models in your browser.</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="opengl.camera.html"
+                        title="next chapter">69. <code class="docutils literal"><span class="pre">opengl.camera</span></code> &#8212; OpenGL camera handling</a></p>
   
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
@@ -136,13 +152,13 @@ I found calpy in &#8216;/home/benedict/prj/calpy&#8217;
 .. pyformex reference manual &#8212; plugins.calpy_itf
 .. CREATED WITH pyformex &#8211;docmodule: DO NOT EDIT</p>
 <div class="section" id="module-plugins.calpy_itf">
-<span id="plugins-calpy-itf-calpy-interface-for-pyformex"></span><span id="sec-ref-plugins-calpy-itf"></span><h1><a class="reference internal" href="#module-plugins.calpy_itf" title="plugins.calpy_itf: Calpy interface for pyFormex."><code class="xref py py-mod docutils literal"><span class="pre">plugins.calpy_itf</span></code></a> &#8212; Calpy interface for pyFormex.<a class="headerlink" href="#module-plugins.calpy_itf" title="Permalink to this headline">¶</a></h1>
+<span id="plugins-calpy-itf-calpy-interface-for-pyformex"></span><span id="sec-ref-plugins-calpy-itf"></span><h1>68. <a class="reference internal" href="#module-plugins.calpy_itf" title="plugins.calpy_itf: Calpy interface for pyFormex."><code class="xref py py-mod docutils literal"><span class="pre">plugins.calpy_itf</span></code></a> &#8212; Calpy interface for pyFormex.<a class="headerlink" href="#module-plugins.calpy_itf" title="Permalink to this headline">¶</a></h1>
 <p>Currently this is only used to detect the installation of calpy and
 add the path of the calpy module to sys.path.</p>
 <p>Importing this module will automatically check the availabilty of calpy
 and set the sys.path accordingly.</p>
 <div class="section" id="classes-defined-in-module-plugins-calpy-itf">
-<h2>Classes defined in module plugins.calpy_itf<a class="headerlink" href="#classes-defined-in-module-plugins-calpy-itf" title="Permalink to this headline">¶</a></h2>
+<h2>68.1. Classes defined in module plugins.calpy_itf<a class="headerlink" href="#classes-defined-in-module-plugins-calpy-itf" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="plugins.calpy_itf.QuadInterpolator">
 <em class="property">class </em><code class="descclassname">plugins.calpy_itf.</code><code class="descname">QuadInterpolator</code><span class="sig-paren">(</span><em>nelems</em>, <em>nplex</em>, <em>gprule</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.calpy_itf.QuadInterpolator" title="Permalink to this definition">¶</a></dt>
@@ -250,7 +266,7 @@ By default, new nodata and nodn arrays are created and zeroed.</p>
 
 </div>
 <div class="section" id="functions-defined-in-module-plugins-calpy-itf">
-<h2>Functions defined in module plugins.calpy_itf<a class="headerlink" href="#functions-defined-in-module-plugins-calpy-itf" title="Permalink to this headline">¶</a></h2>
+<h2>68.2. Functions defined in module plugins.calpy_itf<a class="headerlink" href="#functions-defined-in-module-plugins-calpy-itf" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="plugins.calpy_itf.detect">
 <code class="descclassname">plugins.calpy_itf.</code><code class="descname">detect</code><span class="sig-paren">(</span><em>trypaths=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.calpy_itf.detect" title="Permalink to this definition">¶</a></dt>
@@ -281,14 +297,21 @@ By default, new nodata and nodn arrays are created and zeroed.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li> 
+        <li class="right" >
+          <a href="opengl.camera.html" title="69. opengl.camera — OpenGL camera handling"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plugins.webgl.html" title="67. plugins.webgl — View and manipulate 3D models in your browser."
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pyFormex 1.0.2-a6 documentation</a> &gt;</li>
+          <li class="nav-item nav-item-1"><a href="../refman.html" >pyFormex reference manual</a> &gt;</li> 
       </ul>
     </div>
     <div class="footer">
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

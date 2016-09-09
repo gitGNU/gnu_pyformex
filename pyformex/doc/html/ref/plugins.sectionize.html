@@ -99,6 +99,15 @@
 
 </div>
    
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">61. <code class="docutils literal"><span class="pre">plugins.sectionize</span></code> &#8212; sectionize.py</a><ul>
+<li><a class="reference internal" href="#classes-defined-in-module-plugins-sectionize">61.1. Classes defined in module plugins.sectionize</a></li>
+<li><a class="reference internal" href="#functions-defined-in-module-plugins-sectionize">61.2. Functions defined in module plugins.sectionize</a></li>
+</ul>
+</li>
+</ul>
+
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="plugins.section2d.html"
@@ -136,8 +145,60 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="plugins-sectionize-sectionize-py">
-<span id="sec-ref-plugins-sectionize"></span><h1>61. <code class="xref py py-mod docutils literal"><span class="pre">plugins.sectionize</span></code> &#8212; sectionize.py<a class="headerlink" href="#plugins-sectionize-sectionize-py" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-plugins.sectionize">
+<span id="plugins-sectionize-sectionize-py"></span><span id="sec-ref-plugins-sectionize"></span><h1>61. <a class="reference internal" href="#module-plugins.sectionize" title="plugins.sectionize: sectionize.py"><code class="xref py py-mod docutils literal"><span class="pre">plugins.sectionize</span></code></a> &#8212; sectionize.py<a class="headerlink" href="#module-plugins.sectionize" title="Permalink to this headline">¶</a></h1>
+<p>Create, measure and approximate cross section of a Formex.</p>
+<div class="section" id="classes-defined-in-module-plugins-sectionize">
+<h2>61.1. Classes defined in module plugins.sectionize<a class="headerlink" href="#classes-defined-in-module-plugins-sectionize" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions-defined-in-module-plugins-sectionize">
+<h2>61.2. Functions defined in module plugins.sectionize<a class="headerlink" href="#functions-defined-in-module-plugins-sectionize" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plugins.sectionize.connectPoints">
+<code class="descclassname">plugins.sectionize.</code><code class="descname">connectPoints</code><span class="sig-paren">(</span><em>F</em>, <em>close=False</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.sectionize.connectPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Formex with straight segments connecting subsequent points.</p>
+<p>F can be a Formex or data that can be turned into a Formex (e.g. an (n,3)
+array of points). The result is a plex-2 Formex connecting the subsequent
+points of F or the first point of subsequent elements in case the plexitude
+of F &gt; 1.
+If close=True, the last point is connected back to the first to create a
+closed polyline.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.sectionize.centerline">
+<code class="descclassname">plugins.sectionize.</code><code class="descname">centerline</code><span class="sig-paren">(</span><em>F</em>, <em>dir</em>, <em>nx=2</em>, <em>mode=2</em>, <em>th=0.2</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.sectionize.centerline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the centerline in the direction dir.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.sectionize.createSegments">
+<code class="descclassname">plugins.sectionize.</code><code class="descname">createSegments</code><span class="sig-paren">(</span><em>F</em>, <em>ns=None</em>, <em>th=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.sectionize.createSegments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create segments along 0 axis for sectionizing the Formex F.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.sectionize.sectionize">
+<code class="descclassname">plugins.sectionize.</code><code class="descname">sectionize</code><span class="sig-paren">(</span><em>F</em>, <em>segments</em>, <em>th=0.1</em>, <em>visual=True</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.sectionize.sectionize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sectionize a Formex in planes perpendicular to the segments.</p>
+<p>F is any Formex.
+segments is a plex-2 Formex.</p>
+<p>Planes are chosen in each center of a segment, perpendicular to
+that segment. Then parts of the Formex F are selected in the
+neighbourhood of each plane. Each part is then approximated by a
+circle in that plane.</p>
+<p>th is the relative thickness of the selected part of the Formex.
+If th = 0.5, that part will be delimited by two planes in the endpoints
+of and perpendicular to the segments.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="plugins.sectionize.drawCircles">
+<code class="descclassname">plugins.sectionize.</code><code class="descname">drawCircles</code><span class="sig-paren">(</span><em>sections</em>, <em>ctr</em>, <em>diam</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.sectionize.drawCircles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw circles as approximation of Formices.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -169,7 +230,7 @@
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>

@@ -1,5 +1,5 @@
 .. $Id: links.inc 2075 2011-11-14 10:16:40Z bverheg $  -*- rst -*-
-  
+
 ..
   This file is part of pyFormex 1.0.2  (Thu Jun 18 15:35:31 CEST 2015)
   pyFormex is a tool for generating, manipulating and transforming 3D
@@ -8,34 +8,38 @@
   Project page:  http://savannah.nongnu.org/projects/pyformex/
   Copyright 2004-2015 (C) Benedict Verhegghe (benedict.verhegghe@feops.com)
   Distributed under the GNU General Public License version 3 or later.
-  
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see http://www.gnu.org/licenses/.
-  
-  
+
+
 .. _`email us`: mailto:benedict.verhegghe@ugent.be
 .. _`pyFormex website`: http://pyformex.org
 .. _`Home Page`: http://pyformex.nongnu.org
-.. _`Documentation`: http:///pyformex.nongnu.org/doc
+.. _`Documentation-1.0`: http:///pyformex.nongnu.org/doc-1.0
+.. _`Documentation-0.9`: http:///pyformex.nongnu.org/doc-0.9
 
-.. _`Online manual`: http:///pyformex.nongnu.org/doc/index.html
-.. _`Introduction to pyFormex`: http:///pyformex.nongnu.org/doc/intro.html
-.. _`Installing pyFormex`: http:///pyformex.nongnu.org/doc/install.html
-.. _`pyFormex tutorial`: http:///pyformex.nongnu.org/doc/tutorial.html
-.. _`pyFormex reference manual`: http:///pyformex.nongnu.org/doc/refman.html
-.. _`pyFormex user guide`: http:///pyformex.nongnu.org/doc/user-guide.html
-.. _`pyFormex examples`: http:///pyformex.nongnu.org/doc/examples.html
-.. _`PDF version`: http://download.savannah.gnu.org/releases/pyformex/pyformex.pdf
+.. `Installing pyFormex-1.0`: http:///pyformex.nongnu.org/doc-1.0/install.html
+.. `Installing pyFormex-0.9`: http:///pyformex.nongnu.org/doc-0.9/install.html
+
+.. `Online manual`: http:///pyformex.nongnu.org/doc/index.html
+.. `Introduction to pyFormex`: http:///pyformex.nongnu.org/doc/intro.html
+.. `Installing pyFormex 0.9`: http:///pyformex.nongnu.org/doc-0.9/install.html
+.. `pyFormex tutorial`: http:///pyformex.nongnu.org/doc/tutorial.html
+.. `pyFormex reference manual`: http:///pyformex.nongnu.org/doc/refman.html
+.. `pyFormex user guide`: http:///pyformex.nongnu.org/doc/user-guide.html
+.. `pyFormex examples`: http:///pyformex.nongnu.org/doc/examples.html
+.. _`PDF version`: http://download.savannah.gnu.org/releases/pyformex/pyformex-1.0.pdf
 
 .. _`Savannah`: http://savannah.nongnu.org/
 .. _`Project page`: http://savannah.nongnu.org/projects/pyformex/

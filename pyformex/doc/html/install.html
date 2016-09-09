@@ -100,25 +100,12 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installing pyFormex</a><ul>
-<li><a class="reference internal" href="#choose-installation-type">Choose installation type</a></li>
-<li><a class="reference internal" href="#debian-packages">Debian packages</a></li>
-<li><a class="reference internal" href="#official-release">Official release</a><ul>
+<li><a class="reference internal" href="#installing-pyformex-1-0-x">Installing pyFormex-1.0.x</a></li>
 <li><a class="reference internal" href="#dependencies">Dependencies</a><ul>
 <li><a class="reference internal" href="#installing-dependencies-on-debian-gnu-linux">Installing dependencies on <cite>Debian GNU/Linux</cite></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#download-pyformex">Download pyFormex</a></li>
-<li><a class="reference internal" href="#install-pyformex">Install pyFormex</a></li>
-<li><a class="reference internal" href="#install-additional-software">Install additional software</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#alpha-release">Alpha release</a></li>
-<li><a class="reference internal" href="#development-version">Development version</a><ul>
-<li><a class="reference internal" href="#using-the-older-subversion-repository">Using the older Subversion repository</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#bumpix-live-gnu-linux-system">BuMPix Live GNU/Linux system</a></li>
-<li><a class="reference internal" href="#running-pyformex-on-non-linux-systems">Running pyFormex on non-Linux systems</a></li>
+<li><a class="reference internal" href="#recommends">Recommends</a></li>
 </ul>
 </li>
 </ul>
@@ -160,265 +147,47 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="cha-install">
-<span id="id1"></span><h1>Installing pyFormex<a class="headerlink" href="#cha-install" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="installing-pyformex">
+<span id="cha-install"></span><h1>Installing pyFormex<a class="headerlink" href="#installing-pyformex" title="Permalink to this headline">¶</a></h1>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This document is under construction</p>
+</div>
 <div class="topic">
 <p class="topic-title first">Abstract</p>
 <p>This document explains the different ways for obtaining a running
 pyFormex installation. You will learn how to obtain pyFormex, how
 to install it, and how to get it running.</p>
 </div>
-<div class="section" id="choose-installation-type">
-<span id="sec-choose-installation"></span><h2>Choose installation type<a class="headerlink" href="#choose-installation-type" title="Permalink to this headline">¶</a></h2>
-<p>There are several ways to get a running installation of pyFormex, and you may
-choose the most appropriate method for you, depending on your needs, your current
-infrastructure and your computer knowledge. We will describe them in detail in
-this document, and advice you on which method might be the best in your case.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p><strong>pyFormex on non-Linux systems</strong></p>
-<p class="last">pyFormex is being developed on GNU/Linux systems, and most users run it on a
-GNU/Linux platform. The <a class="reference internal" href="#sec-pyformex-nonlinux"><span class="std std-ref">Running pyFormex on non-Linux systems</span></a> section holds information
-on how pyFormex can be run on other platforms.</p>
+<div class="section" id="installing-pyformex-1-0-x">
+<span id="sec-choose-installation"></span><h2>Installing pyFormex-1.0.x<a class="headerlink" href="#installing-pyformex-1-0-x" title="Permalink to this headline">¶</a></h2>
+<p>This installation manual is for the pyFormex 1.0 series. Installation instructions for pyFormex-0.9 can be found <a class="reference external" href="http:///pyformex.nongnu.org/doc-0.9/install.html">here</a>.</p>
+<p>pyFormex is being developed on GNU/Linux systems, and currently only runs on Linux. On other systems you have the option of running Linux in a virtual machine, or you can boot your machine from a USB stick with a Linux Live system.</p>
+<p>As there has not been an official release yet of pyFormex-1.0, this manual only deals with how to run pyFormex from source, and how to install one of the alpha releases.</p>
+<p>Whether you are running pyFormex from source or from a packaged release, there are some required packages that you need to have on your Linux system. pyFormex will not run without them. Then, there are also some recommended pacakges: these are only necessary for some applications, but not for basic pyFormex.</p>
 </div>
-<p>Let&#8217;s first give you an overview of the most important pros and cons of the
-different install methods.</p>
-<p><a class="reference internal" href="#sec-debian-packages"><span class="std std-ref">Debian packages</span></a>:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="42%" />
-<col width="58%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">PROS</th>
-<th class="head">CONS</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><ul class="first last simple">
-<li>Stable</li>
-<li>Well supported</li>
-<li>Easy install procedure</li>
-<li>Automatic installation of
-all dependencies</li>
-<li>Easy update procecure</li>
-<li>Easy removal procecure</li>
-<li>Site-wide install</li>
-</ul>
-</td>
-<td><ul class="first last simple">
-<li>Debian GNU/Linux required <a class="footnote-reference" href="#debian" id="id2">[1]</a></li>
-<li>Root access required</li>
-<li>May be missing latest features</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<table class="docutils footnote" frame="void" id="debian" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>Installing the Debian packages may also work on Debian derivatives
-like Ubuntu and Mint.</td></tr>
-</tbody>
-</table>
-<p><a class="reference internal" href="#sec-official-release"><span class="std std-ref">Official release</span></a>:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="42%" />
-<col width="58%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">PROS</th>
-<th class="head">CONS</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><ul class="first last simple">
-<li>Stable</li>
-<li>Well supported</li>
-<li>Easy install procedure</li>
-<li>Site-wide install</li>
-</ul>
-</td>
-<td><ul class="first last simple">
-<li>GNU/Linux required</li>
-<li>Root access required</li>
-<li>Installation of dependencies required</li>
-<li>May be missing latest features</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p><a class="reference internal" href="#sec-alpha-release"><span class="std std-ref">Alpha release</span></a>:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="41%" />
-<col width="59%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">PROS</th>
-<th class="head">CONS</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><ul class="first last simple">
-<li>Easy install
-procedure</li>
-<li>Site-wide
-install</li>
-</ul>
-</td>
-<td><ul class="first last simple">
-<li>GNU/Linux required</li>
-<li>Root access required</li>
-<li>Installation of dependencies required</li>
-<li>Latests features</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p><a class="reference internal" href="#sec-development-version"><span class="std std-ref">Development version</span></a>:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="32%" />
-<col width="68%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">PROS</th>
-<th class="head">CONS</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><ul class="first last simple">
-<li>Latest features</li>
-<li>No root
-access required</li>
-<li>No installation
-required</li>
-</ul>
-</td>
-<td><ul class="first last simple">
-<li>GNU/Linux required</li>
-<li>Requires development tools</li>
-<li>(Usually) single user install</li>
-<li>Manual installation of dependencies
-(and root access) may be required</li>
-<li>Less stable</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p><a class="reference internal" href="#sec-bumpix-live-linux"><span class="std std-ref">BuMPix Live GNU/Linux system</span></a>:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="52%" />
-<col width="48%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">PROS</th>
-<th class="head">CONS</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><ul class="first last simple">
-<li>No GNU/Linux required</li>
-<li>No root access required</li>
-<li>No installation required</li>
-<li>Stable version</li>
-<li>Easily portable</li>
-<li>Upgradeable by installing
-development version</li>
-</ul>
-</td>
-<td><ul class="first last simple">
-<li>Missing latest features</li>
-<li>Somewhat slower loading</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>To sum it up:</p>
-<ul class="simple">
-<li>Unless you want to help with the development, or you absolutely
-need some of the latest features or bugfixes, or you just can not
-meet the requirements, the latest <a class="reference internal" href="#sec-debian-packages"><span class="std std-ref">Debian packages</span></a> or
-<a class="reference internal" href="#sec-official-release"><span class="std std-ref">Official release</span></a> source tarballs are
-what you want to go for. They give you the highest degree of
-stability and support and come packed in an archive, with an easy install
-procedure provided by your distributions package manager or included in
-the source tarball.</li>
-<li>If you need some recent feature of pyFormex that is not yet in an official
-release, you may be lucky to find it in some <a class="reference internal" href="#sec-alpha-release"><span class="std std-ref">Alpha release</span></a>.</li>
-<li>If the install procedures do not work for you, or you need the
-absolutely latest development code, you can run pyFormex directly
-from the anonymously checked out <a class="reference internal" href="#sec-development-version"><span class="std std-ref">Development version</span></a>.</li>
-<li>Finally, if you do not have enough permissions to install the dependencies,
-or if you do not have a GNU/Linux system in the first place, or if you just
-want  to try out pyFormex without having to install anything,
-or if you want a portable system that can you take
-with you and run anywhere, choose for the <a class="reference internal" href="#sec-bumpix-live-linux"><span class="std std-ref">BuMPix Live GNU/Linux system</span></a> on
-USB stick.</li>
-</ul>
-</div>
-<div class="section" id="debian-packages">
-<span id="sec-debian-packages"></span><h2>Debian packages<a class="headerlink" href="#debian-packages" title="Permalink to this headline">¶</a></h2>
-<p>If you are running Debian GNU/Linux, or have the opportunity to install
-it, then (by far) the most easy install method is to use the packages
-in the official Debian repositories. Currently pyFormex packages are available for Debian sid and wheezy releases. Be sure to also install the precompiled acceleration libraries:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">pyformex</span> <span class="n">pyformex</span><span class="o">-</span><span class="n">lib</span>
-</pre></div>
-</div>
-<p>This single command will install pyFormex and all its dependencies. Some extra
-functionalities may be installable from a separate package:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">pyformex</span><span class="o">-</span><span class="n">extra</span>
-</pre></div>
-</div>
-<p>If you need a more recent version of pyFormex then the one available in the official repositories, you may try your luck with our <a class="reference external" href="http://bumps.ugent.be/repos">local package repository</a>.
-It contains debian format packages of intermediate releases and test packages for the official releases.
-To access our package repository from your normal package manager, add the following lines to your <cite>/etc/apt/sources.list</cite>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">bumps</span><span class="o">.</span><span class="n">ugent</span><span class="o">.</span><span class="n">be</span><span class="o">/</span><span class="n">repos</span><span class="o">/</span><span class="n">debian</span><span class="o">/</span> <span class="n">sid</span> <span class="n">main</span>
-<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">bumps</span><span class="o">.</span><span class="n">ugent</span><span class="o">.</span><span class="n">be</span><span class="o">/</span><span class="n">repos</span><span class="o">/</span><span class="n">debian</span><span class="o">/</span> <span class="n">sid</span> <span class="n">main</span>
-</pre></div>
-</div>
-<p>You can add the key used to sign the packages to the apt keyring with the following command:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="o">-</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">bumps</span><span class="o">.</span><span class="n">ugent</span><span class="o">.</span><span class="n">be</span><span class="o">/</span><span class="n">repos</span><span class="o">/</span><span class="n">pyformex</span><span class="o">-</span><span class="n">pubkey</span><span class="o">.</span><span class="n">gpg</span> <span class="o">|</span> <span class="n">apt</span><span class="o">-</span><span class="n">key</span> <span class="n">add</span> <span class="o">-</span>
-</pre></div>
-</div>
-<p>Then do <code class="docutils literal"><span class="pre">apt-get</span> <span class="pre">update</span></code>. Now you can use the above commands to install
-the latest alpha release.</p>
-</div>
-<div class="section" id="official-release">
-<span id="sec-official-release"></span><h2>Official release<a class="headerlink" href="#official-release" title="Permalink to this headline">¶</a></h2>
-<p>pyFormex is software under development, and many users run it directly from
-the latest development sources. This holds a certain risk however, because the development version may at times become unstable or incompatible with previous versions and thus break your applications.
-At regular times we therefore create official releases, which provide a more stable and better documented and supported version, together with an easy install procedure.</p>
-<p>If you can meet the requirements for using an officially packed release, and you can not use the <a class="reference internal" href="#sec-debian-packages"><span class="std std-ref">Debian packages</span></a>, this is the recommended way to install pyFormex. All the software packages needed to compile and run pyFormex can be obtained for free.</p>
-<p>To install an official pyFormex release, you need a working GNU/Linux system, root (administrator) privileges to the system, and you need to make sure that the dependencies listed below are installed first on the system. Furthermore, you need the usual GNU development tools (gcc, make).</p>
-<p>If you need to install a new GNU/Linux system from scratch, and have the choice to pick any distribution, we highly recommend <a class="reference external" href="http://www.debian.org">Debian GNU/Linux</a> or derivatives.
-This is because most of the pyFormex development is done on Debian systems,
-and we will give you <a class="reference internal" href="#precise-install-instructions">precise install instructions</a> for this system.
-Also, the Debian software repositories are amongst the most comprehensive to be found on the Internet. Furthermore, as of pyFormex version 0.8.6, we provide official <a class="reference internal" href="#sec-debian-packages"><span class="std std-ref">Debian packages</span></a>, making installation really a no-brainer.</p>
-<p>Most popular GNU/Linux distributions provide appropriately packed recent versions
-of the dependencies, so that you can install them easily from the pacakge manager of your system. In case a package or version is not available for your system, you can always install it from source. We provide the websites where
-you can find the source packages.</p>
 <div class="section" id="dependencies">
-<span id="sec-dependencies"></span><h3>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
-<p>In order to install an official release package of pyFormex, you need to have the following installed (and working) on your computer:</p>
+<span id="sec-dependencies"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>In order to run pyFormex, you need at least the following installed (and working) on your computer:</p>
+<p><strong>Python</strong> (<a class="reference external" href="http://www.python.org">http://www.python.org</a>) Version 2.7 is required. Lower
+versions are no longer supported. Development is ongoing to make
+pyFormex run on Python 3.x, but is not ready yet.  Nearly all Linux
+distributions come with Python 2.7 installed by default (or as an
+option), so this should be no problem.</p>
 <dl class="docutils">
-<dt><strong>Python</strong> (<a class="reference external" href="http://www.python.org">http://www.python.org</a>)</dt>
-<dd>Version 2.5 or higher (2.6 or 2.7 is recommended). Nearly all GNU/Linux distributions come with Python installed, so this should be no major obstacle.</dd>
+<dt><strong>FreeType</strong> (<a class="reference external" href="https://www.freetype.org/">https://www.freetype.org/</a>) Used for rendering text. All</dt>
+<dd>Linux distributions come with FreeType installed, so again here&#8217;s
+no problem.</dd>
 <dt><strong>NumPy</strong> (<a class="reference external" href="http://www.numpy.org">http://www.numpy.org</a>)</dt>
 <dd>Version 1.0 or higher. NumPy is the package used for efficient
 numerical array operations in Python and is essential for pyFormex.</dd>
 <dt><strong>Qt4</strong> (<a class="reference external" href="http://www.trolltech.com/products/qt">http://www.trolltech.com/products/qt</a>)</dt>
 <dd>The widget toolkit on which the pyFormex Graphical User Interface (GUI) was built.</dd>
-<dt><strong>PyQt4</strong> (<a class="reference external" href="http://www.riverbankcomputing.co.uk/pyqt/index.php">http://www.riverbankcomputing.co.uk/pyqt/index.php</a>)</dt>
-<dd>The Python bindings for Qt4.</dd>
+<dt><strong>PySide</strong> (<a class="reference external" href="http://www.pyside.org">http://www.pyside.org</a>)</dt>
+<dd>The Python bindings for Qt4. There is an alternative set of Python bindings
+for Qt4: PyQt4 (<a class="reference external" href="http://www.riverbankcomputing.co.uk/pyqt/index.php">http://www.riverbankcomputing.co.uk/pyqt/index.php</a>), and you
+can use this instead. pyFormex will detect the installed one. If you have
+both, you can select either.</dd>
 <dt><strong>PyOpenGL</strong> (<a class="reference external" href="http://pyopengl.sourceforge.net/">http://pyopengl.sourceforge.net/</a>)</dt>
 <dd>Python bindings for OpenGL, used for drawing and manipulating the
 3D-structures.</dd>
@@ -430,298 +199,31 @@ procedure however does not provide this option yet, so you will have to do the
 install by hand.
 Currently we recommend to install the whole package including the GUI.
 Most probably you will want to visualize your structures and for that you need the GUI anyway.</p>
-<p>Additionally, we recommend you to also install the Python and OpenGL header files. The install procedure needs these to compile the pyFormex acceleration library. While pyFormex can run without the library (Python versions will be substituted for all functions in the library), using the library will dramatically speed up some low level operations such as drawing, especially when working with large structures .</p>
+<p>In order to speed up some time-critical tasks, pyFormex has an acceleration library containing some compiled C functions. In order to install and compile these, you will need a C development environment and the required header files:</p>
+<ul class="simple">
+<li>GNU make</li>
+<li>gcc: GNU C compiler</li>
+<li>header files for Python and OpenGL (e.g. from mesa)</li>
+</ul>
+<p>We highly recommend that you install these to allow the acceleration library to be compiled.</p>
 <div class="section" id="installing-dependencies-on-debian-gnu-linux">
-<span id="precise-install-instructions"></span><h4>Installing dependencies on <cite>Debian GNU/Linux</cite><a class="headerlink" href="#installing-dependencies-on-debian-gnu-linux" title="Permalink to this headline">¶</a></h4>
-<p>Debian users should just have to install the packages <code class="docutils literal"><span class="pre">python-numpy</span></code>, <code class="docutils literal"><span class="pre">python-opengl</span></code> and  <code class="docutils literal"><span class="pre">python-qt4-gl</span></code>. The latter will install <code class="docutils literal"><span class="pre">python-qt4</span></code> as dependency. Also, for compiling the acceleration library, you should install
+<span id="install-dependencies"></span><h3>Installing dependencies on <cite>Debian GNU/Linux</cite><a class="headerlink" href="#installing-dependencies-on-debian-gnu-linux" title="Permalink to this headline">¶</a></h3>
+<p>Debian/Ubuntu users can install the pyFormex dependencies from their distribution&#8217;s repositories. Installing the following packages should suffice:
+<code class="docutils literal"><span class="pre">python-numpy</span></code>, <code class="docutils literal"><span class="pre">python-opengl</span></code>, <code class="docutils literal"><span class="pre">python-qt4</span></code>, <code class="docutils literal"><span class="pre">python-pyside</span></code>.</p>
+<p>Also, for compiling the acceleration library, you should install
 <code class="docutils literal"><span class="pre">python-dev</span></code> and <code class="docutils literal"><span class="pre">libglu1-mesa-dev</span></code>. This command will do it all:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">numpy</span> <span class="n">python</span><span class="o">-</span><span class="n">opengl</span> <span class="n">python</span><span class="o">-</span><span class="n">qt4</span><span class="o">-</span><span class="n">gl</span> <span class="n">python</span><span class="o">-</span><span class="n">dev</span> <span class="n">libglu1</span><span class="o">-</span><span class="n">mesa</span><span class="o">-</span><span class="n">dev</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">numpy</span> <span class="n">python</span><span class="o">-</span><span class="n">opengl</span> <span class="n">python</span><span class="o">-</span><span class="n">qt4</span> <span class="n">python</span><span class="o">-</span><span class="n">pyside</span> <span class="n">python</span><span class="o">-</span><span class="n">qt4</span><span class="o">-</span><span class="n">gl</span> <span class="n">python</span><span class="o">-</span><span class="n">dev</span> <span class="n">libglu1</span><span class="o">-</span><span class="n">mesa</span><span class="o">-</span><span class="n">dev</span> <span class="n">libfreetype6</span><span class="o">-</span><span class="n">dev</span>
 </pre></div>
 </div>
+</div>
+</div>
+<div class="section" id="recommends">
+<h2>Recommends<a class="headerlink" href="#recommends" title="Permalink to this headline">¶</a></h2>
+<p>Additionally, we recommend you to also install the Python and OpenGL header files. The install procedure needs these to compile the pyFormex acceleration library. While pyFormex can run without the library (Python versions will be substituted for all functions in the library), using the library will dramatically speed up some low level operations such as drawing, especially when working with large structures .</p>
 <dl class="docutils">
 <dt>Other optional packages that might be useful are <code class="docutils literal"><span class="pre">admesh</span></code>, <code class="docutils literal"><span class="pre">python-scipy</span></code>,</dt>
 <dd><code class="docutils literal"><span class="pre">units</span></code>.</dd>
 </dl>
-</div>
-</div>
-<div class="section" id="download-pyformex">
-<span id="sec-downloading"></span><h3>Download pyFormex<a class="headerlink" href="#download-pyformex" title="Permalink to this headline">¶</a></h3>
-<p>Official pyFormex releases can be downloaded from this website:
-<a class="reference external" href="http://download.savannah.gnu.org/releases/pyformex/">Releases</a>. As of the writing of this manual, the latest
-release is 0.8.6.</p>
-<p>pyFormex is currently distributed in the form of a .tar.gz (tarball) archive. See <a class="reference internal" href="#sec-installation-linux"><span class="std std-ref">Install pyFormex</span></a> for how to proceed further with the downloaded file.</p>
-</div>
-<div class="section" id="install-pyformex">
-<span id="sec-installation-linux"></span><h3>Install pyFormex<a class="headerlink" href="#install-pyformex" title="Permalink to this headline">¶</a></h3>
-<p>Once you have downloaded the tarball, unpack it with the command</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">tar</span> <span class="n">xvzf</span> <span class="n">pyformex</span><span class="o">-</span><span class="n">VERSION</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
-</pre></div>
-</div>
-<p>where you replace <code class="docutils literal"><span class="pre">VERSION</span></code> with the correct version from the downloaded file.
-Then go to the created pyformex directory</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">pyformex</span><span class="o">-</span><span class="n">VERSION</span>
-</pre></div>
-</div>
-<p>and execute the following command with root privileges:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span> <span class="o">--</span><span class="n">prefix</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span>
-</pre></div>
-</div>
-<p>This will install pyFormex under <code class="docutils literal"><span class="pre">/usr/local/</span></code>.
-You can change the prefix to install pyFormex in some other place.</p>
-<p>The installation procedure installs everything into a single
-directory, and creates a symlink to the executable in
-<code class="docutils literal"><span class="pre">/usr/local/bin</span></code>. You can use the command</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pyformex</span> <span class="o">--</span><span class="n">whereami</span>
-</pre></div>
-</div>
-<p>to find out where pyFormex is installed.</p>
-<p>Finally, a pyFormex tarball installation can usually be removed by giving the command</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pyformex</span> <span class="o">--</span><span class="n">remove</span>
-</pre></div>
-</div>
-<p>and answering &#8216;yes&#8217; to the question.  You may
-want to do this before installing a new version, especially if you
-install a new release of an already existing version.</p>
-</div>
-<div class="section" id="install-additional-software">
-<span id="subsec-development-version"></span><h3>Install additional software<a class="headerlink" href="#install-additional-software" title="Permalink to this headline">¶</a></h3>
-<p>pyFormex uses a large number of external software packages to enhance
-its functionality. Some of these packages are so essential, that they
-were listed as requirements. Others however are merely optional
-packages: interesting for those users who need them, but not essential
-for everybody.  The user has the choice to install these extras or
-not.</p>
-<p>Some external packages however do not come in an easy to install package, or
-the available packaged formats do not collaborate well with pyFormex.
-Therefore, we have created a set of dedicated install script to ease the
-installation of these external packages. Currently, there is an
-install procedure for the following packages:</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">We provide these installation procedures for your
-convenience, but take no responsibility for them working correctly.</p>
-</div>
-<dl class="docutils">
-<dt><strong>gl2ps</strong></dt>
-<dd>This package allows to save the OpenGL rendering to a file in
-vector format. Currently supported are <code class="docutils literal"><span class="pre">eps</span></code>, <code class="docutils literal"><span class="pre">pdf</span></code> and
-<code class="docutils literal"><span class="pre">svg</span></code>. Our install procedure provides the necessary Python
-interface and installs the gl2ps library at the same time.</dd>
-<dt><strong>gts</strong></dt>
-<dd>This package (Gnu Triangluted Surfaces) implements a library of
-powerful functions for operating on triangulated surface models.
-It also delivers some example programs built with the library.
-The pyFormex <code class="docutils literal"><span class="pre">surface</span></code> plugin uses these for many of its
-functions. Debian users should install the packages <code class="docutils literal"><span class="pre">libgts-0.7.5</span></code>,
-<code class="docutils literal"><span class="pre">libgts-bin</span></code> and <code class="docutils literal"><span class="pre">libgts-dev</span></code> as dependencies.</dd>
-<dt><strong>tetgen</strong></dt>
-<dd>This package provides a high quality tetrahedral mesher. pyFormex
-has some import and export functions for the specific <code class="docutils literal"><span class="pre">tetgen</span></code> file formats.
-Since <code class="docutils literal"><span class="pre">tetgen</span></code> is only distributed in source form, we provide this
-install procedure to help with the compile/install.</dd>
-<dt><strong>calpy</strong></dt>
-<dd>Calpy is an experimental package that provides efficient Finite Element
-simulations through a Python interface. It does this by calling
-into a library of compiled Fortran routines. There is currently no
-distribution to the general public yet, but this install procedure
-grabs the source from our local FTP server, compiles the library
-and creates the Python interface. pyFormex comes with some examples
-that use Calpy as a simulatiopn tool.</dd>
-</dl>
-<p>To install any of these packages, proceed as follows. Go to the
-directory where you unpacked the pyFormex distribution:
-<code class="docutils literal"><span class="pre">cd</span> <span class="pre">pyformex-version</span></code>. Then go to the <code class="docutils literal"><span class="pre">pyformex/external</span></code>
-subdirectory, where you will find a subdirectory for each of the
-above packages. Go into the directory of the package you wish to
-install and execute the following commands (install may require
-root privileges):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">make</span>
-<span class="n">make</span> <span class="n">install</span>
-</pre></div>
-</div>
-<p>In some case there is no <code class="docutils literal"><span class="pre">Makefile</span></code> provided but an install script instead.
-Then you can just do:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span> <span class="nb">all</span>
-</pre></div>
-</div>
-<p>All these procedures will install under <code class="docutils literal"><span class="pre">/usr/local</span></code>. If you wish to
-change this, you will have to change the <code class="docutils literal"><span class="pre">Makefile</span></code> or install procedure.
-The install procedures can also be used to perform only part of the
-installation process. Thus, <code class="docutils literal"><span class="pre">./install.sh</span> <span class="pre">get</span> <span class="pre">unpack</span></code> will
-only download and unpack that package. See the README files and the
-install procedures themselves for more info.</p>
-</div>
-</div>
-<div class="section" id="alpha-release">
-<span id="sec-alpha-release"></span><h2>Alpha release<a class="headerlink" href="#alpha-release" title="Permalink to this headline">¶</a></h2>
-<p>Official releases are only created a couple of times per year, because
-they require a lot of testing.  pyFormex is however developing fast,
-and as soon as an official release has been made, new features are
-already being included in the source repository. Sometimes, you may be
-in need of such a feature, that will only become officially available
-within several months.  Between successive official releases, we
-create interim alpha releases. They are less well tested (meaning they
-may contain more bugs) and supported than the official ones, but they
-may just work well for you.</p>
-<p>These alpha releases can be downloaded from the developer <a class="reference external" href="ftp://bumps.ugent.be/pub/pyformex/">FTP site</a>
-or from our <a class="reference external" href="ftp://bumps.ugent.be/pub/pyformex">local FTP server</a>. The latter may be slower, but
-you may find there some old releases or release candidates that are not
-available on the official server.
-They install just like the <a class="reference internal" href="#sec-official-release"><span class="std std-ref">Official release</span></a>.</p>
-<p>Again, as a Debian user, you may be extra lucky: we usually create Debian
-<a class="reference internal" href="#sec-debian-packages"><span class="std std-ref">Debian packages</span></a> from these alpha releases and make them available on our <a class="reference external" href="http://bumps.ugent.be/repos">local package repository</a>.</p>
-</div>
-<div class="section" id="development-version">
-<span id="sec-development-version"></span><h2>Development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
-<p>If the install procedures for the packaged releases do not work for
-you, or if you want to have the absolutely latest features and bug fixes,
-then you can run pyFormex directly from the development sources.
-Obviously, the pyFormex developers use this method, but there are also
-several normal users who prefer this, because it allows for easy
-updating to the latest version.</p>
-<p>To run pyFormex from the development sources you need to have the same
-dependencies installed as for the <a class="reference internal" href="#sec-official-release"><span class="std std-ref">Official release</span></a>.
-Furthermore, you need the <a class="reference external" href="http://git-scm.com/">git</a> revision control system.
-You can check whether you have it by trying the command <code class="docutils literal"><span class="pre">git</span></code>.
-If you do not have the command, you should first install it.
-Debian and Ubuntu users can just do <code class="docutils literal"><span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">git</span></code>.</p>
-<p>Now you can anonymously check out the latest pyFormex version
-from the <a class="reference external" href="http://savannah.nongnu.org/git/?group=pyformex">Source code</a> repository at the <a class="reference external" href="http://savannah.nongnu.org/projects/pyformex/">Project page</a>, using the
-command:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">git</span><span class="o">.</span><span class="n">savannah</span><span class="o">.</span><span class="n">nongnu</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">pyformex</span><span class="o">.</span><span class="n">git</span>
-</pre></div>
-</div>
-<p>This will create a directory <code class="docutils literal"><span class="pre">pyformex</span></code> with the full source.</p>
-<p>Now you can directly run pyFormex from the created <code class="docutils literal"><span class="pre">pyformex</span></code> directory:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">pyformex</span>
-<span class="n">pyformex</span><span class="o">/</span><span class="n">pyformex</span>
-</pre></div>
-</div>
-<p>The first time you run the command, it will start with compiling the pyFormex
-acceleration libraries. When that has finished, the pyFormex GUI will start,
-running directly from your checked out source.
-The next time you run the command, the library will not be
-recompiled, unless some updates have been made to the files, making the
-already compiled versions out of date.</p>
-<p>You can make the <code class="docutils literal"><span class="pre">pyformex/pyformex</span></code> command
-executable from anywhere by creating a symlink under one of the
-directories in your <code class="docutils literal"><span class="pre">PATH</span></code> environment variable.
-Many GNU/Linux distributions add <code class="docutils literal"><span class="pre">/home/USER/bin</span></code> to the user&#8217;s path.
-Thus the following command is suitable in most cases:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ln</span> <span class="o">-</span><span class="n">sfn</span> <span class="n">BASEDIR</span><span class="o">/</span><span class="n">pyformex</span><span class="o">/</span><span class="n">pyformex</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">USER</span><span class="o">/</span><span class="nb">bin</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal"><span class="pre">BASEDIR</span></code> is the full path to the directory where you checked out the
-source.</p>
-<p>The pyFormex repository contains a lot of files that are only needed and
-interesting for the pyFormex developers. As a normal user you may want to
-remove this extra overhead in your copy. To do so, run the <cite>sparse_checkout</cite>
-script from the checkout directory:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sh</span> <span class="n">sparse_checkout</span>
-</pre></div>
-</div>
-<p>You can update your pyFormex installation at any time to the latest
-version by issuing the command</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">pull</span>
-</pre></div>
-</div>
-<p>in your <code class="docutils literal"><span class="pre">BASEDIR</span></code> directory. You can even roll back to any older revision of
-pyFormex. Just remember that after updating your sources, the compiled
-libraries could be out of sync with your new sources. Normally pyFormex
-will rebuild the libraries the next time you start it.
-If you ever want to rebuild the libraries without starting the <code class="docutils literal"><span class="pre">pyformex</span></code>
-program, you can use the command <code class="docutils literal"><span class="pre">make</span> <span class="pre">lib</span></code> from inside <code class="docutils literal"><span class="pre">BASEDIR</span></code>.</p>
-<div class="section" id="using-the-older-subversion-repository">
-<h3>Using the older Subversion repository<a class="headerlink" href="#using-the-older-subversion-repository" title="Permalink to this headline">¶</a></h3>
-<p>To run pyFormex from the development sources you need to have the same
-dependencies installed as for the
-<a class="reference internal" href="#sec-official-release"><span class="std std-ref">Official release</span></a>. Furthermore, you need the
-<a class="reference external" href="http://subversion.tigris.org">Subversion</a> revision control system. You can check whether you have it
-by trying the command <code class="docutils literal"><span class="pre">svn</span> <span class="pre">help</span></code>. If you do not have the command,
-you should install Subversion first. Debian and Ubuntu users can just
-do <code class="docutils literal"><span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">subversion</span></code>.</p>
-<p>Now you can anonymously check out the latest pyFormex version
-from the <a class="reference external" href="http://savannah.nongnu.org/svn/?group=pyformex">SVN Source code</a> repository at the <a class="reference external" href="http://savannah.nongnu.org/projects/pyformex/">Project page</a>.
-If you are not a pyFormex developer, the suggested commands for this checkout
-are:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">svn</span> <span class="n">co</span> <span class="n">svn</span><span class="p">:</span><span class="o">//</span><span class="n">svn</span><span class="o">.</span><span class="n">savannah</span><span class="o">.</span><span class="n">nongnu</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">pyformex</span><span class="o">/</span><span class="n">trunk</span> <span class="o">--</span><span class="n">depth</span> <span class="n">files</span> <span class="n">MYDIR</span>
-<span class="n">svn</span> <span class="n">update</span> <span class="o">--</span><span class="n">depth</span> <span class="n">infinity</span> <span class="n">MYDIR</span><span class="o">/</span><span class="n">pyformex</span>
-</pre></div>
-</div>
-<p>In these commands you should replace <code class="docutils literal"><span class="pre">MYDIR</span></code> with the path name of a
-directory where you have write permission. Many users choose
-<code class="docutils literal"><span class="pre">~/pyformex</span></code> as the checkout directory, but this is not
-required. You can even check out different versions under
-different path names. If you leave out the <code class="docutils literal"><span class="pre">MYDIR</span></code> from the above command,
-a new directory <code class="docutils literal"><span class="pre">trunk</span></code> will be created in the current path.</p>
-<p>Instead of the above two commands, you could also use the following single
-command to check out the whole trunk, but that would download a lot of extra
-files which are only useful for pyFormex developers, not for normal users</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">svn</span> <span class="n">co</span> <span class="n">svn</span><span class="p">:</span><span class="o">//</span><span class="n">svn</span><span class="o">.</span><span class="n">savannah</span><span class="o">.</span><span class="n">nongnu</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">pyformex</span><span class="o">/</span><span class="n">trunk</span> <span class="n">MYDIR</span>
-</pre></div>
-</div>
-<p>Now change into the created <code class="docutils literal"><span class="pre">MYDIR</span></code> directory, where you can execute
-the command <code class="docutils literal"><span class="pre">pyformex/pyformex</span></code> and proceed as explained above for a
-checkout of the git repository.</p>
-</div>
-</div>
-<div class="section" id="bumpix-live-gnu-linux-system">
-<span id="sec-bumpix-live-linux"></span><h2>BuMPix Live GNU/Linux system<a class="headerlink" href="#bumpix-live-gnu-linux-system" title="Permalink to this headline">¶</a></h2>
-<p>If you do not have access to a running GNU/Linux system, or if the above
-installation methods fail for some unknown reason (remember, you can
-ask for help on the pyFormex <a class="reference external" href="http://savannah.nongnu.org/support/?group=pyformex">Support tracker</a>), you can still run pyFormex by
-using a <a class="reference external" href="ftp://bumps.ugent.be/pub/bumpix">Bumpix Live GNU/Linux</a> system. <cite>Bumpix Live</cite> is a full featured
-Debian GNU/Linux system including pyFormex that can be run from a single
-removable medium such as a CD or a USB key.
-Installation instructions can be found in <a class="reference internal" href="bumpix.html"><span class="doc">BuMPix Live GNU/Linux system</span></a>.</p>
-<p>Alternatively,</p>
-<ul class="simple">
-<li>if you do not succeed in properly writing the image to a USB key, or</li>
-<li>if you just want an easy solution without any install troubles, or</li>
-<li>if you want to financially support the further development of pyFormex, or</li>
-<li>if you need a large number of pyFormex USB installations,</li>
-</ul>
-<p>you may be happy to know that we can provide ready-made BuMPix USB
-sticks with the <code class="docutils literal"><span class="pre">pyformex.org</span></code> logo at a cost hardly exceeding that
-of production and distribution.
-If you think this is the right choice for you, just <a class="reference external" href="mailto:benedict&#46;verhegghe&#37;&#52;&#48;ugent&#46;be">email us</a> for a quotation.</p>
-<p>Further guidelines for using the BuMPix system can be found in <a class="reference internal" href="bumpix.html"><span class="doc">BuMPix Live GNU/Linux system</span></a>.</p>
-</div>
-<div class="section" id="running-pyformex-on-non-linux-systems">
-<span id="sec-pyformex-nonlinux"></span><h2>Running pyFormex on non-Linux systems<a class="headerlink" href="#running-pyformex-on-non-linux-systems" title="Permalink to this headline">¶</a></h2>
-<p>pyFormex is being developed on GNU/Linux platforms, and most of its users run
-pyFormex on a GNU/Linux system. Because of that, there is no installation
-procedure to run pyFormex natively on other systems.</p>
-<p>Currently, the easiest way to run pyFormex on a non-Linux system is by
-using the <a class="reference internal" href="#sec-bumpix-live-linux"><span class="std std-ref">BuMPix Live GNU/Linux system</span></a>. We use this frequently with
-large groups of students in classes having only Windows PCs. We also
-have some professional users who could no install GNU/Linux due to
-corporate regulations, that are working this way.</p>
-<p>Another possibility is to run a virtual GNU/Linux instance on the
-platform. There is currently quite good virtualization software
-available for nearly any platform.</p>
-<p>However, as all the essential underlying packages on which pyFormex is
-built are available for many other platforms (including Windows, Mac),
-it is (in theory) possible to get pyFormex to run natively on
-non-Linux platforms.  There has already been a successful attempt with
-a rather old version, but with recent versions nobody has (yet) taken
-the bother to try it.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>pyFormex on Windows</strong>
-Lately there have been some successful attempts to get the basic
-functionality of pyFormex running on Windows. Thomas Praet has
-compiled <a class="reference external" href="ftp://bumps.ugent.be/pub/pyformex/Install_pyFormex_on_Windows.html">this document</a>
-on how to proceed.
-Submit a request on the <a class="reference external" href="http://savannah.nongnu.org/support/?group=pyformex">Support tracker</a> if you need any help.</p>
-</div>
-<p>There may be a few things that have to be changed to successfully run
-pyFormex on other platforms (especially on Windows), but it should all
-be rather obvious.  If you have some programming experience on your
-platform, and you want to give it a try, please do so. We certainly
-are willing to help where we can. And
-we are certainly interested in feedback about your attempt, whether
-successful or not.</p>
 </div>
 </div>
 
@@ -753,7 +255,7 @@ successful or not.</p>
     <span class="left">
         &copy; Copyright 2004-2015, Benedict Verhegghe.
     </span>
-      Last updated on Sep 08, 2016.
+      Last updated on Sep 09, 2016.
     <span class="right">
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.4.5.
     </span>
