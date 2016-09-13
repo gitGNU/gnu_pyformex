@@ -1,19 +1,16 @@
 {# $Id: layout.html 2063 2011-11-06 16:43:46Z bverheg $
 #}
-
 {% extends "basic/layout.html" %}
-
 {# Add copyright notice in all produced .html documents #}
-{%- block doctype -%}
-    {{ super() }} 
-<!-- 
+{%- block htmltitle -%}
+<!--
 ##
 ##  This file is part of the pyFormex project.
 ##  pyFormex is a tool for generating, manipulating and transforming 3D
 ##  geometrical models by sequences of mathematical operations.
 ##  Home page: http://pyformex.org
 ##  Project page:  http://savannah.nongnu.org/projects/pyformex/
-##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be) 
+##  Copyright (C) Benedict Verhegghe (benedict.verhegghe@ugent.be)
 ##  Distributed under the GNU General Public License version 3 or later.
 ##
 ##
@@ -31,9 +28,6 @@
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
 -->
-{%- endblock %}
-
-{%- block htmltitle %}
 {%- if title == 'pyFormex Home' %}
     <title>{{ title }}</title>
 {% else %}

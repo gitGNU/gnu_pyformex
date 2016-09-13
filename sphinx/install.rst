@@ -128,7 +128,7 @@ Additionally, we recommend you to also install the Python and OpenGL header file
 
 
 Other optional packages that might be useful are ``admesh``, ``python-scipy``,
- ``units``.
+ ``units``, ``python-vtk``.
 
 
 
