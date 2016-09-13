@@ -1372,7 +1372,7 @@ class NurbsSurface(Geometry4):
                 print("We got a NaN")
                 raise RuntimeError
         except:
-            raise RuntimeError("Some error occurred during the evaluation of the Nurbs curve")
+            raise RuntimeError("Some error occurred during the evaluation of the Nurbs surface.\nPerhaps you are not using the compiled library?")
 
         if pts.shape[-1] == 4:
             pts = Coords4(pts).toCoords()

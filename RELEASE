@@ -1,5 +1,5 @@
 # pyFormex version
-VERSION=1.0.2
+VERSION=1.0.3
 # version for public documentation directory
 DOCVERSION=1.0
 # Unless you are creating an official release, a tail should be added
@@ -8,5 +8,5 @@ DOCVERSION=1.0
 # NOTE: we do no longer use the ~ character, for sorting reasons
 # We should not create Debian packages for -a versions
 #
-RELEASE=${VERSION}-a6
+RELEASE=${VERSION}-a1
 

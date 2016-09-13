@@ -406,14 +406,6 @@ def run(argv=[]):
        action="store", dest="debuglevel", type=int, default=0,
        help="Display debugging info to sys.stdout. The value is an int with the bits of the requested debug levels set. A value of -1 switches on all debug info. If this option is used, it overrides the --debug option.",
        )
-    ## MO("--gl1",
-    ##    action="store_false", dest="opengl2", default=True,
-    ##    help="Obsolete. Silently ignored.",
-    ##    )
-    ## MO("--gl2",
-    ##    action="store_true", dest="opengl2", default=True,
-    ##    help="Obsolete. Silently ignored.",
-    ##    )
     MO("--mesa",
        action="store_true", dest="mesa", default=False,
        help="Force the use of software 3D rendering through the mesa libs. The default is to use hardware accelerated rendering whenever possible. This flag can be useful when running pyFormex remotely on another host. The hardware accelerated version will not work over remote X.",

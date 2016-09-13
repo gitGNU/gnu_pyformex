@@ -35,7 +35,7 @@
 
 /****************** LIBRARY VERSION AND DOCSTRING *******************/
 
-static char *__version__ = "1.0.2-a6";
+static char *__version__ = "1.0.3-a1";
 static char *__doc__ = "pyformex.lib.misc_\n\
 \n\
 This module provides accelerated versions of miscellaneous pyFormex functions.\n\
