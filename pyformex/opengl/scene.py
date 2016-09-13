@@ -117,7 +117,6 @@ class Scene(object):
         """Initialize an empty scene with default settings."""
         self.canvas = canvas
         self.actors = ItemList(self)
-        self.oldactors = ItemList(self)
         self.annotations = ItemList(self)
         self.decorations = ItemList(self)
         self.backgrounds = ItemList(self)
@@ -187,11 +186,8 @@ class Scene(object):
         an item to the scene, because it makes sure that each item is added
         to the proper list.
         """
-        from pyformex.legacy import actors as oldactors
         if isinstance(actor, (tuple,list)):
             [ self.addAny(a) for a in actor ]
-        elif isinstance(actor, oldactors.Actor):
-            self.oldactors.add(actor)
         elif isinstance(actor, Actor):
             if abs(actor.rendertype) == 1:
                 self.annotations.add(actor)
@@ -214,11 +210,8 @@ class Scene(object):
         itemlist can also be a single item instead of a list.
         If None is specified, all items from all lists will be removed.
         """
-        from pyformex.legacy import actors as oldactors
         if isinstance(actor, (tuple,list)):
             [ self.removeAny(a) for a in actor ]
-        elif isinstance(actor, oldactors.Actor):
-            self.oldactors.delete(actor)
         elif isinstance(actor, Actor):
             if abs(actor.rendertype) == 1:
                 self.annotations.delete(actor)
@@ -235,7 +228,6 @@ class Scene(object):
     def clear(self,sticky=False):
         """Clear the whole scene"""
         self.actors.clear(sticky)
-        self.oldactors.clear(sticky)
         self.annotations.clear(sticky)
         self.decorations.clear(sticky)
         self.backgrounds.clear(sticky)
@@ -260,7 +252,7 @@ class Scene(object):
 
 
     def printTotals(self):
-        print("SCENE: %s actors, %s oldactors, %s annotations, %s decorations" % (len(self.actors), len(self.oldactors), len(self.annotations), len(self.decorations)))
+        print("SCENE: %s actors, %s annotations, %s decorations" % (len(self.actors), len(self.annotations), len(self.decorations)))
 
 
 ##########################################

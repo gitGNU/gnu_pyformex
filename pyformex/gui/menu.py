@@ -127,7 +127,7 @@ class BaseMenu(object):
             return self.separators.get(utils.strNorm(text), None)
 
 
-    def item(self, text):
+    def __getitem__(self, text):
         """Return the item with specified text.
 
         For a normal action or a separator, an action is returned.
@@ -143,6 +143,10 @@ class BaseMenu(object):
                 return a
         else:
             return self.separators.get(utils.strNorm(text), None)
+
+    # Alias retained for compatibility
+    item = __getitem__
+
 
 
     def nextitem(self, text):

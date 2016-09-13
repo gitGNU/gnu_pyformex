@@ -341,8 +341,6 @@ class Renderer(object):
         finally:
             self.shader.unbind()
 
-        self.canvas.drawGL1()
-
 
 def front(actorlist):
     """Return the actors from the list that have ontop=True"""

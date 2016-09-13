@@ -29,8 +29,9 @@ from __future__ import absolute_import, division, print_function
 import pyformex as pf
 from pyformex.process import Process
 # These are here to re-export them as utils functions
-from pyformex import zip, round, isFile, isString
-from pyformex.software import hasModule, checkModule, hasExternal, checkExternal
+from pyformex import (zip, round, isFile, isString)
+from pyformex.software import (hasModule, checkModule, requireModule,
+                               hasExternal, checkExternal)
 from pyformex.odict import OrderedDict
 
 import os

@@ -2804,9 +2804,14 @@ def quad4_wts(seed0, seed1):
 
 
 def quad4_els(nx, ny):
+    """Quad4 element connectivity for a regular stack of nx,ny elements.
+
+    The node numbers vary first in the x, then in the y direction.
+    """
     n = nx+1
     els = [ row_stack([ array([0, 1, n+1, n]) + i for i in range(nx) ]) + j * n for j in range(ny) ]
     return row_stack(els)
+
 
 # TODO: remove or document in subdivide
 quad9_wts=quad4_wts

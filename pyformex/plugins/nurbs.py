@@ -548,7 +548,7 @@ class NurbsCurve(Geometry4):
 
 
         self.coords = control
-        self.knotv = knots
+        self.knotu = knots
         self.degree = degree
         self.closed = closed
 
@@ -556,14 +556,14 @@ class NurbsCurve(Geometry4):
     @property
     def knots(self):
         """Return the full list of knot values"""
-        return self.knotv.values()
+        return self.knotu.values()
 
     # This is commented out because there is only 1 place where we set
     # the knots: __init__
 #    @knots.setter
 #    def knots(self,value):
 #        """Set the knot values"""
-#        self.knotv = KnotVector(knots)
+#        self.knotu = KnotVector(knots)
 
 
     def nctrl(self):
@@ -572,7 +572,7 @@ class NurbsCurve(Geometry4):
 
     def nknots(self):
         """Return the number of knots"""
-        return self.knotv.nknots()
+        return self.knotu.nknots()
 
     def order(self):
         """Return the order of the Nurbs curve"""
@@ -585,7 +585,7 @@ class NurbsCurve(Geometry4):
         value for which the curve is defined.
         """
         p = self.degree
-        return [self.knotv[p],self.knotv[-1-p]]
+        return [self.knotu[p],self.knotu[-1-p]]
 
 
     def isClamped(self):
@@ -594,7 +594,7 @@ class NurbsCurve(Geometry4):
         A clamped knot vector has a multiplicity p+1 for the first and
         last knot. All our generated knot vectors are clamped.
         """
-        return self.knotv.mul[0] == self.knotv.mul[-1] == (self.degree + 1)
+        return self.knotu.mul[0] == self.knotu.mul[-1] == (self.degree + 1)
 
 
     def isUniform(self):
@@ -602,7 +602,7 @@ class NurbsCurve(Geometry4):
 
         A uniform knot vector has a constant spacing between the knot values.
         """
-        d = self.knotv.val[1:] - self.knotv.val[:-1]
+        d = self.knotu.val[1:] - self.knotu.val[:-1]
         return np.isclose(d[1:],d[0]).all()
 
 
@@ -632,7 +632,7 @@ class NurbsCurve(Geometry4):
         Note: for testing whether an unclamped curve is blended or not,
         first clamp it.
         """
-        return self.isClamped() and (self.knotv.mul[1:-1] == self.degree).all()
+        return self.isClamped() and (self.knotu.mul[1:-1] == self.degree).all()
 
 
     def bbox(self):
@@ -649,7 +649,7 @@ class NurbsCurve(Geometry4):
 %s,
   %s
   urange = %s
-"""  % ( self.degree, len(self.coords), self.nknots(), self.closed, self.isClamped(), self.isUniform(), self.isRational(), self.coords, self.knotv, self.urange())
+"""  % ( self.degree, len(self.coords), self.nknots(), self.closed, self.isClamped(), self.isUniform(), self.isRational(), self.coords, self.knotu, self.urange())
 
 
 
@@ -658,7 +658,7 @@ class NurbsCurve(Geometry4):
 
         Changing the copy will not change the original.
         """
-        return NurbsCurve(control=self.coords.copy(),degree=self.degree,knots=self.knotv.copy(),closed=self.closed)
+        return NurbsCurve(control=self.coords.copy(),degree=self.degree,knots=self.knotu.copy(),closed=self.closed)
 
 
     def pointsAt(self, u):
@@ -675,7 +675,7 @@ class NurbsCurve(Geometry4):
 
         """
         ctrl = self.coords.astype(np.double)
-        knots = self.knotv.values().astype(np.double)
+        knots = self.knotu.values().astype(np.double)
         u = np.atleast_1d(u).astype(np.double)
 
         try:
@@ -712,13 +712,13 @@ class NurbsCurve(Geometry4):
         Returns a float array of shape (d+1,npts,3).
         """
         if isinstance(u, int):
-            u = at.uniformParamValues(u, self.knotv.val[0], self.knotv.val[-1])
+            u = at.uniformParamValues(u, self.knotu.val[0], self.knotu.val[-1])
         else:
             u = at.checkArray(u, (-1,), 'f', 'i')
 
         # sanitize arguments for library call
         ctrl = self.coords.astype(np.double)
-        knots = self.knotv.values().astype(np.double)
+        knots = self.knotu.values().astype(np.double)
         u = np.atleast_1d(u).astype(np.double)
         d = int(d)
 
@@ -810,9 +810,9 @@ class NurbsCurve(Geometry4):
         The default is to return all points just once.
         """
         if multiple:
-            val = self.knotv.knots
+            val = self.knotu.knots
         else:
-            val = self.knotv.val
+            val = self.knotu.val
         return self.pointsAt(val)
 
 
@@ -832,7 +832,7 @@ class NurbsCurve(Geometry4):
             raise ValueError("insertKnots currently does not work on closed curves")
         # sanitize arguments for library call
         ctrl = self.coords.astype(np.double)
-        knots = self.knotv.values().astype(np.double)
+        knots = self.knotu.values().astype(np.double)
         u = np.asarray(u).astype(np.double)
         newP, newU = nurbs.curveKnotRefine(ctrl, knots, u)
         return NurbsCurve(newP, degree=self.degree, knots=newU, closed=self.closed)
@@ -858,7 +858,7 @@ class NurbsCurve(Geometry4):
 
         """
         # get actual multiplicities
-        m = np.array([ self.knotv.mult(ui) for ui in val ])
+        m = np.array([ self.knotu.mult(ui) for ui in val ])
         # compute missing multiplicities
         mul = mul - m
         if (mul > 0).any():
@@ -882,10 +882,10 @@ class NurbsCurve(Geometry4):
         p = self.degree
         # Make sure we have the knots
         N = self.requireKnots([u1,u2],[p+1,p+1])
-        j1 = N.knotv.index(u1)
-        j2 = N.knotv.index(u2)
-        knots = KnotVector(val=N.knotv.val[j1:j2+1],mul=N.knotv.mul[j1:j2+1])
-        k1 = N.knotv.span(u1)
+        j1 = N.knotu.index(u1)
+        j2 = N.knotu.index(u2)
+        knots = KnotVector(val=N.knotu.val[j1:j2+1],mul=N.knotu.mul[j1:j2+1])
+        k1 = N.knotu.span(u1)
         nctrl = knots.nknots() - p - 1
         ctrl = N.coords[k1:k1+nctrl]
         return NurbsCurve(control=ctrl,degree=p,knots=knots,closed=self.closed)
@@ -910,7 +910,7 @@ class NurbsCurve(Geometry4):
 
         else:
             p = self.degree
-            u1, u2 = self.knotv.val[[p,-1-p]]
+            u1, u2 = self.knotu.val[[p,-1-p]]
             return self.subCurve(u1,u2)
 
 
@@ -930,7 +930,7 @@ class NurbsCurve(Geometry4):
         """
         if self.isClamped():
             from pyformex.lib.nurbs_e import curveUnclamp
-            P,U = curveUnclamp(self.coords,self.knotv.values())
+            P,U = curveUnclamp(self.coords,self.knotu.values())
             return NurbsCurve(control=P,degree=self.degree,knots=U,closed=self.closed)
 
         else:
@@ -946,7 +946,7 @@ class NurbsCurve(Geometry4):
         """
         # sanitize arguments for library call
         ctrl = self.coords
-        knots = self.knotv.values().astype(np.double)
+        knots = self.knotu.values().astype(np.double)
         X = nurbs.curveDecompose(ctrl, knots)
         return NurbsCurve(X, degree=self.degree, blended=False)
 
@@ -976,7 +976,7 @@ class NurbsCurve(Geometry4):
             raise ValueError("Can not convert a rational NURBS ro Bezier")
 
         ctrl = self.coords
-        knots = self.knotv.values()
+        knots = self.knotu.values()
         X = nurbs.curveDecompose(ctrl, knots)
         X = Coords4(X).toCoords()
         if self.degree > 1 or force_Bezier:
@@ -1011,14 +1011,14 @@ class NurbsCurve(Geometry4):
         if self.closed:
             raise ValueError("removeKnots currently does not work on closed curves")
 
-        i = self.knotv.index(u)
+        i = self.knotu.index(u)
 
         if m < 0:
-            m = self.knotv.mul[i]
+            m = self.knotu.mul[i]
 
         P = self.coords.astype(np.double)
-        Uv = self.knotv.val.astype(np.double)
-        Um = self.knotv.mul.astype(at.Int)
+        Uv = self.knotu.val.astype(np.double)
+        Um = self.knotu.mul.astype(at.Int)
         t,newP,newU = nurbs.curveKnotRemove(P,Uv,Um,i,m,tol)
 
         if t > 0:
@@ -1044,7 +1044,7 @@ class NurbsCurve(Geometry4):
         print(N)
         while True:
             print(N)
-            for u in N.knotv.val:
+            for u in N.knotu.val:
                 print("Removing %s" % u)
                 NN = N.removeKnot(u,m=-1,tol=tol)
                 if NN is N:
@@ -1078,7 +1078,7 @@ class NurbsCurve(Geometry4):
             raise ValueError("elevateDegree currently does not work on closed curves")
 
         P = self.coords.astype(np.double)
-        U = self.knotv.values()
+        U = self.knotu.values()
 
         newP,newU,nh,mh = nurbs.curveDegreeElevate(P, U, t)
 
@@ -1138,7 +1138,7 @@ class NurbsCurve(Geometry4):
         P = at.checkArray(P,(3,),'f','i')
 
         # Determine start value from best match of nseed+1 points
-        umin,umax = self.knotv.val[[0,-1]]
+        umin,umax = self.knotu.val[[0,-1]]
         u = at.uniformParamValues(nseed+1,umin,umax)
         pts = self.pointsAt(u)
         i = pts.distanceFromPoint(P).argmin()
@@ -1218,12 +1218,7 @@ class NurbsCurve(Geometry4):
 
     def actor(self,**kargs):
         """Graphical representation"""
-#        from pyformex.legacy.actors import NurbsActor
         from pyformex.opengl.actors import Actor
-#        if self.degree <= 7:
-#            return NurbsActor(self,**kargs)
-#        else:
-            #B = self.decompose()
         G = self.approx(ndiv=100).toFormex()
         G.attrib(**self.attrib)
         return Actor(G,**kargs)
@@ -1235,7 +1230,7 @@ class NurbsCurve(Geometry4):
         The reversed curve is geometrically identical, but start and en point
         are interchanged and parameter values increase in the opposite direction.
         """
-        return NurbsCurve(control=self.coords[::-1], knots=self.knotv.reverse(), degree=self.degree, closed=self.closed)
+        return NurbsCurve(control=self.coords[::-1], knots=self.knotu.reverse(), degree=self.degree, closed=self.closed)
 
 
 
@@ -1266,7 +1261,11 @@ class NurbsSurface(Geometry4):
     """
 
     def __init__(self,control,degree=(None, None),wts=None,knots=(None, None),closed=(False, False),blended=(True, True)):
+        """Initialize the NurbsSurface.
 
+        """
+
+        Geometry4.__init__(self)
         self.closed = closed
 
         control = Coords4(control)
@@ -1309,9 +1308,9 @@ class NurbsSurface(Geometry4):
                 raise ValueError("Length of knot vector (%s) must be equal to number of control points (%s) plus order (%s)" % (nknots, nctrl, order))
 
             if d == 0:
-                self.uknots = kn
+                self.knotu = kn
             else:
-                self.vknots = kn
+                self.knotv = kn
 
         self.coords = control
         self.degree = degree
@@ -1319,8 +1318,29 @@ class NurbsSurface(Geometry4):
 
 
     def order(self):
-        return (self.uknots.shape[0]-self.coords.shape[1],
-                self.vknots.shape[0]-self.coords.shape[0])
+        return (self.knotu.shape[0]-self.coords.shape[1],
+                self.knotv.shape[0]-self.coords.shape[0])
+
+
+    def urange(self):
+        """Return the u-parameter range on which the curve is defined.
+
+        Returns a (2,) float array with the minimum and maximum parameter
+        value u for which the curve is defined.
+        """
+        p = self.degree[0]
+        return [self.knotu[p],self.knotu[-1-p]]
+
+
+    def vrange(self):
+        """Return the v-parameter range on which the curve is defined.
+
+        Returns a (2,) float array with the minimum and maximum parameter
+        value v for which the curve is defined.
+        """
+        p = self.degree[1]
+        return [self.knotv[p],self.knotv[-1-p]]
+
 
     def bbox(self):
         """Return the bounding box of the NURBS surface.
@@ -1342,8 +1362,8 @@ class NurbsSurface(Geometry4):
 
         """
         ctrl = self.coords.astype(np.double)
-        U = self.vknots.astype(np.double)
-        V = self.uknots.astype(np.double)
+        U = self.knotv.astype(np.double)
+        V = self.knotu.astype(np.double)
         u = np.asarray(u).astype(np.double)
 
         try:
@@ -1380,8 +1400,8 @@ class NurbsSurface(Geometry4):
         """
         # sanitize arguments for library call
         ctrl = self.coords.astype(np.double)
-        U = self.vknots.astype(np.double)
-        V = self.uknots.astype(np.double)
+        U = self.knotv.astype(np.double)
+        V = self.knotu.astype(np.double)
         u = np.asarray(u).astype(np.double)
         mu, mv = m
         mu = int(mu)
@@ -1404,10 +1424,44 @@ class NurbsSurface(Geometry4):
         return pts
 
 
+    def approx(self,ndiv=None,**kargs):
+        """Return a Quad4 Mesh approximation of the Nurbs surface
+
+        Parameters:
+
+        - `ndiv`: number of divisions of the parametric space
+        If no `nseg` is given, the curve is approximated by a PolyLine
+        through equidistant `ndiv+1` point in parameter space. These points
+        may be far from equidistant in Cartesian space.
+
+        If `nseg` is given, a second approximation is computed with `nseg`
+        straight segments of nearly equal length. The lengths are computed
+        based on the first approximation with `ndiv` segments.
+        """
+        from pyformex.mesh import Mesh, quad4_els
+        if ndiv is None:
+            ndiv = self.N_approx
+        if at.isInt(ndiv):
+            ndiv = (ndiv,ndiv)
+        udiv,vdiv = ndiv
+        umin,umax = self.urange()
+        vmin,vmax = self.vrange()
+        u = at.uniformParamValues(udiv,umin,umax)
+        v = at.uniformParamValues(udiv,umin,umax)
+        uv = np.ones((udiv+1,vdiv+1,2))
+        uv[:,:,0] *= u
+        uv[:,:,1] *= v.reshape(-1,1)
+        coords = self.pointsAt(uv.reshape(-1,2))
+        elems = quad4_els(udiv,vdiv)
+        return Mesh(coords,elems,eltype='quad4')
+
+
     def actor(self,**kargs):
         """Graphical representation"""
-        from pyformex.legacy.actors import NurbsActor
-        return NurbsActor(self,**kargs)
+        from pyformex.opengl.actors import Actor
+        G = self.approx(ndiv=100)
+        G.attrib(**self.attrib)
+        return Actor(G,**kargs)
 
 
 ################################################################

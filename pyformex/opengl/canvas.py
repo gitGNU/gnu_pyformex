@@ -1110,25 +1110,6 @@ class Canvas(object):
             self.mode2D = False
 
 
-    def drawGL1(self):
-        # The old 3D actors
-        if self.scene.oldactors:
-            # start 3D drawing
-            self.camera.set3DMatrices()
-            # Draw the opengl1 actors
-            GL.glEnable(GL.GL_CULL_FACE)
-            GL.glEnable(GL.GL_DEPTH_TEST)
-            GL.glDepthMask (GL.GL_TRUE)
-            self.draw_sorted_objects(self.scene.oldactors, self.settings.alphablend)
-
-        # The old 2D actors
-        if hasattr(self.scene,'olddecors') and self.scene.olddecors:
-            self.begin_2D_drawing()
-            for obj in self.scene.olddecors:
-                self.setDefaults()
-                obj.draw()
-            self.end_2D_drawing()
-
 
 #    def addHighlight(self, itemlist):
 #        """Add a highlight or a list thereof to the 3D scene."""

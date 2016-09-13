@@ -1191,7 +1191,6 @@ def polygonEdgeIndex(n):
 
 ########################################################################
 
-## from pyformex.legacy.actors import Actor as OldActor
 ## from pyformex import arraytools as at
 
 ## class Text3DActor(OldActor):

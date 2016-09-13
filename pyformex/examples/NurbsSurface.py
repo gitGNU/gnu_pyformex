@@ -140,10 +140,12 @@ def run():
 
     # create the Nurbs surface
     S = NurbsSurface(X, degree=(px, py))
+
     if draw_surf:
         # draw the Nurbs surface, with random colors
-        colors = 0.5*random.rand(*S.coords.shape)
-        draw(S, color=colors[..., :3])
+        #colors = 0.5*random.rand(*S.coords.shape)
+        draw(S, color=red) #colors[..., :3])
+    return
 
     ###########################
     ####   ISOPARAMETRIC CURVES

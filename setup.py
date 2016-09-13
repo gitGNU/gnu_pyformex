@@ -210,7 +210,6 @@ def run_setup(with_cext):
               'pyformex.opengl',
               'pyformex.plugins',
               'pyformex.examples',
-              'pyformex.legacy',
               'pyformex.freetype',
               'pyformex.freetype.ft_enums',
               ],

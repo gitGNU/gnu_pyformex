@@ -479,41 +479,54 @@ class AppMenu(menu.Menu):
         The first and last arguments do not apply to the submenus.
 
         """
+        if self.mode != 'app':
+            print("I can only do this in 'App' mode, not 'Script' mode")
+            return
+
         from pyformex.gui.draw import layout, reset, sleep
         from pyformex.gui import widgets
         pf.GUI.enableButtons(pf.GUI.actions, ['Stop'], True)
+
         if last is None:
             last = len(self.files)
         if count > 0:
             last = min(last, first+count)
         files = self.files[first:last]
+
         if random:
             import random as r
             r.seed()
             r.shuffle(files)
-        print("Running %s examples" % len(files))
-        print(files)
-        save = widgets.input_timeout
-        pf.GUI.drawlock.free()
-        widgets.input_timeout = 1.0
-        for f in files:
-            while pf.scriptlock:
-                print("RUNALL WAITING BECAUSE OF SCRIPT LOCK")
-                print("Locked by: %s" % pf.scriptlock)
-                import time
-                time.sleep(2)
-                pf.app.processEvents()
-            layout(1)
-            reset()
-            pf.PF.clear()
-            self.runApp(f)
-            script.breakpt(msg="Breakpoint from runall")
-            sleep(1)#,msg="EXITREQUESTED: %s" % script.exitrequested)
-            if script.exitrequested:
-                break
+
         tcount = len(files)
-        widgets.input_timeout = save
-        pf.GUI.drawlock.allow()
+        if tcount > 0:
+            # Run these files
+            print("Running %s applications from '%s'" % (len(files),self.title()))
+            print(files)
+            save = widgets.input_timeout
+            pf.GUI.drawlock.free()
+            widgets.input_timeout = 1.0
+            for f in files:
+                # while '__auto/script__' in pf.scriptlock:
+                #     print("RUNALL WAITING BECAUSE OF SCRIPT LOCK")
+                #     print("Locked by: %s" % pf.scriptlock)
+                #     import time
+                #     time.sleep(2)
+                #     pf.app.processEvents()
+                layout(1)
+                reset()
+                pf.PF.clear()
+                print("Running app '%s'" % f)
+                self.runApp(f)
+                script.breakpt(msg="Breakpoint from runall")
+                sleep(1)#,msg="EXITREQUESTED: %s" % script.exitrequested)
+                if script.exitrequested:
+                    break
+            tcount = len(files)
+            widgets.input_timeout = save
+            pf.GUI.drawlock.allow()
+
+        # if room for more, recurse into submenus
         if recursive and (count < 0 or tcount < count):
             for m in self._submenus_:
                 n = m.runAll(recursive=recursive, random=random, count=count-tcount)
@@ -523,6 +536,7 @@ class AppMenu(menu.Menu):
                     break
                 else:
                     print("Still want %s more examples" % (count-tcount))
+
         pf.GUI.enableButtons(pf.GUI.actions, ['Stop'], False)
         return tcount
 
@@ -566,7 +580,7 @@ class AppMenu(menu.Menu):
 
     def runAllApps(self):
         from pyformex.gui import draw
-        res =draw.askItems([
+        res = draw.askItems([
             ('timeout', True),
             ('random', False),
             ('recursive', True),
