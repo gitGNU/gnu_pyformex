@@ -33,7 +33,7 @@ versions might cause compilation to fail.
 """
 from __future__ import absolute_import, division, print_function
 
-startup_warnings ="""
+py3_warning = """
 #####################################################################
 ##  Warning! This is an experimental Python3 version of pyFormex.  ##
 ##  It is only meant for development and debugging purposes.       ##
@@ -41,7 +41,7 @@ startup_warnings ="""
 ##  Python2 version.                                               ##
 #####################################################################
 """
-print(startup_warnings)
+print(py3_warning)
 
 import sys
 if (sys.hexversion & 0xFFFF0000) == 0x03010000:

@@ -45,7 +45,7 @@ Description = "pyFormex is a tool for generating, manipulating and transforming 
 StartTime = datetime.datetime.now()
 
 startup_messages = ''
-startup_warnings = ''  # may be overridden in compat_?k below
+startup_warnings = ''
 
 #########  Check Python version #############
 
@@ -140,11 +140,13 @@ if installtype in 'SG':
     libdir = os.path.join(pyformexdir, 'lib')
 
     def checkLibraries():
-        #print "Checking pyFormex libraries"
+        # find extension used by compiled library (.so)
+        import sysconfig
+        ext = sysconfig.get_config_var('SO')
         msg = ''
         for lib in libraries:
             src = os.path.join(libdir, lib+'.c')
-            obj = os.path.join(libdir, lib+'.so')
+            obj = os.path.join(libdir, lib+ext)
             if not os.path.exists(obj) or os.path.getmtime(obj) < os.path.getmtime(src):
                 msg += "\nThe compiled library '%s' is not up to date!" % lib
         return msg
@@ -154,7 +156,11 @@ if installtype in 'SG':
     if msg:
         # Try rebyuilding
         print("Rebuilding pyFormex libraries, please wait")
-        cmd = "cd %s/..; make lib" % pyformexdir
+        if PY3:
+            target = 'lib3'
+        else:
+            target = 'lib'
+        cmd = "cd %s/..; make %s" % (pyformexdir,target)
         os.system(cmd)
         msg = checkLibraries()
 
@@ -297,7 +303,6 @@ def debug(s,level=DEBUG.ALL):
 def debugt(s, level):
     """Print a debug message with timer"""
     debug("%s: %s" % (time.time(), s))
-
 
 
 # End

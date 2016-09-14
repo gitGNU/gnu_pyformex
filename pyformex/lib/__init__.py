@@ -39,7 +39,12 @@ def checkVersion(lib):
     pf.debug("Succesfully loaded the pyFormex compiled library %s" % lib.__name__, pf.DEBUG.LIB)
     pf.debug("  Library version is %s" % lib.__version__, pf.DEBUG.LIB)
     if not lib.__version__ == pf.__version__:
-        raise RuntimeError("Incorrect acceleration library version (have %s, required %s)\nIf you are running pyFormex directly from sources, this might mean you have to run 'make lib' in the top directory of your pyFormex source tree.\nElse, this probably means pyFormex was not correctly installed.")
+        if pf.PY3:
+            target = 'lib3'
+        else:
+            target = 'lib'
+
+        raise RuntimeError("Incorrect acceleration library version (have %s, required %s)\nIf you are running pyFormex directly from sources, this might mean you have to run 'make %s' in the top directory of your pyFormex source tree.\nElse, this probably means pyFormex was not correctly installed." % (lib.__version__,pf.__version__,target))
     accelerated.append(lib)
 
 

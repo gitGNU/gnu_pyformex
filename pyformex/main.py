@@ -724,8 +724,8 @@ def run(argv=[]):
         pf.options.interactive = True
 
     # Initialize the libraries
-    pf.print3("Trying to import the libraries")
-    pf.print3(sys.path)
+    #pf.print3("Trying to import the libraries")
+    #pf.print3(sys.path)
     from pyformex import lib
 
     # If we run from a checked out source repository, we should
