@@ -330,8 +330,6 @@ def BezDegreeReduce(Q,return_errfunc=False):
         return P,maxerr
 
 
-from pyformex.coords import Coords
-from pyformex.gui.draw import pause
 def curveDegreeReduce(Qw,U):
     """Reduce the degree of the Nurbs curve.
 
@@ -422,10 +420,10 @@ def curveDegreeReduce(Qw,U):
         print("bpts =\n",bpts)
         # Degree reducee Bezier segment
         rbpts,maxErr = BezDegreeReduce(bpts)
-        from pyformex.plugins.curve import PolyLine
-        from pyformex.gui.draw import draw
-        draw(PolyLine(rbpts[:,:3]),color='darkgreen')
-        draw(Coords(rbpts[:,:3]),color='black',marksize=5)
+        #from pyformex.plugins.curve import PolyLine
+        #from pyformex.gui.draw import draw
+        #draw(PolyLine(rbpts[:,:3]),color='darkgreen')
+        #draw(Coords(rbpts[:,:3]),color='black',marksize=5)
         print("Reduced ctrl points: \n",rbpts[:p])
         print("Degree reduce error = %s"%maxErr)
         err[a] += maxErr
@@ -487,10 +485,10 @@ def curveDegreeReduce(Qw,U):
             cind += 1
         print("Pw is now (%s)" % cind)
         print(Pw[:cind])
-        pause()
-        draw(Coords(Pw[:cind,:3]),color='black',marksize=5)
+        #pause()
+        #draw(Coords(Pw[:cind,:3]),color='black',marksize=5)
 
-        pause()
+        #pause()
         if b < m:
             print("%s < %s: Set up for next pass thru loop" % (b,m))
             for i in range(r):
