@@ -2419,7 +2419,7 @@ def pattern(s,aslist=False):
 
     Currently the following codes are defined:
 
-    - 0: goto origin (0.,0.,0.)
+    - 0 or +: goto origin (0.,0.,0.)
     - 1..8: move in the x,y plane
     - 9 or .: remain at the same place (i.e. duplicate the last point)
     - A..I: same as 1..9 plus step +1. in z-direction
@@ -2476,7 +2476,7 @@ def pattern(s,aslist=False):
         if c == '/':
             insert = False
             continue
-        elif c == '0':
+        elif c == '0' or c == '+':
             x = y = z = 0
         elif c == '.':
             pass

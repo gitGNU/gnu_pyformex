@@ -82,9 +82,9 @@ def run():
     from pyformex import timer
     t = timer.Timer()
     if method == 'Sweep':
-        L = simple.line([0, 0, 0], [0, 0, l], el)
-        x = concatenate([L.coords[:, 0], L.coords[-1:, 1]])
-        path = curve.PolyLine(x)
+        path = simple.line([0, 0, 0], [0, 0, l], el).toCurve()
+        #x = concatenate([L.coords[:, 0], L.coords[-1:, 1]])
+        #path = curve.PolyLine(x)
         Beam = Section.sweep(path, normal=[0., 0., 1.], upvector=[0., 1., 0.])
 
     elif method == 'Connect':
