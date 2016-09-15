@@ -467,38 +467,42 @@ class AppMenu(menu.Menu):
             script.runAny(appname)
 
 
-    def runAll(self,first=0,last=None,random=False,count=-1,recursive=True):
-        """Run all apps in the range [first,last].
+    def runAll(self,startfrom='A',stopat='[',count=-1,recursive=True,random=False):
+        """Run all apps with a name in the range [startfrom,stopat].
 
-        Runs the apps in the range first:last.
-        If last is None, the length of the file list is used.
-        If count is positive, at most count scripts per submenu are executed.
-        Notice that the range is Python style.
-        If random is True, the files are shuffled before running.
+        Runs the apps with a name >= `startfrom` and < `stopat`.
+        The default will run all apps starting with a capital (like
+        the examples). Specify None to disable the limit.
+        If count is positive, at most count scripts are executed.
         If recursive is True, also the files in submenu are played.
-        The first and last arguments do not apply to the submenus.
-
+        If random is True, the files in any submenu are shuffled before running.
         """
+        from pyformex.gui.draw import layout, reset, sleep
+        from pyformex.gui import widgets
+
         if self.mode != 'app':
             print("I can only do this in 'App' mode, not 'Script' mode")
             return
 
-        from pyformex.gui.draw import layout, reset, sleep
-        from pyformex.gui import widgets
+        print(startfrom,stopat,count)
+
         pf.GUI.enableButtons(pf.GUI.actions, ['Stop'], True)
 
-        if last is None:
-            last = len(self.files)
-        if count > 0:
-            last = min(last, first+count)
-        files = self.files[first:last]
-
+        files = self.files
+        if startfrom is not None:
+            files = [ f for f in files if f >= startfrom ]
+        if stopat is not None:
+            files = [ f for f in files if f < stopat ]
         if random:
             import random as r
             r.seed()
             r.shuffle(files)
+        if count >= 0:
+            files = files[:count]
 
         tcount = len(files)
+        print(tcount,files)
+
         if tcount > 0:
             # Run these files
             print("Running %s applications from '%s'" % (len(files),self.title()))
@@ -506,30 +510,27 @@ class AppMenu(menu.Menu):
             save = widgets.input_timeout
             pf.GUI.drawlock.free()
             widgets.input_timeout = 1.0
-            for f in files:
-                # while '__auto/script__' in pf.scriptlock:
-                #     print("RUNALL WAITING BECAUSE OF SCRIPT LOCK")
-                #     print("Locked by: %s" % pf.scriptlock)
-                #     import time
-                #     time.sleep(2)
-                #     pf.app.processEvents()
-                layout(1)
-                reset()
-                pf.PF.clear()
-                print("Running app '%s'" % f)
-                self.runApp(f)
-                script.breakpt(msg="Breakpoint from runall")
-                sleep(1)#,msg="EXITREQUESTED: %s" % script.exitrequested)
-                if script.exitrequested:
-                    break
-            tcount = len(files)
-            widgets.input_timeout = save
-            pf.GUI.drawlock.allow()
+            tcount = 0
+            try:
+                for f in files:
+                    layout(1)
+                    reset()
+                    pf.PF.clear()
+                    print("Running app '%s'" % f)
+                    self.runApp(f)
+                    script.breakpt(msg="Breakpoint from runall")
+                    sleep(1)#,msg="EXITREQUESTED: %s" % script.exitrequested)
+                    if script.exitrequested:
+                        break
+                    tcount += 1
+            finally:
+                widgets.input_timeout = save
+                pf.GUI.drawlock.allow()
 
         # if room for more, recurse into submenus
         if recursive and (count < 0 or tcount < count):
             for m in self._submenus_:
-                n = m.runAll(recursive=recursive, random=random, count=count-tcount)
+                n = m.runAll(startfrom, stopat, count=count-tcount, recursive=recursive, random=random)
                 tcount += n
                 if count > 0 and tcount >= count:
                     print("Ran %s examples; getting out" % tcount)
