@@ -49,11 +49,20 @@ startup_warnings = ''
 
 #########  Check Python version #############
 
+# A single variable to flag Python 3+
+PY3 = sys.hexversion >= 0x03000000
+
 # intended Python version
-# Dropping support for pre 2.7 will help migration to 3.x
-minimal_version = 0x02070000
-target_version = 0x02070000
-future_version = 0x03000000
+if PY3:
+    # We only support 3.4+
+    minimal_version = 0x03040000
+    target_version = 0x03050000
+    future_version = 0x03060000
+else:
+    # Dropping support for pre 2.7 will help migration to 3.x
+    minimal_version = 0x02070000
+    target_version = 0x02070000
+    future_version = 0x03000000
 
 def major(v):
     """Return the major component of version"""
@@ -92,10 +101,6 @@ if sys.hexversion & 0xFFFF0000 > target_version:
 #######################################################################
 """ % (human_version(sys.hexversion), human_version(minimal_version))
     #print(startup_warnings)
-
-
-# A single variable to flag Python 3
-PY3 = sys.hexversion >= 0x03000000
 
 # Compatibility between Python2 and Python3
 # We keep these in separate modules, because the ones for 2k might
