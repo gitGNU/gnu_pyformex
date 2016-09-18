@@ -28,10 +28,13 @@ applications.
 """
 from __future__ import absolute_import, division, print_function
 
+import os, sys
 
 import pyformex as pf
+if pf.PY3:
+    from importlib import reload
 from pyformex import utils
-import os, sys
+
 
 # global variable used of tracing application load errors
 _traceback = ''

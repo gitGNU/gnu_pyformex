@@ -28,14 +28,16 @@ plugin menus.
 """
 from __future__ import absolute_import, division, print_function
 
+from types import ModuleType
 
 import pyformex as pf
-from types import ModuleType
+if pf.PY3:
+    from importlib import reload
 
 # The following imports help with reading back old projects
 # (We moved these modules from plugins to core)
-from pyformex import project
-from pyformex import mesh
+#from pyformex import project
+#from pyformex import mesh
 
 
 def load(plugin):

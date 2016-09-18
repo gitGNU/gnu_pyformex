@@ -29,16 +29,16 @@ interactive widgets to his scripts. Of course he can also use all the
 Qt widgets directly.
 """
 from __future__ import absolute_import, division, print_function
-from pyformex import zip
 
 import os
-from pyformex.gui import QtCore, QtGui
+
 import pyformex as pf
-from pyformex.opengl import colors
 from pyformex import mydict, olist
 from pyformex import utils
 from pyformex import arraytools as at
-
+from pyformex.gui import QtCore, QtGui
+from pyformex.opengl import colors
+from pyformex import zip
 from pyformex.odict import OrderedDict
 
 
@@ -3104,6 +3104,9 @@ def updateText(widget,text,format=''):
         widget.setHtml(text)
     else:
         # Default is to use QT's autorecognition
+        if pf.PY3:
+            if isinstance(text,bytes):
+                text = text.decode()
         widget.setText(text)
 
 
