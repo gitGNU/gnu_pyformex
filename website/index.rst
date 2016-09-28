@@ -83,12 +83,12 @@ Overview
 
     </td><td width="50%">
 
-  <p class="biglink"><a class="biglink" href="doc/index.html">Documentation</a> :
+  <p class="biglink"><span class="biglink">Documentation: </span>
 	 <a class="biglink" href="doc-0.9/index.html">0.9</a> |
 	 <a class="biglink" href="doc-1.0/index.html">1.0</a>
 	 <br/><span class="linkdescr">learn all about pyFormex</span></p>
 
-  <p class="biglink"><a class="biglink" href="doc/install.html">Install</a> :
+  <p class="biglink"><span class="biglink">Install: </span>
   <a class="biglink" href="doc-0.9/install.html">0.9</a> |
   <a class="biglink" href="doc-1.0/install.html">1.0</a>
 	 <br/><span class="linkdescr">discover the many ways to install</span></p>

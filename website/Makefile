@@ -181,9 +181,6 @@ pyformex.help: ../pyformex/pyformex
 	../pyformex/pyformex --help > $@
 
 
-# Transfer the html docs to doc
-svndoc:
-	${RSYNC} -a --exclude '.svn' --delete ${MANDOCS} ${SVNDOC}
 
 # Transfer the files to www for publication
 
