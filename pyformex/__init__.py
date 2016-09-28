@@ -21,7 +21,7 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""pyFormex core module initialisation.
+"""pyFormex core module initialization.
 
 This module initializes the pyFormex global variables and
 defines a few essential functions.

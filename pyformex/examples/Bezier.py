@@ -50,7 +50,11 @@ def build_matrix(atoms, vars):
     A matrix is returned where each row contains the values of atoms evaluated
     for one set of the variables.
     """
-    nval = len(vars[vars.keys()[0]])
+    if pf.PY3:
+        keys = list(vars)
+    else:
+        keys = vars.keys()
+    nval = len(vars[keys[0]])
     aa = zeros((nval, len(atoms)), Float)
     for k, a in enumerate(atoms):
         res = eval(a, vars)

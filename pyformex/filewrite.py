@@ -37,10 +37,17 @@ from __future__ import absolute_import, division, print_function
 
 import pyformex as pf
 import numpy as np
-from pyformex.lib import misc
 from pyformex.arraytools import checkArray
 from pyformex import utils
 
+
+if pf.PY3:
+    # We can not use the accelerated functions yet
+    from pyformex.lib.misc_e import tofile_int32, tofile_float32
+else:
+    from pyformex.lib import misc
+    tofile_int32 = misc.tofile_int32
+    tofile_float32 = misc.tofile_float32
 
 #
 # DEVS: Do not use Int and Float here, but np.int32 and np.float32
@@ -85,9 +92,9 @@ def writeData(fil,data,sep='',fmt=None,end=''):
     else:
         val = data.reshape(-1, data.shape[-1])
         if kind == 'i':
-            misc.tofile_int32(val.astype(np.int32), fil, fmt)
+            tofile_int32(val.astype(np.int32), fil, fmt)
         elif kind == 'f':
-            misc.tofile_float32(val.astype(np.float32), fil, fmt)
+            tofile_float32(val.astype(np.float32), fil, fmt)
         else:
             raise ValueError("Can not write data fo type %s" % data.dtype)
     if end:
@@ -112,7 +119,7 @@ def writeIData(data,fil,fmt,ind=1):
 
     if kind == 'i':
         raise RuntimeError("This is not implemented yet")
-        misc.tofile_int32(val.astype(np.int32), fil, fmt)
+        misc.tofile_iint32(val.astype(np.int32), fil, fmt)
     elif kind == 'f':
         misc.tofile_ifloat32(ind.astype(np.int32), val.astype(np.float32), fil, fmt)
     else:
@@ -276,7 +283,7 @@ def write_stl_asc(fn, x):
         raise ValueError("Expected an (ntri,4,3) array, got %s" % x.shape)
 
     print("Writing ascii STL %s" % fn)
-    with open(fn, 'wb') as fil:
+    with open(fn, 'w') as fil:
 
         fil.write("solid  Created by %s\n" % pf.fullVersion())
         for e in x:

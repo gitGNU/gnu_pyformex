@@ -31,6 +31,15 @@ The operations include intersection, projection, distance computing.
 Many of the functions in this module are exported as methods on the
 Coords and Geometry classes and subclasses.
 
+
+Renamed functions::
+
+    intersectionPointsLWL    -> intersectLineWithLine
+    intersectionTimesLWL     -> intersectLineWithLine
+    intersectionPointsLWP    -> intersectLineWithPlane
+    intersectionTimesLWP     -> intersectLineWithPlaneTimes
+
+
 Planned renaming of functions::
 
     areaNormals
@@ -55,6 +64,7 @@ Planned renaming of functions::
     perpendicularVector
     projectionVOV            -> projectVectorOnVector
     projectionVOP            -> projectVectorOnPlane
+
 
     pointsAtLines            -> pointOnLine
     pointsAtSegments         -> pointOnSegment
@@ -162,11 +172,6 @@ def pointsAtSegments(S, t):
 
 ################## intersection #######################
 #
-
-#    intersectionPointsLWL    -> intersectLineWithLine
-#    intersectionTimesLWL     -> intersectLineWithLine
-#    intersectionPointsLWP    -> intersectLineWithPlane
-#    intersectionTimesLWP     -> intersectLineWithPlaneTimes
 
 
 def intersectLineWithLine(q1,m1,q2,m2,mode='all',times=False):
@@ -1332,6 +1337,17 @@ def triangleInCircle(x):
 
     Returns a tuple r,C,n with the radii, Center and unit normals of the
     incircles.
+
+    Example:
+
+    >>> X = Formex(Coords([1.,0.,0.])).rosette(3,120.)
+    >>> print(X)
+    {[1.0,0.0,0.0], [-0.5,0.866025,0.0], [-0.5,-0.866025,0.0]}
+    >>> radius, center, normal = triangleInCircle(X.coords.reshape(-1,3,3))
+    >>> print(radius)
+    [ 0.5]
+    >>> print(center)
+    [[ 0.  0.  0.]]
     """
     checkArray(x, shape=(-1, 3, 3))
     # Edge vectors
@@ -1341,7 +1357,7 @@ def triangleInCircle(x):
     b0 = v[:, 0]-v[:, 2]
     b1 = v[:, 1]-v[:, 0]
     # find intersection => center point of incircle
-    center = intersectLineWithLine(x[:, 0], b0, x[:, 1], b1)
+    center = intersectLineWithLine(x[:, 0], b0, x[:, 1], b1, mode='pair')[0]
     # find distance to any side => radius
     radius = center.distanceFromLine(x[:, 0], v[:, 0])
     # normals

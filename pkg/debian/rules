@@ -28,7 +28,7 @@ build:
 
 binary:
 	@echo "=== Installing ==="
-	dh binary --with=python2
+	dh binary --with python2
 	@echo "=== Installing extra ==="
 	DESTDIR=$(CURDIR)/debian/tmp make -C $(CURDIR)/pyformex/extra prefix=/usr install
 

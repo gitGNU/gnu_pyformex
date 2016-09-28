@@ -439,8 +439,8 @@ class Curve(Geometry):
             at = self.atApproximate(nseg,ndiv,equidistant,npre)
         else:
             at = self.atChordal(chordal)
-        if self.closed:
-            at = at[:-1]
+#        if self.closed:
+#            at = at[:-1]
         return self.approxAt(at)
 
 

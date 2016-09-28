@@ -1723,15 +1723,15 @@ class NameSequence(object):
     Example:
 
     >>> N = NameSequence('abc.98')
-    >>> [ N.next() for i in range(3) ]
+    >>> [ next(N) for i in range(3) ]
     ['abc.98', 'abc.99', 'abc.100']
     >>> N = NameSequence('abc-8x.png')
-    >>> [ N.next() for i in range(3) ]
+    >>> [ next(N) for i in range(3) ]
     ['abc-8x.png', 'abc-9x.png', 'abc-10x.png']
     >>> NameSequence('abc','.png').next()
     'abc-000.png'
     >>> N = NameSequence('/home/user/abc23','5.png')
-    >>> [ N.next() for i in range(2) ]
+    >>> [ next(N) for i in range(2) ]
     ['/home/user/abc235.png', '/home/user/abc245.png']
     """
 
@@ -1746,11 +1746,12 @@ class NameSequence(object):
             format = "-%03d"
         self.name = prefix+format+suffix+ext
 
-    def next(self):
+    def __next__(self):
         """Return the next name in the sequence"""
         fn = self.name % self.nr
         self.nr += 1
         return fn
+    next = __next__
 
     def peek(self):
         """Return the next name in the sequence without incrementing."""

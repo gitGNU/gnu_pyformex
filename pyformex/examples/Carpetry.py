@@ -81,7 +81,7 @@ def run():
         nconv = random.randint(minconv, maxconv)
 
         while (len(conversions) < nconv and M.nelems() < maxelems) or M.nelems() < minelems:
-            possible_conversions = M.elType().conversions.keys()
+            possible_conversions = list(M.elType().conversions)
             i = random.randint(len(possible_conversions))
             conv = possible_conversions[i]
             conversions.append(conv)
