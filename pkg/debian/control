@@ -4,9 +4,9 @@ Priority: optional
 Maintainer: Benedict Verhegghe <benedict.verhegghe@ugent.be>
 Build-Depends: debhelper (>= 9.0.0),
 	       dpkg-dev (>= 1.16.1~),
-	       python-all-dev (>= 2.6.6-3~),
+	       python-all-dev (>= 2.7),
 	       python-numpy (>=1.0),
-	       libglu1-mesa-dev,
+	       libgl1-mesa-dev,
 	       libgts-dev,
 	       libglib2.0-dev,
 	       libdxflib-dev
@@ -20,6 +20,7 @@ Package: pyformex
 Architecture: all
 Depends: ${misc:Depends},
 	 ${python:Depends},
+	 python-all (>= 2.7),
 	 python-numpy(>=1.0),
 	 python-qt4-gl,
 	 python-opengl,

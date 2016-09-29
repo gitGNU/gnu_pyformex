@@ -201,7 +201,7 @@ incdoc:
 pubdoc:
 	mkdir -p ${PUBDIR_HTML}
 	${RSYNC} -a --exclude 'CVS' --exclude '.svn' --exclude '.buildinfo' --delete _build/html/ ${PUBDIR_HTML}
-	cd ${PUBDIR_HTML} && sed -i '/PYFORMEX_WEBSITE/d' *.html ref/*.html
+	./decorate_webdocs ${PUBDIR_HTML}
 
 # Publish the PDF manual
 

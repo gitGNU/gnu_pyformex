@@ -86,6 +86,7 @@ unpack() {
 
 
 build() {
+    rsync debian $PYFDIR -av
     pushd $PYFDIR
     debuild -us -uc
     popd

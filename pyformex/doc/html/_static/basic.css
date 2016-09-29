@@ -133,6 +133,10 @@ a.biglink {
     font-size: 1.3em;
 }
 
+span.biglink {
+    font-size: 1.3em;
+}
+
 span.linkdescr {
     font-style: italic;
     padding-top: 5px;

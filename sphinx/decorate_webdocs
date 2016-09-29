@@ -1,0 +1,3 @@
+#!/bin/bash
+#
+[ -d "$1" ] && sed -i -f sidebar_decorations.sed $1/{,ref/}*.html
