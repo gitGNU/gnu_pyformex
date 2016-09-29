@@ -118,9 +118,9 @@ def settings():
         res['gui/console'] = utils.inverseDict(gui_console_options)[res['gui/console']]
         res['gui/plugins'] = [ p for p in ok_plugins if ok_plugins[p]]
         res['gui/actionbuttons'] = [ t for t in _actionbuttons if res['_gui/%sbutton'%t ] ]
-        if res['webgl/script'] == 'local':
-            res['webgl/script'] = 'file:'+res['_webgl_script']
-        if res['webgl/guiscript'] == 'local':
+        if res['webgl/script'] == 'custom':
+            res['webgl/script'] = res['_webgl_script']
+        if res['webgl/guiscript'] == 'custom':
             res['webgl/guiscript'] = res['_webgl_guiscript']
         updateSettings(res)
         plugins.loadConfiguredPlugins()
@@ -176,19 +176,21 @@ def settings():
         ]
 
     scripts = [
-        "https:///fewgl-0.2.js",
-        "file://"+os.path.join(pf.cfg['datadir'],'fewgl.js'),
+        pf.cfg['webgl/script'],
+#        "https:///fewgl-0.2.js",
+#        "file://"+os.path.join(pf.cfg['datadir'],'fewgl.js'),
         ]
     if pf.installtype == 'G':
         fewgl_dir = os.path.join(pf.parentdir, "fewgl")
         if os.path.exists(fewgl_dir):
             scripts += [ "file://"+os.path.join(fewgl_dir,f) for f in ['fewgl.js','fewgl_debug.js'] ]
-    scripts.append('local')
+    scripts.append('custom')
     guiscripts = [
-        "https://net.feops.com/public/webgl/xtk_xdat.gui.js",
-        "file://"+os.path.join(pf.cfg['datadir'],'xtk_xdat.js'),
+        pf.cfg['webgl/guiscript'],
+        #        "https://net.feops.com/public/webgl/xtk_xdat.gui.js",
+#        "file://"+os.path.join(pf.cfg['datadir'],'xtk_xdat.js'),
         ]
-    guiscripts.append('local')
+    guiscripts.append('custom')
     webgl_settings = [
         _I('webgl/script', pf.cfg['webgl/script'], text='WebGL base script', choices=scripts),
         _I('_webgl_script', '', text='URL for local WebGL base script', itemtype='filename', filter='js', exist=True),
@@ -199,8 +201,8 @@ def settings():
         _I('webgl/devpath', pf.cfg['webgl/devpath'], text='Path to the pyFormex source WebGL script'),
         ]
     enablers.extend([
-        ('webgl/script', 'local', '_webgl_script'),
-        ('webgl/guiscript', 'local', '_webgl_guiscript'),
+        ('webgl/script', 'custom', '_webgl_script'),
+        ('webgl/guiscript', 'custom', '_webgl_guiscript'),
         ('webgl/devel', True, 'webgl/devpath'),
         ])
 

@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Benedict Verhegghe <benedict.verhegghe@ugent.be>
 Build-Depends: debhelper (>= 9.0.0),
 	       dpkg-dev (>= 1.16.1~),
+	       dh-python,
 	       python-all-dev (>= 2.7),
 	       python-numpy (>=1.0),
 	       libgl1-mesa-dev,
@@ -11,7 +12,7 @@ Build-Depends: debhelper (>= 9.0.0),
 	       libglib2.0-dev,
 	       libdxflib-dev
 Build-Depends-Indep: libjs-jquery, libjs-underscore
-Standards-Version: 3.9.5
+Standards-Version: 3.9.8
 Homepage: http://pyformex.org
 X-Python-Version: >= 2.5
 
