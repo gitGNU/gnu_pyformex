@@ -1,5 +1,5 @@
 #!/usr/bin/env pyformex
-# Created by postabq 0.1 (C) 2008 Benedict Verhegghe
+# Created by postabq 0.2 (C) 2008,2014 Benedict Verhegghe
 from plugins.fe_post import FeResult
 D = FeResult()
 D.Abqver('6.11-1')

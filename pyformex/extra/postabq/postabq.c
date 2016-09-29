@@ -119,14 +119,14 @@ char* str(int64_t k) {
 }
 
 void do_element() {
-  printf("D.Element(%d,",data.i[j++]);
+  printf("D.Element(%ld,",data.i[j++]);
   printf("'%s',[",str(j++));
-  while (j < jend) printf("%d,",data.i[j++]);
+  while (j < jend) printf("%ld,",data.i[j++]);
   printf("])\n");
 }
 
 void do_node() {
-  printf("D.Node(%d,[",data.i[j++]);
+  printf("D.Node(%ld,[",data.i[j++]);
   int64_t j3 = j+3;
   if (j3 > jend) j3 = jend;
   while (j < j3) printf("%e,",data.d[j++]);
@@ -139,7 +139,7 @@ void do_node() {
 
 void do_dofs() {
   printf("D.Dofs([");
-  while (j < jend) printf("%d,",data.i[j++]);
+  while (j < jend) printf("%ld,",data.i[j++]);
   printf("])\n");
 }
 
@@ -156,7 +156,7 @@ void do_abqver() {
   /* BEWARE ! Do not call str() multiple times in the same printf instruction */
   printf("D.Date('%s',",strn(j,2)); j += 2;
   printf("'%s')\n",str(j++));
-  printf("D.Size(nelems=%d,nnodes=%d,length=%f)\n",data.i[j],data.i[j+1],data.d[j+2]);
+  printf("D.Size(nelems=%ld,nnodes=%ld,length=%f)\n",data.i[j],data.i[j+1],data.d[j+2]);
 }
 
 void do_heading() {
@@ -165,30 +165,30 @@ void do_heading() {
 
 void do_nodeset() {
   printf("D.Nodeset('%s',[",stripn(j++,1,1));
-  while (j<jend) printf("%d,",data.i[j++]);
+  while (j<jend) printf("%ld,",data.i[j++]);
   printf("])\n");
 }
 
 void add_nodeset() {
   printf("D.NodesetAdd([");
-  while (j<jend) printf("%d,",data.i[j++]);
+  while (j<jend) printf("%ld,",data.i[j++]);
   printf("])\n");
 }
 
 void do_elemset() {
   printf("D.Elemset('%s',[",stripn(j++,1,1));
-  while (j<jend) printf("%d,",data.i[j++]);
+  while (j<jend) printf("%ld,",data.i[j++]);
   printf("])\n");
 }
 
 void add_elemset() {
   printf("D.ElemsetAdd([");
-  while (j<jend) printf("%d,",data.i[j++]);
+  while (j<jend) printf("%ld,",data.i[j++]);
   printf("])\n");
 }
 
 void do_label() {
-  printf("D.Label(tag='%d',value='",data.i[j++]);
+  printf("D.Label(tag='%ld',value='",data.i[j++]);
   printf("%s",strn(j,jend-j));
   printf("')\n");
 }
@@ -199,17 +199,17 @@ void do_increment() {
   int64_t type = ip[4];
   explicit = (type==17 || type == 74);
   printf("D.Increment(");
-  printf("step=%d,",ip[5]);
-  printf("inc=%d,",ip[6]);
+  printf("step=%ld,",ip[5]);
+  printf("inc=%ld,",ip[6]);
   printf("tottime=%e,",dp[0]);
   printf("steptime=%e,",dp[1]);
   printf("timeinc=%e,",dp[10]);
-  printf("type=%d,",type);
+  printf("type=%ld,",type);
   printf("heading='%s',",stripn(j+11,10,1));
   if (!explicit) {
     printf("maxcreep=%e,",dp[2]);
     printf("solamp=%e,",dp[3]);
-    printf("linpert=%d,",ip[7]);
+    printf("linpert=%ld,",ip[7]);
     printf("loadfactor=%e,",dp[8]);
     printf("frequency=%e,",dp[9]);
   }
@@ -226,20 +226,20 @@ void do_elemheader() {
   int64_t * ip = data.i + j;
   int loc = ip[3];
   printf("D.ElemHeader(loc='%s',",output_location[loc]);
-  printf("i=%d,",ip[0]);
+  printf("i=%ld,",ip[0]);
   if (loc==0)
-    printf("gp=%d,",ip[1]);
+    printf("gp=%ld,",ip[1]);
   else if (loc==2)
-    printf("np=%d,",ip[1]);
+    printf("np=%ld,",ip[1]);
   else if (ip[1]!=0)
-    printf("ip=%d,",ip[1]);
+    printf("ip=%ld,",ip[1]);
   if (ip[2]!=0)
-    printf("sp=%d,",ip[2]);
+    printf("sp=%ld,",ip[2]);
   if (loc==3)
     printf("rb='%s',",stripn(j+4,1,1));
-  printf("ndi=%d,",ip[5]);
-  printf("nshr=%d,",ip[6]);
-  printf("nsfc=%d,",ip[8]);
+  printf("ndi=%ld,",ip[5]);
+  printf("nshr=%ld,",ip[6]);
+  printf("nsfc=%ld,",ip[8]);
   if (explicit)
     printf("ndir=%ld,",ip[7]);
   printf(")\n");
@@ -252,7 +252,7 @@ void do_elemout(char* text) {
 }
 
 void do_nodeout(char* text) {
-  printf("D.NodeOutput('%s',%d,[",text,data.i[j++]);
+  printf("D.NodeOutput('%s',%ld,[",text,data.i[j++]);
   while (j < jend) printf("%e,",data.d[j++]);
   printf("])\n");
 }
@@ -288,7 +288,7 @@ void do_total_energies() {
 /* Process the data of a record */
 int process_data() {
   /* nw and key have been set, j points to data*/
-  if (verbose) fprintf(stderr,"Record %d Offset %d Length %d Type %d End %d max %d\n",recnr,j,nw,key,jend,jmax);
+  if (verbose) fprintf(stderr,"Record %ld Offset %ld Length %ld Type %ld End %ld max %ld\n",recnr,j,nw,key,jend,jmax);
   if (fake) return 0;
   switch(key) {
   case 1900: do_element(); break;
@@ -321,7 +321,7 @@ int process_data() {
   case 110: do_nodeout("RVT"); break;
 
   case 1999: do_total_energies(); break;
-  default: printf("D.Unknown(%d)\n",key);
+  default: printf("D.Unknown(%ld)\n",key);
   }
   return err;
 }
@@ -332,7 +332,7 @@ int read_block() {
   if (j < jmax) {
     /* Move the remaining data to the start of the buffer */
     int64_t nm = jmax-j;
-    if (verbose) fprintf(stderr,"Moving %d words to start of buffer\n",nm);
+    if (verbose) fprintf(stderr,"Moving %ld words to start of buffer\n",nm);
     memmove(data.d,data.d+j,8*nm);
     j = 0;
     jmax = j+nm;
@@ -342,18 +342,18 @@ int read_block() {
   }
   blknr++;
   if (verbose)
-    fprintf(stderr,"Reading block at filepos %d, %d\n",ftell(fil),feof(fil));
-  if ( fread(&lead,sizeof(lead),1,fil) != 1 && !feof(fil) ||
-       !feof(fil) && fread(data.d+jmax,RECSIZE*8,1,fil) != 1 ||
-       !feof(fil) && fread(&tail,sizeof(tail),1,fil) != 1 ) {
-    fprintf(stderr,"ERROR while reading block nr %d at filepos %d\n",blknr,ftell(fil));
+    fprintf(stderr,"Reading block at filepos %ld, %d\n",ftell(fil),feof(fil));
+  if ( (fread(&lead,sizeof(lead),1,fil) != 1 && !feof(fil)) ||
+       (!feof(fil) && fread(data.d+jmax,RECSIZE*8,1,fil) != 1) ||
+       (!feof(fil) && fread(&tail,sizeof(tail),1,fil) != 1) ) {
+    fprintf(stderr,"ERROR while reading block nr %ld at filepos %ld\n",blknr,ftell(fil));
     return 1;
   }
   if (feof(fil)) return 1;
   jmax += RECSIZE;
   if (verbose) {
-    fprintf(stderr,"** Block %d size %d lead %d tail %d\n",blknr,8*RECSIZE,lead,tail);
-    fprintf(stderr,"** Buffer Start %d End %d size %d\n",j,jmax,jmax-j);
+    fprintf(stderr,"** Block %ld size %d lead %d tail %d\n",blknr,8*RECSIZE,lead,tail);
+    fprintf(stderr,"** Buffer Start %ld End %ld size %ld\n",j,jmax,jmax-j);
   }
   return 0;
 }

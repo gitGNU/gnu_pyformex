@@ -53,6 +53,7 @@ LIBDIR:= $(DESTDIR)$(libdir)
 DOCDIR:= $(DESTDIR)$(docdir)
 MANDIR:= $(DESTDIR)$(mandir)
 
+CFLAGS:= -Wall
 CC:= gcc $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)
 INSTALL:= $(SU) install
 INSTALLDIR:= $(INSTALL) -d
