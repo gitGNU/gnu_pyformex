@@ -65,7 +65,7 @@ def structuredHexMeshGrid(dx, dy, dz, isophex='hex64'):
     if not isinstance(dz, int):n3[..., 2]=array(dz).reshape(-1)
     nyz=(sgy+1)*(sgz+1)
     xh0= array([0, nyz, nyz+sgz+1, 0+sgz+1 ])
-    xh0= concatenate([xh0, xh0+1], axis=1)#first cell
+    xh0= concatenate([xh0, xh0+1])#first cell
     hz= array([xh0+j for j in range(sgz)])#z column
     hzy= array([hz+(sgz+1)*j for j in range(sgy)])#zy 2D rectangle
     hzyx=array([hzy+nyz*k for k in range(sgx)]).reshape(-1, 8)#zyx 3D
