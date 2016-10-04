@@ -124,6 +124,7 @@ warn_project_compression = "The contents of the file does not appear to be compr
 warn_project_create = "The create=True argument should be replaced with access='w'"
 warn_project_legacy = "The legacy=True argument has become superfluous"
 warn_properties_setname = "!! 'setname' is deprecated, please use 'name'"
+warn_regular_grid = "The function simple.regularGrid has changed!. The points are now ordered first along the 0-axis, then along the 1-axis, etc... This is to be consistent with other grid numbering schemes in pyFormex. The old numbering scheme (first along the highest axis) can be obtained by passing the 'swapaxes=True' argument to the function."
 warn_select_changed = "The select and cselect methods have changed for Mesh type opbjects. The default is now compact=False, as suggested in https://savannah.nongnu.org/bugs/?40662#comment7. If you want to get the result compacted, use clip/cclip instead, or add '.compact()'"
 warn_widgets_updatedialogitems = "gui.widgets.updateDialogItems now expects data in the new InputItem format. Use gui.widgets.updateOldDialogItems for use with old data format."
 warn_radio_enabler = "A 'radio' type input item can currently not be used as an enabler for other input fields."

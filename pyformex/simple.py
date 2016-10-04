@@ -29,11 +29,14 @@ You need to import this module in your scripts to have access to its
 contents.
 """
 from __future__ import absolute_import, division, print_function
-from pyformex import zip, round
+
+import numpy as np
+
+from pyformex import utils, zip, round
+from pyformex.formex import Formex, connect
+from pyformex import arraytools as at
 
 from pyformex.formex import *
-from pyformex import arraytools as at
-import numpy as np
 
 # A collection of Formex string input patterns to construct some simple
 # geometrical shapes

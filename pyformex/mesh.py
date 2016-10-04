@@ -39,6 +39,8 @@ It also contains some useful functions to create such models.
 """
 from __future__ import absolute_import, division, print_function
 
+import numpy as np
+
 import pyformex as pf
 from pyformex import zip, utils
 from pyformex import arraytools as at
@@ -231,10 +233,11 @@ class Mesh(Geometry):
         from pyformex import geomtools as gt
         if normals is None:
             pass
-        elif normals == 'auto':
-            normals = gt.polygonNormals(self.coords[self.elems])
-        elif normals == 'avg':
-            normals = gt.averageNormals(self.coords, self.elems)
+        elif isinstance(normals,str):
+            if normals == 'auto':
+                normals = gt.polygonNormals(self.coords[self.elems])
+            elif normals == 'avg':
+                normals = gt.averageNormals(self.coords, self.elems)
         else:
             normals = checkArray(normals, (self.nelems(), self.nplex(), 3), 'f')
         self.normals = normals
@@ -2690,6 +2693,16 @@ def smartSeed(n,start=0):
       this can be useful when creating seeds over multiple adjacent
       intervals.
 
+    Example:
+
+    >>> set_printoptions(precision=4)
+    >>> print(smartSeed(5))
+    [ 0.   0.2  0.4  0.6  0.8  1. ]
+    >>> print(smartSeed((5,2.,1.)))
+    [ 0.      0.01    0.1092  0.3701  0.7504  1.    ]
+    >>> print(smartSeed([0.0,0.2,0.3,0.4,0.8,1.0]))
+    [0.0, 0.2, 0.3, 0.4, 0.8, 1.0]
+
     """
     if isInt(n):
         return seed(n)[start:]
@@ -2737,8 +2750,11 @@ def gridpoints(seed0,seed1=None,seed2=None):
     - 'seed2' : int or list of floats . It specifies divisions along
       the t parametric direction of the element
 
-    If these parametes are integer values the divisions will be equally
+    If these parameters are integer values the divisions will be equally
     spaced between 0 and 1.
+
+    Example:
+
     """
     if seed0 is not None:
         if isinstance(seed0, int):
@@ -2785,20 +2801,22 @@ def line2_els(nx):
     els = [ array([0, 1]) + i for i in range(nx) ]
     return row_stack(els)
 
-# TODO: can be removed, this is equivalent to gridpoints(seed(nx),seed(ny))
+
 def quad4_wts(seed0, seed1):
     """ Create weights for quad4 subdivision.
 
-        Parameters:
+    Parameters:
 
-        - 'seed0' : int or list of floats . It specifies divisions along the
-          first parametric direction of the element
+    - 'seed0' : int or list of floats . It specifies divisions along the
+      first parametric direction of the element
 
-        - 'seed1' : int or list of floats . It specifies divisions along
-          the second parametric direction of the element
+    - 'seed1' : int or list of floats . It specifies divisions along
+      the second parametric direction of the element
 
-        If these parametes are integer values the divisions will be equally spaced between  0 and 1
+    If these parameters are integer values the divisions will be equally
+    spaced between  0 and 1
 
+    This is equivalent with `gridpoints(seed0, seed1)`.
     """
     return gridpoints(seed0, seed1)
 
@@ -2821,13 +2839,20 @@ quad9_els=quad4_els
 def quadgrid(seed0, seed1, roll=0):
     """Create a quadrilateral mesh of unit size with the specified seeds.
 
-    The seeds are a monotonously increasing series of parametric values
-    in the range 0..1. They define the positions of the nodes in the
-    parametric directions 0, resp. 1.
-    Normally, the first and last values of the seeds are 0., resp. 1.,
-    leading to a unit square grid.
+    Parameters:
 
-    The seeds are usually generated with the seed() function.
+    - `seed0`,`seed1`: seeds for the elements along the parametric directions
+      0 and 1. Each can be one of the following:
+
+      - an integer number, specifying the number of equally sized elements
+        along that direction,
+      - a tuple (n,) or (n,e0) or (n,e0,e1), to be used as parameters in the
+        :func:`mesh.seed` function,
+      - a list of monotonously increasing float values in the range 0.0 to 1.0,
+        specifying the relative positions of the nodes. Normally, the first and
+        last values of the seeds are 0. and 1., leading to a unit square grid.
+
+    The node and element numbers vary first in the x, then in the y direction.
     """
     from pyformex.elements import Quad4
     seed0 = smartSeed(seed0)
@@ -2882,23 +2907,10 @@ def rectangle(L, W, nl, nw):
     """Create a plane rectangular mesh of quad4 elements.
 
     Parameters:
-
-    - nl,nw: seeds for the elements along the length, width of the rectangle.
-      They should one of the following:
-
-      - an integer number, specifying the number of equally sized elements
-        along that direction,
-      - a tuple (n,) or (n,e0) or (n,e0,e1), to be used as parameters in the
-        :func:`mesh.seed` function,
-      - a list of float values in the range 0.0 to 1.0, specifying the relative
-        position of the seeds. The values should be ordered and the first and
-        last values should be 0.0 and 1.0.
-    - L,W: length,width of the rectangle.
+    - `L`,`W`: length,width of the rectangle.
 
     """
-    sl = smartSeed(nl)
-    sw = smartSeed(nw)
-    return quadgrid(sl, sw).resized([L, W, 1.0])
+    return quadgrid(nl, nw).resized([L, W, 1.0])
 
 
 def rectangleWithHole(L,W,r,nr,nl,nw=None,e0=0.0,eltype='quad4'):
