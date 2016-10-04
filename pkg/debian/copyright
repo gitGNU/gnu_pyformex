@@ -4,7 +4,7 @@ Upstream-Contact: Benedict Verhegghe <benedict.verhegghe@ugent.be>
 Source: http://savannah.nongnu.org/projects/pyformex/
 
 Files: *
-Copyright: 2004-2012 Benedict Verhegghe
+Copyright: 2004-2016 Benedict Verhegghe
 License: GPL-3+
 
 Files: debian/*
@@ -27,4 +27,3 @@ License: GPL-3+
  .
  On Debian systems, the complete text of the GNU General
  Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
-

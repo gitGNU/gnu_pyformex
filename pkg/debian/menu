@@ -1,3 +1,0 @@
-?package(pyformex):needs="X11" section="Applications/Science/Engineering"\
-  title="pyFormex" command="/usr/bin/pyformex"\
- icon="/usr/share/pixmaps/pyformex.xpm"
