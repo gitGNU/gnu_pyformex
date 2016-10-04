@@ -77,7 +77,7 @@ def drawNurbs(N,clear=True,**kargs):
 #        if _options.knot_numbers:
 #           _decors.knot_numbers = drawNumbers(N.knotPoints())
         if _options.knot_values:
-           _decors.knot_values = drawMarks(N.knotPoints(), ["%f(%s)"%(v,m) for v,m in N.knotv.knots()], leader='  --> ')
+           _decors.knot_values = drawMarks(N.knotPoints(), ["%f(%s)"%(v,m) for v,m in N.knotu.knots()], prefix='  --> ')
 
     zoomObj(N)
 

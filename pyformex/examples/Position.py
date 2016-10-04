@@ -45,7 +45,7 @@ def drawObjectWithName(obj, name):
 def drawPointsNumbered(pts, color, prefix):
     """Draw a set of points with their number"""
     draw(pts, color=color, ontop=True, nolight=True)
-    drawNumbers(Coords(pts), leader=prefix)
+    drawNumbers(Coords(pts), prefix=prefix)
 
 
 def run():

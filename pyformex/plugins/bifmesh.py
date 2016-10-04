@@ -176,31 +176,7 @@ def visualizeSubmappingQuadRegion(sqr, timewait=None):
         if timewait!=None:
             sleep(timewait)
         undraw(di)
-#clear()
-##draw(Formex([0., 0., 0.]))
-#hc=circle(2, 2, 360).scale(2).rotate(90).rotate(180, 1)[:]
-#hc=hc[:, 0].append([hc[-1, 1]])
-#hc=divPolyLine(hc,24*1, closed=True)[:-1]#points that define 1 circular section (normally 24*int)
-##oc=[-0.3, 0., 0.]#center of the circular section
-#oc=Coords([0., 0., 0.2])#center of the circular section
-#hc[:, 2]=hc[:, 2]+0.2*abs(hc[:, 0])**2.
-##draw(hc)
-##draw(Formex(oc))
-##drawNumbers(hc)
-##draw(PolyLine(hc, closed=True))
-#
-#HC=[hc]
-#OC=[oc]
-#for i in range(5):
-#    HC.append(HC[-1].translate([0.1, -0.2, 3.]).rotate(0,0 ))
-#    OC.append(OC[-1].translate([0.1, -0.2, 3.]).rotate(0,0 ))
-#OC, HC=array(OC), array(HC)
-#OC[:, 1]+=0.001*OC[:, 2]**3
-#OC[:, 0]+=0.02*OC[:, 2]
-#HC[:, :, 1]+=0.001*HC[:,:,  2]**3
-#
-#[draw(Formex(i), color='red') for i in OC]
-#[draw(PolyLine(i, closed=True)) for i in HC]
+
 
 def cpOneSection(hc, oc=None,isBranchingSection=False, verbos=False ):
     """hc is a numbers of points on the boundary line of 1 almost circular section. oc is the center point of the section. It returns 3 groups of control points: for the inner part, for the transitional part and for the boundary layer of one single section"""
@@ -296,8 +272,4 @@ def mapQuadLong(mesh_block, cpvr):
     n=concatenate(n, axis=0)
     return n, e_block
 
-##FORTH STEP ----- map the blocks of the 3 regions
-#in_mesh, tr_mesh, bl_mesh=[mapHexLong(v_block, v_cp) for v_block, v_cp in zip([in_block, tr_block, bl_block], hex_cp)]
-#M= [m[0][:, m[1]].reshape(-1, 8, 3) for m in [in_mesh, tr_mesh, bl_mesh] ]
-#
-#[draw(Formex(M[i], eltype='Hex8').setProp(i)) for  i in range(3)]
+# End

@@ -97,7 +97,7 @@ def drawNurbs(points,pointtype,degree,strategy,closed,blended,weighted=False,Cle
     X = pattern(points)
     F = Formex(X)
     draw(F, marksize=10, bbox='auto', view='front')
-    drawNumbers(F, leader='P', trl=[0.02, 0.02, 0.])
+    drawNumbers(F, prefix='P', trl=[0.02, 0.02, 0.])
     if closed:
         # remove last point if it coincides with first
         x, e = Coords.concatenate([X[0], X[-1]]).fuse()

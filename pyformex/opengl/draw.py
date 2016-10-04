@@ -516,20 +516,27 @@ def drawPlane(P,N,size,**drawOptions):
     return draw(p,bbox='last',**drawOptions)
 
 
-def drawMarks(X,M,color='black',leader='',ontop=True,**kargs):
+def drawMarks(X,M,color='black',prefix='',ontop=True,**kargs):
     """Draw a list of marks at points X.
 
-    X is a Coords array.
-    M is a list with the same length as X.
-    The string representation of the marks are drawn at the corresponding
-    3D coordinate.
+    Parameters:
+
+    - `X`: Coords.
+    - `M`: list of length X.ncoords(). The string representation of the
+      items in the list are drawn at the corresponding 3D coordinate of X.
+    - `prefix`: string. If specified, it is prepended to all drawn strings.
+    - `ontop`: bool. If True, the marks are drawn on top, meaning they will
+      all be visible, even those drawn at points hidden by the geometry.
+      If False, hidden marks can be hidden by the drawn geometry.
+
+    Other parameters can be passed to the :class:`actors.TextArray` class.
     """
     from pyformex.gui.draw import ack
     _large_ = 20000
     if len(M) > _large_:
         if not ack("You are trying to draw marks at %s points. This may take a long time, and the results will most likely not be readible anyway. If you insist on drawing these marks, anwer YES." % len(M)):
             return None
-    A = actors.TextArray(val=M, pos=X, color=color, leader=leader,**kargs)
+    A = actors.TextArray(val=M, pos=X, color=color, prefix=prefix, **kargs)
     drawActor(A)
     return A
 
@@ -540,21 +547,30 @@ def drawFreeEdges(M,color='black'):
     return draw(B, color=color, nolight=True)
 
 
-def drawNumbers(F,numbers=None,color='black',trl=None,offset=0,leader='',ontop=None,**kargs):
-    """Draw numbers on all elements of F.
+def drawNumbers(G,numbers=None,color='black',trl=None,offset=0,prefix='',ontop=None,**kargs):
+    """Draw numbers on all elements of a Geometry G.
 
-    numbers is an array with F.nelems() integer numbers.
-    If no numbers are given, the range from 0 to nelems()-1 is used.
-    Normally, the numbers are drawn at the centroids of the elements.
-    A translation may be given to put the numbers out of the centroids,
-    e.g. to put them in front of the objects to make them visible,
-    or to allow to view a mark at the centroids.
-    If an offset is specified, it is added to the shown numbers.
+    Parameters:
+
+    - `G`: Geometry like (Coords, Formex, Mesh)
+    - `numbers`: int array of length F.nelems(). If not specified,
+      the range from 0 to F.nelems()-1 is used.
+    - `color`: color to be used in drawing the numbers.
+    - `trl`: If unspecified, the numbers are drawn at the centroids of
+      the elements. A translation (x,y,z) may be given to put the numbers
+      out of the centroids, e.g. to put them in front of the objects to
+      make them visible, or to allow to view a mark at the centroids.
+    - `offset`: int. If specified, this value is added to the numbers. This is
+      an easy ways to compare the drawing with systems using base 1 numbering.
+    - `prefix`: string. If specified, it is added before every drawn number.
+
+    Other parameters are passed to the :func:`drawMarks` function.
+
     """
     if ontop is None:
         ontop = getcfg('draw/numbersontop')
     try:
-        X = F.centroids()
+        X = G.centroids()
     except:
         return None
     if trl is not None:
@@ -562,7 +578,7 @@ def drawNumbers(F,numbers=None,color='black',trl=None,offset=0,leader='',ontop=N
     X = X.reshape(-1, 3)
     if numbers is None:
         numbers = np.arange(X.shape[0])
-    return drawMarks(X, numbers+offset, color=color, leader=leader, ontop=ontop,**kargs)
+    return drawMarks(X, numbers+offset, color=color, prefix=prefix, ontop=ontop,**kargs)
 
 
 def drawPropNumbers(F,**kargs):

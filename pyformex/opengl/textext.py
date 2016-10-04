@@ -262,7 +262,10 @@ class Text(Actor):
 
 
 class TextArray(Text):
-    """A array of texts drawn at a 2D or 3D positions.
+    """An array of texts drawn at a 2D or 3D positions.
+
+    The text is drawn in 2D, inserted at the specified (2D or 3D) position,
+    with alignment specified by the gravity (see class :class:`Text`).
 
     Parameters:
 
@@ -271,12 +274,12 @@ class TextArray(Text):
     - `pos`: either an [N,2] or [N,3] shaped array of 2D or 3D positions.
       If 2D, the values are measured in pixels. If 3D, it is a point in
       global 3D space.
+    - `prefix`: string. If specified, it is prepended to all drawn strings.
 
-    The text is drawn in 2D, inserted at the specified position, with
-    alignment specified by the gravity.
+    Other parameters can be passed to the :class:`Text` class.
     """
 
-    def __init__(self,val,pos,leader='',**kargs):
+    def __init__(self,val,pos,prefix='',**kargs):
         # Make sure we have strings
         val = [ str(i) for i in val ]
         pos = at.checkArray(pos,shape=(len(val),-1))
@@ -284,7 +287,7 @@ class TextArray(Text):
             raise ValueError("val and pos should have same length")
 
         # concatenate all strings
-        val = [ leader+str(v) for v in val ]
+        val = [ prefix+str(v) for v in val ]
         cs = at.cumsum([0,] + [ len(v) for v in val ])
         val = ''.join(val)
         nc = cs[1:] - cs[:-1]
