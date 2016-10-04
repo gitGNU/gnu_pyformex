@@ -75,7 +75,7 @@ def randomPoints(n,bbox=[[0.,0.,0.],[1.,1.,1.]]):
     return Coords(at.randomNoise((n,3))).scale(bbox[1]-bbox[0]).trl(bbox[0])
 
 
-def regularGrid(x0, x1, nx):
+def regularGrid(x0, x1, nx, swapaxes=True):
     """Create a regular grid of points between two points x0 and x1.
 
     x0 and x1 are n-dimensional points (usually 1D, 2D or 3D).
@@ -83,19 +83,41 @@ def regularGrid(x0, x1, nx):
     the same dimension as x0 and x1.
     The result is a rectangular grid of coordinates in an array with
     shape ( nx[0]+1, nx[1]+1, ..., n ).
+
+    Example:
+
+    >>> regularGrid(0.,1.,4)
+    array([[ 0.  ],
+           [ 0.25],
+           [ 0.5 ],
+           [ 0.75],
+           [ 1.  ]])
+    >>> regularGrid((0.,0.),(1.,1.),(3,2))
+
     """
-    x0 = asarray(x0).ravel()
-    x1 = asarray(x1).ravel()
-    nx = asarray(nx).ravel()
+    # We do not use a decorator utils.warning, because
+    # this function gets called during startup (initilization of elements)
+    #utils.warn("warn_regular_grid")
+    x0 = np.asarray(x0).ravel()
+    x1 = np.asarray(x1).ravel()
+    nx = np.asarray(nx).ravel()
     if x0.size != x1.size or nx.size != x0.size:
         raise ValueError("Expected equally sized 1D arrays x0,x1,nx")
     if any(nx < 0):
         raise ValueError("nx values should be >= 0")
-    n = x0.size
-    ind = indices(nx + 1).reshape((n, -1))
-    shape = append(tuple(nx + 1), n)
+    # First construct a grid with integer coordinates
+    ndim = x0.size
+    shape = np.append(tuple(nx + 1), ndim)
+    if swapaxes:
+        # we can just use numpy.indices
+        ind = np.indices(nx + 1)
+    else:
+        # we need to reverse the axes for numpy.indices
+        ind = np.indices(nx[::-1] + 1)[::-1]
+    ind = ind.reshape((ndim, -1))
+    # And a grid with the complementary indices
     nx[nx == 0] = 1
-    jnd = nx.reshape((n, -1)) - ind
+    jnd = nx.reshape((ndim, -1)) - ind
     ind = ind.transpose()
     jnd = jnd.transpose()
     return ((x0 * jnd + x1 * ind) / nx).reshape(shape)
