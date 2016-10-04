@@ -3165,7 +3165,10 @@ class MessageBox(QtGui.QMessageBox):
         addTimeOut(self, timeout, self.accept)
         self.checks = []
         if check:
-            self.checks.append(self.addCheck(check))
+            if not isinstance(check,list):
+                check = [ check ]
+            for text in check:
+                self.checks.append(self.addCheck(text))
 
     def getIcon(self, level='noicon'):
         if level == 'info':
@@ -3183,7 +3186,8 @@ class MessageBox(QtGui.QMessageBox):
         grid = self.layout()
         nr = grid.rowCount()
         check = QtGui.QCheckBox(text)
-        grid.addWidget(check, nr, len(self.checks))
+        # Always use column 1: the icon is in column 0, the text in column 1
+        grid.addWidget(check, nr, 1)
         return check
 
 
