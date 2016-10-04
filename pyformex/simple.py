@@ -75,14 +75,23 @@ def randomPoints(n,bbox=[[0.,0.,0.],[1.,1.,1.]]):
     return Coords(at.randomNoise((n,3))).scale(bbox[1]-bbox[0]).trl(bbox[0])
 
 
-def regularGrid(x0, x1, nx, swapaxes=True):
+def regularGrid(x0, x1, nx, swapaxes=None):
     """Create a regular grid of points between two points x0 and x1.
 
-    x0 and x1 are n-dimensional points (usually 1D, 2D or 3D).
-    The space between x0 and x1 is divided in nx equal parts. nx should have
-    the same dimension as x0 and x1.
-    The result is a rectangular grid of coordinates in an array with
-    shape ( nx[0]+1, nx[1]+1, ..., n ).
+    Parameters:
+
+    - `x0`: n-dimensional float (usually 1D, 2D or 3D).
+    - `x1`: n-dimensional float with same dimension as `x0`.
+    - `nx`: n-dimensional int   with same dimension as `x0` and `x1`.
+      The space between `x0` and `x1` is divided in `nx[i]` equal parts
+      along the axis i.
+    - `swapaxes`: bool. If False(default), the points are number first in
+      the direction of the 0 axis, then the next axis,...
+      If True, numbering starts in the direction of the highest axis.
+      This is the legacy behavior.
+
+    Returns a rectangular grid of n-dimensional coordinates in an array with
+    shape ( nx[0]+1, nx[1]+1, ..., ndim ).
 
     Example:
 
@@ -95,9 +104,13 @@ def regularGrid(x0, x1, nx, swapaxes=True):
     >>> regularGrid((0.,0.),(1.,1.),(3,2))
 
     """
-    # We do not use a decorator utils.warning, because
-    # this function gets called during startup (initilization of elements)
-    #utils.warn("warn_regular_grid")
+    if swapaxes is None:
+        # We do not use a decorator utils.warning, because
+        # this function gets called during startup (initilization of elements)
+        utils.warn("warn_regular_grid")
+        print("Using default 'swapaxes=False'")
+        swapaxes = False
+
     x0 = np.asarray(x0).ravel()
     x1 = np.asarray(x1).ravel()
     nx = np.asarray(nx).ravel()
@@ -406,7 +419,7 @@ def sector(r, t, nr, nt, h=0., diag=None):
     """
     r = float(r)
     t = float(t)
-    p = Formex(regularGrid([0., 0., 0.], [r, 0., 0.], [nr, 0, 0]).reshape(-1, 3))
+    p = Formex(regularGrid([0., 0., 0.], [r, 0., 0.], [nr, 0, 0],swapaxes=True).reshape(-1, 3))
     if h != 0.:
         p = p.shear(2, 0, h / r)
     q = p.rotate(t / nt)

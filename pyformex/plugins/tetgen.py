@@ -471,6 +471,14 @@ def readTetgen(fn):
 #
 #  TODO: This should just be merged with tetMesh
 #
+#    This could be made an example:
+#
+#    from pyformex.simple import regularGrid
+#    X = Coords(regularGrid([0., 0., 0.], [1., 1., 1.], [10, 10, 10]).reshape(-1, 3)).addNoise(rsize=0.05,asize=0.5)
+#    draw(X)
+#    from pyformex.plugins.tetgen import tetgenConvexHull
+#    tch, ch =tetgenConvexHull( X)
+#    draw(ch, color='red', marksize=10)
 
 def tetgenConvexHull(pts):
     """_Tetralize the convex hull of some points.
@@ -480,14 +488,6 @@ def tetgenConvexHull(pts):
 
     If all points are on the same plane there is no convex hull.
 
-    This could be made an example:
-
-    from pyformex.simple import regularGrid
-    X = Coords(regularGrid([0., 0., 0.], [1., 1., 1.], [10, 10, 10]).reshape(-1, 3)).addNoise(rsize=0.05,asize=0.5)
-    draw(X)
-    from pyformex.plugins.tetgen import tetgenConvexHull
-    tch, ch =tetgenConvexHull( X)
-    draw(ch, color='red', marksize=10)
     """
     tmp = utils.tempName()
     writeNodes(fn=tmp+'.node', coords=pts, offset=0)

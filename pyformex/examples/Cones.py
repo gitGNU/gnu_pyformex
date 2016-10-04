@@ -141,6 +141,7 @@ def run():
         G.setProp(1)
         H = F+G
         clear()
+        smoothwire()
         draw(H)
         return
 

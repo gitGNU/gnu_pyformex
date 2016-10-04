@@ -46,10 +46,10 @@ from pyformex.geomtools import triangleCircumCircle
 
 def structuredQuadMeshGrid(sgx=3, sgy=3, isopquad=None):
     """it returns nodes (2D) and elems of a structured quadrilateral grid. nodes and elements are both ordered first vertically (y) and then orizontally (x). This function is the equivalent of simple.rectangularGrid but on the mesh level."""
-    sg=regularGrid([0., 0.], [1., 1.], [sgx, sgy])
+    sg=regularGrid([0., 0.], [1., 1.], [sgx, sgy], swapaxes=True)
     sgc=sgy+1
     esg=array([array([[i, i+sgc, i+1+sgc,  i+1] for i in range(sgc-1)])+sgc*j for j in range(sgx)])
-    if isopquad=='quad16': return sg.reshape(-1, 2), esg.reshape(-1, 4), regularGrid([0., 0.], [1., 1.], [3, 3]).reshape(-1, 2)#control points for the hex64 applied to a basic struct hex grid
+    if isopquad=='quad16': return sg.reshape(-1, 2), esg.reshape(-1, 4), regularGrid([0., 0.], [1., 1.], [3, 3], swapaxes=True).reshape(-1, 2)#control points for the hex64 applied to a basic struct hex grid
     else:return sg.reshape(-1, 2), esg.reshape(-1, 4)
 
 def structuredHexMeshGrid(dx, dy, dz, isophex='hex64'):
@@ -59,7 +59,7 @@ def structuredHexMeshGrid(dx, dy, dz, isophex='hex64'):
     if not isinstance(dx, int):sgx=len(dx)-1
     if not isinstance(dy, int):sgy=len(dy)-1
     if not isinstance(dz, int):sgz=len(dz)-1
-    n3=regularGrid([0., 0., 0.], [1., 1., 1.], [sgx, sgy, sgz])
+    n3=regularGrid([0., 0., 0.], [1., 1., 1.], [sgx, sgy, sgz], swapaxes=True)
     if not isinstance(dx, int):n3[..., 0]=array(dx).reshape(-1, 1, 1)
     if not isinstance(dy, int):n3[..., 1]=array(dy).reshape(-1,  1)
     if not isinstance(dz, int):n3[..., 2]=array(dz).reshape(-1)
@@ -69,7 +69,7 @@ def structuredHexMeshGrid(dx, dy, dz, isophex='hex64'):
     hz= array([xh0+j for j in range(sgz)])#z column
     hzy= array([hz+(sgz+1)*j for j in range(sgy)])#zy 2D rectangle
     hzyx=array([hzy+nyz*k for k in range(sgx)]).reshape(-1, 8)#zyx 3D
-    if isophex=='hex64': return Coords(n3.reshape(-1, 3)), hzyx.reshape(-1, 8), regularGrid([0., 0., 0.], [1., 1., 1.], [3, 3, 3]).reshape(-1, 3)#control points for the hex64 applied to a basic struct hex grid
+    if isophex=='hex64': return Coords(n3.reshape(-1, 3)), hzyx.reshape(-1, 8), regularGrid([0., 0., 0.], [1., 1., 1.], [3, 3, 3], swapaxes=True).reshape(-1, 3)#control points for the hex64 applied to a basic struct hex grid
     else: return Coords(n3.reshape(-1, 3)), hzyx.reshape(-1, 8)
 
 
@@ -132,7 +132,7 @@ def cpQuarterLumen(lumb, centp, edgesq=0.75, diag=0.6*2**0.5, verbos=False):
     xcp1, xcp3=centp+(arcp[[arcsh, 0]]-centp)*edgesq
     xcp2=centp+(arcp[arcsh//2]-centp)*diag
     nc0=array([centp, xcp1, xcp2, xcp3])#new coord0
-    grid16= regularGrid([0., 0., 0], [1., 1., 0.], [3, 3, 0]).reshape(-1, 3)#grid
+    grid16= regularGrid([0., 0., 0], [1., 1., 0.], [3, 3, 0], swapaxes=True).reshape(-1, 3)#grid
     ncold=grid16[[0, 12, 15, 3]]#old coord
     fx=arcsh//6
     sc=array([1./fx, 1./fx, 0.])
@@ -163,7 +163,7 @@ def cpQuarterLumen(lumb, centp, edgesq=0.75, diag=0.6*2**0.5, verbos=False):
 
 def visualizeSubmappingQuadRegion(sqr, timewait=None):
     """visualilze the control points (-1,16,3) in each submapped region and check the quality of the region (which will be inherited by the mesh crossectionally)"""
-    sqr3=regularGrid([0., 0., 0.], [1., 1., 0.], [3, 3, 0]).reshape(-1, 3)#base old coords
+    sqr3=regularGrid([0., 0., 0.], [1., 1., 0.], [3, 3, 0], swapaxes=True).reshape(-1, 3)#base old coords
     sqrn3, sqre3=structuredQuadMeshGrid(3, 3)#quad mesh to map
     for  i, f in enumerate(sqr):
         sqr0=Formex(sqrn3).isopar('quad16', f, sqr3)[:].reshape(-1, 3)

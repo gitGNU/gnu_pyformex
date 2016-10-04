@@ -1220,7 +1220,7 @@ class Canvas(object):
             tf = coords.tand(fovy/2.)
 
             from pyformex import simple
-            bbix = simple.regularGrid(X0, X1, [1, 1, 1])
+            bbix = simple.regularGrid(X0, X1, [1, 1, 1],swapaxes=True)
             bbix = np.dot(bbix, self.camera.rot[:3, :3])
             bbox = coords.Coords(bbix).bbox()
             dx, dy, dz = bbox[1] - bbox[0]

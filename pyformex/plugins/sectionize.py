@@ -61,7 +61,7 @@ def centerline(F,dir,nx=2,mode=2,th=0.2):
     n = array((0, 0, 0))
     n[dir] = nx
 
-    grid = simple.regularGrid(x0, x1, n).reshape((-1, 3))
+    grid = simple.regularGrid(x0, x1, n, swapaxes=True).reshape((-1, 3))
 
     th *= (x1[dir]-x0[dir])/nx
     n = zeros((3,))

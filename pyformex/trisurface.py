@@ -2353,7 +2353,7 @@ Quality: %s .. %s
             step = sz.max() / (n-1)
             n = ceil(sz / step).astype(Int)
         n = checkArray(n,shape=(3,),kind='i')
-        X = simple.regularGrid(bbox[0], bbox[0]+n*step, n)
+        X = simple.regularGrid(bbox[0], bbox[0]+n*step, n, swapaxes=True)
         ind = self.inside(X)
         vox = zeros(n+1, dtype=uint8)
         vox.ravel()[ind] = 1
