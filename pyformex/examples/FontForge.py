@@ -132,14 +132,14 @@ def contourCurve(c):
 
 def charContours(fontfile, character):
     font = fontforge.open(fontfile, 5)
-    print("FONT INFO FOR %s" % font)
-    print(dir(font))
-    print(font.gpos_lookups)
+    print("FONT INFO: %s" % font)
+    #print(dir(font))
+    #print(font.gpos_lookups)
 
     g = font[ord(character)]
-    print("GLYPH INFO FOR %s" % g)
-    print(dir(g))
-    print(g.getPosSub)
+    print("GLYPH INFO: %s" % g)
+    #print(dir(g))
+    #print(g.getPosSub)
 
 
     l = g.layers[1]
@@ -221,6 +221,8 @@ def drawCurve2(curve,color,fill=None,with_border=True,with_points=True):
 
 
 def show(fontname,character,fill=None):
+    """Show a character from a font"""
+    print("Char '%s' from font '%s'" % (character,fontname))
     curve = charCurves(fontname, character)
     size = curve[0].pointsOn().bbox().dsize()
     clear()
@@ -240,23 +242,21 @@ def show(fontname,character,fill=None):
 # Initialization
 
 # List font files on nonstandard places
-my_fonts = [ f for f in [
+my_fonts = [
     os.path.join(pf.cfg['datadir'], 'blippok.ttf'),
-] if os.path.exists(f) ]
-
+]
 
 fonts = []
 
 def run():
-    # disabled this example
-    #return
 
     global fonts
     if not fonts:
-        fonts = my_fonts + utils.listAllFonts()
+        fonts =  [ f for f in my_fonts if os.path.exists(f) ] + utils.listAllFonts()
 
-    fonts.sort()
-    print(fonts)
+    print("There are %s fonts" % len(fonts))
+    print("There are %s monospaced fonts" % len(utils.listMonoFonts()))
+    print("The default monospaced font is %s" % utils.defaultMonoFont())
 
     data = dict(
         fontname = fonts[0],
@@ -267,8 +267,10 @@ def run():
         data.update(pf.PF['_FontForge_data_'])
     except:
         pass
-    print(dir(fontforge))
     print("Number of available fonts: %s" % len(fonts))
+    if not data['fontname']:
+        data['fontname'] = fonts[0]
+    print("Current font: %s" % data['fontname'])
     res = askItems(store=data, items=[
         _I('fontname', choices=fonts),
         _I('character', max=1),
@@ -282,8 +284,6 @@ def run():
     if res['fill'] == 'None':
         del res['fill']
 
-
-    print(res)
 
     show(**res)
 
