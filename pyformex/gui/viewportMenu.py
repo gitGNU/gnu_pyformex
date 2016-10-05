@@ -341,7 +341,7 @@ def singleViewport():
 def clearAll():
     for vp in pf.GUI.viewports.all:
         vp.removeAll()
-        vp.clear()
+        vp.clearCanvas()
         vp.update()
     pf.GUI.processEvents()
 
