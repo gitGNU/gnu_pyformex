@@ -2687,23 +2687,23 @@ Script: %s
         for p in self.prop.getProp('e'):
             if p.set is not None:
                 # element set is directly specified
-                set = p.set
+                pset = p.set
             elif p.prop is not None:
                 # element set is specified by eprop nrs
                 if self.eprop is None:
                     print(p)
                     raise ValueError("elemProp has a 'prop' field but no 'eprop' was specified")
-                set = where(self.eprop == p.prop)[0]
+                pset = where(self.eprop == p.prop)[0]
             else:
                 # default is all elements
-                set = arange(telems)
+                pset = arange(telems)
 
-            if len(p.set):
+            if len(pset) > 0:
                 if 'eltype' in p:
-                    pf.debug('Elements of type %s: %s' % (p.eltype, set), pf.DEBUG.ABQ)
+                    pf.debug('Elements of type %s: %s' % (p.eltype, pset), pf.DEBUG.ABQ)
 
                     setname = esetName(p)
-                    gl, gr = self.model.splitElems(set)
+                    gl, gr = self.model.splitElems(pset)
                     elems = self.model.getElems(gr)
                     for i, elnrs, els in zip(range(len(gl)), gl, elems):
                         grpname = Eset('grp', i)
