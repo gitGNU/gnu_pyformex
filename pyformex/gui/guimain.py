@@ -441,7 +441,8 @@ class Gui(QtGui.QMainWindow):
         # Set up hot keys: hitting the key will emit the corresponding signal
         self.hotkey  = {
             QtCore.Qt.Key_F2: self.signals.SAVE,
-            QtCore.Qt.Key_F5: self.signals.FULLSCREEN,
+#            QtCore.Qt.Key_F5: self.signals.FULLSCREEN,
+            QtCore.Qt.Key_F11: self.signals.FULLSCREEN,
             }
 
 
@@ -993,7 +994,7 @@ class Gui(QtGui.QMainWindow):
             event.ignore()
 
 
-    def fullScreen(self):
+    def fullScreen(self,onoff=None):
         """Toggle the canvas full screen mode.
 
         Fullscreen mode hides all the components of the main window, except
@@ -1007,20 +1008,24 @@ class Gui(QtGui.QMainWindow):
         hide = [self.board, self.statusbar, self.menu] + self.toolbars
         if self.console:
             hide.append(self.console)
-        if self.fullscreen:
-            # already fullscreen: go back to normal mode
-            for w in hide:
-                w.show()
-            self.boxlayout.setContentsMargins(*pf.cfg['gui/boxmargins'])
-            self.showNormal()
-        else:
+        if onoff is None:
+            onoff = not self.fullscreen
+
+        if onoff:
             # goto fullscreen
             for w in hide:
                 w.hide()
             self.boxlayout.setContentsMargins(0, 0, 0, 0)
             self.showFullScreen()
+        else:
+            # go to normal mode
+            for w in hide:
+                w.show()
+            self.boxlayout.setContentsMargins(*pf.cfg['gui/boxmargins'])
+            self.showNormal()
+
         self.update()
-        self.fullscreen = not self.fullscreen
+        self.fullscreen = onoff
         pf.app.processEvents()
 
 
@@ -1070,10 +1075,6 @@ def exitDialog():
         fileMenu.closeProject(save=False, clear=False)
 
     return True
-
-
-def fullscreen():
-    pf.GUI.fullScreen()
 
 
 def xwininfo(windowid=None,name=None):
