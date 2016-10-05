@@ -51,11 +51,12 @@ def drawCircles(F,func,color=red):
 
 
 def run():
-    layout(2)
+    # multiple viewports is currently broken
+    #layout(2)
     wireframe()
 
     # draw in viewport 0
-    viewport(0)
+    #viewport(0)
     view('front')
     clear()
     rtri = Formex('3:016932').scale([1.5, 1, 0])
@@ -70,18 +71,19 @@ def run():
 
 
     # draw in viewport 1
-    viewport(1)
+    #viewport(1)
+    pause()
     view('iso')
     clear()
-    F, c = cube_tri()
+    F = cube_tri()
     draw(F)
     drawCircles(F, triangleInCircle)
     zoomAll()
 
-    if not ack("Keep both viewports ?"):
-        print("Removing a viewport")
-        # remove last viewport
-        removeViewport()
+    # if not ack("Keep both viewports ?"):
+    #     print("Removing a viewport")
+    #     # remove last viewport
+    #     removeViewport()
 
 if __name__ == '__draw__':
     run()
