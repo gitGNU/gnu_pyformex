@@ -1359,7 +1359,7 @@ def triangleInCircle(x):
     # find intersection => center point of incircle
     center = intersectLineWithLine(x[:, 0], b0, x[:, 1], b1, mode='pair')[0]
     # find distance to any side => radius
-    radius = center.distanceFromLine(x[:, 0], v[:, 0])
+    radius = distanceFromLine(center,(x[:,0], v[:,0]),mode='pair')
     # normals
     normal = cross(v[:, 0], v[:, 1])
     normal /= length(normal).reshape(-1, 1)
