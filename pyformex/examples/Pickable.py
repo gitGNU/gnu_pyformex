@@ -56,6 +56,10 @@ def run():
     actors = draw(objects)
     zoomAll()
 
+    # TODO: We should add a timer here to emit a CANCEL or DONE
+    # after the input timeout
+
+
     # pick elements
     pick('element',prompt="Pick elements and notice that the cone is not pickable")
 

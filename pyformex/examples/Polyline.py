@@ -145,9 +145,10 @@ def show():
 
 
 def timeOut():
-    showAll()
-    wait()
-    close()
+    try:
+        show()
+    finally:
+        close()
 
 
 def run():
