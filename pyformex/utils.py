@@ -2015,14 +2015,22 @@ def stuur(x,xval,yval,exp=2.5):
 def listAllFonts():
     """List all fonts known to the system.
 
-    Returns a list of path names to all the font files found on the system.
+    Returns a sorted list of path names to all the font files
+    found on the system.
+
+    This uses fontconfig and will produce a warning if fontconfig is not
+    installed.
     """
     cmd = "fc-list : file | sed 's|.*file=||;s|:||'"
     P = system(cmd, shell=True)
     if P.sta:
         warning("fc-list could not find your font files.\nMaybe you do not have fontconfig installed?")
+        fonts = []
     else:
-        return [ f.strip() for f in P.out.split('\n') ]
+        fonts = sorted([ f.strip() for f in P.out.split('\n') ])
+        if not fonts[0]:
+            fonts = fonts[1:]
+    return fonts
 
 
 def is_mono_font(fontfile,size=24):
