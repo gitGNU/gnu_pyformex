@@ -82,7 +82,7 @@ def run():
 
     print("Create a dome from the circular layout")
     f2.setProp(3)
-    pf.canvas.camera.setAngles([0., -45.])
+    pf.canvas.camera.setAngles([0., -45., 0.])
     show(scallop(6, 1, 2, 0), None, False)
 
 

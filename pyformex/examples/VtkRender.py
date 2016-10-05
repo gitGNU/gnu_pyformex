@@ -29,12 +29,18 @@ of commands to remove any floating widget
 from __future__ import absolute_import, division, print_function
 
 
-_status = 'checked'
+_status = 'flaky'
 _level = 'advanced'
 _topics = ['vtk','rendering']
 _techniques =  ['vtk','rendering']
 
 from pyformex.gui.draw import *
+
+
+###
+#
+#  This gives a flaky user experience
+#
 
 def renderVTK(object,color=[0.,0.,0.],bkg=[1.,1.,1.]):
     """Display an objet in an interactive vtk render window.
@@ -49,7 +55,6 @@ def renderVTK(object,color=[0.,0.,0.],bkg=[1.,1.,1.]):
     from pyformex.arraytools import checkArray
 
     vpd = convert2VPD(object)
-    pause()
     color=checkArray(color,shape=(3,),kind='f')
     # creating the actors mapper
     mapper = vtkPolyDataMapper()
@@ -88,8 +93,10 @@ def renderVTK(object,color=[0.,0.,0.],bkg=[1.,1.,1.]):
 
 def run():
     S = TriSurface.read(getcfg('datadir')+'/horse.off')
+    pause(msg="Use the Play button to proceed, close the VTK window to finish.")
     renderVTK(S,color=[0.1,0.4,0.2],bkg=[0,0,0])
 
 if __name__ == '__draw__':
     run()
+
 # End

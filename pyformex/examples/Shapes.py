@@ -47,7 +47,10 @@ from pyformex.gui.draw import *
 
 def circle(n=60):
     a1 = 360./n
-    return Formex([[[cosd(i*a1), sind(i*a1), 0.] for i in range(n)]])
+    # we do not have the 'polygon' mode anymore!
+    #return Formex([[[cosd(i*a1), sind(i*a1), 0.] for i in range(n)]])
+    # therefore create all triangles
+    return Formex([[[0.,0.],[cosd(i*a1), sind(i*a1)],[cosd((i+1)*a1), sind((i+1)*a1)]] for i in range(n)])
 
 def triangle():
     return Formex([[[0., 0., 0.], [1., 0., 0.], [0.5, 0.5*sqrt(3.), 0.]]])
@@ -58,7 +61,7 @@ def square():
 
 class Shape(Geometry):
     def __init__(self, shape, size, position, color):
-        Geometry.init(self)
+        Geometry.__init__(self)
         self.shape = shape
         self.size = resize(size, (3))
         self.position = position

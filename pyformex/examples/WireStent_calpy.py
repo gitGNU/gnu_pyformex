@@ -229,7 +229,7 @@ def postproc(coords, elements, displ, frc):
     bgcolor('lightgreen')
     linewidth(3)
     x = pf.canvas.width()//2
-    TA = drawText('Normal force in the members', (x, 100), font='tr32')
+    TA = drawText('Normal force in the members', (x, 100), size=32)
     CLA = ColorLegend(CS, 100, 10, 20, 30, 200)
     decorate(CLA)
     sleep(3)
