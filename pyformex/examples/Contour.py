@@ -40,8 +40,8 @@ _topics = ['text']
 _techniques = ['contour', 'font']
 
 from pyformex.gui.draw import *
-from pyformex.plugins.curve import *
-from pyformex.opengl.textext import *
+from pyformex.plugins.curve import Contour
+from pyformex import freetype as ft
 
 
 class FontOutline(Geometry):
@@ -128,17 +128,17 @@ def run():
     default = utils.defaultMonoFont()
     setFont(default)
 
-    while True:
-        choices = [ chr(i) for i in range(32,127) ]
-        res = askItems([
-            _I('font',choices=fonts,value=default,onselect=setFont),
-            _I('char',itemtype='hpush',choices=choices,func=callback,count=16),
-            ])
-        if not res:
-            break
-        default = res['font']
-        setFont(default)
-        drawChar(res['char'])
+    choices = [ chr(i) for i in range(32,127) ]
+    res = askItems([
+        _I('font',choices=fonts,value=default,onselect=setFont),
+        _I('char',itemtype='hpush',choices=choices,value='@',func=callback,count=16),
+        ])
+    if not res:
+        return
+    default = res['font']
+    setFont(default)
+    c = res['char']
+    drawChar(c)
 
 
 if __name__ == '__draw__':
