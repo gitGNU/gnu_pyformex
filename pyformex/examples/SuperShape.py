@@ -231,8 +231,10 @@ dialog_default = 'Show'
 
 
 def timeOut():
-    show()
-    close()
+    try:
+        show()
+    finally:
+        close()
 
 
 def createDialog():

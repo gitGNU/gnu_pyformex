@@ -154,9 +154,10 @@ def showAll():
 
 
 def timeOut():
-    showAll()
-    wait()
-    close()
+    try:
+        showAll()
+    finally:
+        close()
 
 
 predefined = [

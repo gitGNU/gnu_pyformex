@@ -50,11 +50,11 @@ from pyformex.lib import nurbs
 
 def showCurve(reverse=False):
     """Select and show a Nurbs curve."""
-    global N,dia
+    global N,dialog
 
-    if dia:
-        dia.acceptData()
-        res = dia.results
+    if dialog:
+        dialog.acceptData()
+        res = dialog.results
         curv = res['curv']
     else:
         curv = ''
@@ -73,10 +73,10 @@ def showReverse():
 
 def insertKnot():
     """Insert a knot in the knot vector of Nurbs curve N."""
-    global N,dia
+    global N,dialog
 
-    dia.acceptData()
-    res = dia.results
+    dialog.acceptData()
+    res = dialog.results
     u = eval('[%s]' % res['u'])
     N = N.insertKnots(u)
     print(N)
@@ -86,10 +86,10 @@ def insertKnot():
 
 def removeKnot():
     """Remove a knot from the knot vector of Nurbs curve N."""
-    global N,dia
+    global N,dialog
 
-    dia.acceptData()
-    res = dia.results
+    dialog.acceptData()
+    res = dialog.results
     ur = res['ur']
     m = res['m']
     tol = res['tol']
@@ -101,10 +101,10 @@ def removeKnot():
 
 def removeAllKnots():
     """Remove all removable knots."""
-    global N,dia
+    global N,dialog
 
-    dia.acceptData()
-    res = dia.results
+    dialog.acceptData()
+    res = dialog.results
     tol = res['tol']
     N = N.removeAllKnots(tol=tol)
     print(N)
@@ -114,10 +114,10 @@ def removeAllKnots():
 
 def elevateDegree():
     """Elevate the degree of the Nurbs curve N."""
-    global N,dia
+    global N,dialog
 
-    dia.acceptData()
-    res = dia.results
+    dialog.acceptData()
+    res = dialog.results
     nd = res['nd']
     if nd > 0:
         N = N.elevateDegree(nd)
@@ -132,7 +132,7 @@ def elevateDegree():
 
 def decompose():
     """Decompose Nurbs curve N"""
-    global N,C,dia
+    global N,C,dialog
 
     N1 = N.decompose()
     print(N1)
@@ -149,7 +149,7 @@ def decompose():
 
 def unclamp():
     """(Un)Clamp the curve N"""
-    global N,C,dia
+    global N,C,dialog
 
     if N.isClamped():
         N = N.unclamp()
@@ -162,10 +162,10 @@ def unclamp():
 
 def projectPoints():
     """Project points on the NurbsCurve N"""
-    global N,dia
+    global N,dialog
 
-    dia.acceptData()
-    res = dia.results
+    dialog.acceptData()
+    res = dialog.results
     npts = res['npts']
     show_distance = res['show_distance']
 
@@ -181,15 +181,26 @@ def projectPoints():
 
 
 def close():
-    global dia
-    dia.close()
-    dia = None
+    global dialog
+    if dialog:
+        dialog.close()
+        dialog = None
+    # Release script lock
+    scriptRelease(__file__)
 
 
-dia = None
+def timeOut():
+    try:
+        showCurve()
+        decompose()
+    finally:
+        close()
+
+
+dialog = None
 
 def run():
-    global N, dia
+    global N, dialog
     clear()
     flat()
 
@@ -203,9 +214,9 @@ def run():
 
     createNurbs('default')
 
-    if dia:
-        dia.close()
-    dia = Dialog([
+    if dialog:
+        dialog.close()
+    dialog = Dialog([
             _G('Curve Selection',[
                 _I('curv', 'default', choices=utils.hsorted(nurbs_book_examples.keys()),
                    buttons=[('Show Curve',showCurve),('Show Reverse',showReverse)]),
@@ -231,7 +242,11 @@ def run():
             ('(Un)Clamp',unclamp),
             ('Decompose',decompose),
         ])
-    dia.show()
+    dialog.timeout = timeOut
+    dialog.show()
+
+    # Block other scripts
+    scriptLock(__file__)
 
 
 

@@ -55,7 +55,7 @@ def run():
     fgcolor(blue)
     grow('Plant1', ngen=7, clearing=False, text=False)
     data = readGeomFile(os.path.join(pf.cfg['datadir'], 'blippo.pgf'))
-    curve = data['blippo_000']
+    curve = data['blippo-0']
     bb = curve.coords.bbox()
     ctr = bb.center()
     siz = bb.sizes()
