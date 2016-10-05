@@ -27,15 +27,16 @@ Finite element models are geometrical models that consist of a unique
 set of nodal coordinates and one of more sets of elements.
 """
 from __future__ import absolute_import, division, print_function
-from pyformex import zip
+
+import numpy as np
 
 import pyformex as pf
+from pyformex import zip
 from pyformex import arraytools as at
 from pyformex.coords import Coords
 from pyformex.connectivity import Connectivity
 from pyformex.geometry import Geometry
 from pyformex.mesh import Mesh, mergeMeshes
-import numpy as np
 
 
 ######################## Finite Element Model ##########################
@@ -278,10 +279,10 @@ def sortElemsByLoadedFace(ind):
 
     For a typical use case, see the FePlast example.
     """
-    edgset = unique(ind[:, 1])
+    edgset = np.unique(ind[:, 1])
     d = {}
     for e in edgset:
-        d[e] = ind[where(ind[:, 1]==e)[0], 0]
+        d[e] = ind[np.where(ind[:, 1]==e)[0], 0]
     return d
 
 
