@@ -663,7 +663,7 @@ def run(argv=[]):
                 os.makedirs(basedir)
             open(pf.preffile,'a').close()
         except:
-            pf.warning("Could not create the user configuration file '%s'.\nUser preferences will not be saved." % pf.preffile)
+            pf.startup_warnings += "Could not create the user configuration file '%s'.\nUser preferences will not be saved.\n" % pf.preffile
             pf.preffile = None
 
     # Set this as preferences config
@@ -818,7 +818,7 @@ pyFormex Warning
         if pf.cfg['startup_warnings']:
             pf.warning(pf.startup_warnings)
         else:
-            print(pf.startup_warnings)
+            print("*** WARNING ***\n"+pf.startup_warnings+"****************\n")
     if pf.startup_messages:
         print(pf.startup_messages)
 
@@ -833,6 +833,9 @@ pyFormex Warning
     # we put it back to a sane setting
     #
     utils.setSaneLocale()
+
+    # Startup done
+    pf.started = True
 
     # Prepend the autorun script
     ar = pf.cfg.get('autorun', '')

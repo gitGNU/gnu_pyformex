@@ -462,7 +462,7 @@ class Gui(QtGui.QMainWindow):
                 self.splitter.addWidget(self.board)
         if 'c' in config:
             if self.console is None:
-                print("ADDING EXPERIMENTAL CONSOLE")
+                pf.startup_messages += "Added experimental console\n"
                 from pyformex.gui import pyconsole
                 self.console = pyconsole.PyConsole(pf.interpreter)
                 self.console.interpreter.globals = draw.Globals()

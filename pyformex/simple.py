@@ -106,9 +106,8 @@ def regularGrid(x0, x1, nx, swapaxes=None):
     """
     if swapaxes is None:
         # We do not use a decorator utils.warning, because
-        # this function gets called during startup (initilization of elements)
+        # this function gets called during startup (initialization of elements)
         utils.warn("warn_regular_grid")
-        print("Using default 'swapaxes=False'")
         swapaxes = False
 
     x0 = np.asarray(x0).ravel()

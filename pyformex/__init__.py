@@ -46,6 +46,7 @@ StartTime = datetime.datetime.now()
 
 startup_messages = ''
 startup_warnings = ''
+started = False
 
 #########  Check Python version #############
 
