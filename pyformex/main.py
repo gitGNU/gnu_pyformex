@@ -577,6 +577,14 @@ def run(argv=[]):
         olduserprefs = os.path.join(homedir, '.pyformex', 'pyformexrc')
         if os.path.exists(olduserprefs):
             print("Migrating your user preferences\n  from %s\n  to %s" % (olduserprefs, pf.cfg['userprefs']))
+            # We move the user config from HOME/.pyformex/.pyformexrc
+            # to HOME/.config/pyformex/pyformex.conf
+            # The directory change is because of changing standards in Linux
+            # The filename change is to no clash with the defaults file
+            # (which is ./pyformex/pyformexrc) when being executed from
+            # the pyformex directory.
+            # We link back the new config location to the old one, so that
+            # versions < 0.9.1 can still pick up the user config.
             try:
                 import shutil
                 olddir = os.path.dirname(olduserprefs)
@@ -596,7 +604,7 @@ def run(argv=[]):
                 os.symlink(newdir, olddir)
 
             except:
-                raise RuntimeError("Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\s to get a fresh start with default config." % (olddir, newdir))
+                raise RuntimeError("Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\n to get a fresh start with default config." % (olddir, newdir))
 
     ########### Load the user configuration  ####################
 
@@ -649,10 +657,14 @@ def run(argv=[]):
     else:
         # Create the config file
         pf.debug("Creating config file %s" % pf.preffile, pf.DEBUG.CONFIG)
-        basedir = os.path.dirname(pf.preffile)
-        if not os.path.exists(basedir):
-            os.makedirs(basedir)
-        open(pf.preffile,'a').close()
+        try:
+            basedir = os.path.dirname(pf.preffile)
+            if not os.path.exists(basedir):
+                os.makedirs(basedir)
+            open(pf.preffile,'a').close()
+        except:
+            pf.warning("Could not create the user configuration file '%s'.\nUser preferences will not be saved." % pf.preffile)
+            pf.preffile = None
 
     # Set this as preferences config
     pf.prefcfg = pf.cfg

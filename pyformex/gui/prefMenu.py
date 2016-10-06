@@ -651,7 +651,8 @@ def reloadPreferences(preffile=None):
     """Reload the preferences from the user preferences file"""
     if preffile is None:
         preffile = pf.preffile
-    pf.prefcfg.read(pf.preffile)
+    if pf.preffile:
+        pf.prefcfg.read(pf.preffile)
 
 
 def editPreferences():
@@ -665,6 +666,10 @@ def editPreferences():
     'File->Save Preferences Now' option from the GUI.
     """
     from ..main import savePreferences
+    if pf.preffile is None:
+        pf.warning("You have no writable preferences file")
+        return
+
     if not savePreferences():
         if pf.warning("Could not save to preferences file %s\nEdit the file anyway?" % pf.preffile) == 'Cancel':
             return
@@ -680,8 +685,9 @@ def saveAndUnwatchPreferences():
     This also has the side effect of no longer watching the preferences
     file for changes, if the user has loaded it into the editor.
     """
-    pf.GUI.filewatch.removeWatch(pf.preffile)
-    savePreferences()
+    if pf.preffile:
+        pf.GUI.filewatch.removeWatch(pf.preffile)
+        savePreferences()
 
 
 def reloadAndUnwatchPreferences():
@@ -690,8 +696,9 @@ def reloadAndUnwatchPreferences():
     This also has the side effect of no longer watching the preferences
     file for changes, if the user has loaded it into the editor.
     """
-    pf.GUI.filewatch.removeWatch(pf.preffile)
-    reloadPreferences()
+    if pf.preffile:
+        pf.GUI.filewatch.removeWatch(pf.preffile)
+        reloadPreferences()
 
 
 MenuData = [
