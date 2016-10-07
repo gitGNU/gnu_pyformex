@@ -256,9 +256,23 @@ scriptlock = set()
 scriptMode = None
 
 
+
 # define default of warning and error
 warning = print
 error = print
+
+def _busy(state=True):
+    """Flag a busy state to the user"""
+    if state:
+        print("This may take some time...")
+
+def busy(state=True):
+    """Flag a busy state to the user"""
+    if GUI:
+        GUI.setBusy(state)
+    else:
+        _busy(state)
+
 
 class DebugLevels(object):
     """A class with debug levels.
