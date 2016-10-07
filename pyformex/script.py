@@ -29,31 +29,14 @@ applications, without the need to explicitely importing the :mod:`script`
 module.
 """
 from __future__ import absolute_import, division, print_function
-from pyformex import zip
 
-import pyformex as pf
-from pyformex import formex
-from pyformex import geomfile
-from pyformex import utils
-from pyformex.project import Project
-from pyformex.geometry import Geometry
-
-########################
-# Imported here only to make available in scripts
-from pyformex.olist import List
-from pyformex.varray import Varray
-from pyformex.formex import *
-from pyformex.mesh import Mesh
-from pyformex.trisurface import TriSurface
-from pyformex.coordsys import CoordinateSystem,CoordSys
-from pyformex import simple
-
-########################
+############### Standard libraries first
 
 import os
 import sys
 import re
 import time
+import shutil
 
 ############### DEBUGGING MEMORY LEAKS
 #try:
@@ -61,7 +44,27 @@ import time
 #    _memtracker = tracker.SummaryTracker()
 #except:
 #    _memtracker = None
-################
+
+################ pyFormex modules
+
+import pyformex as pf
+from pyformex import zip
+from pyformex import formex
+from pyformex import geomfile
+from pyformex import utils
+from pyformex.project import Project
+from pyformex.geometry import Geometry
+
+######################## more pyFormex stuff
+# Imported here only to have them available in scripts
+# Everything from utils is passed by default to scripts
+from pyformex.olist import List
+from pyformex.varray import Varray
+from pyformex.formex import *
+from pyformex.mesh import Mesh
+from pyformex.trisurface import TriSurface
+from pyformex.coordsys import CoordinateSystem,CoordSys
+from pyformex import simple
 
 
 ######################### Exceptions #########################################
@@ -789,8 +792,10 @@ def chdir(path,create=False):
         if not os.path.isdir(path):
             path = os.path.dirname(os.path.abspath(path))
     else:
-        if not create or not mkdir(path):
-            raise ValueError("The path %s does not exist" % path)
+        if create:
+            mkdir(path)
+        else:
+            raise OsError("The path %s does not exist" % path)
     try:
         os.chdir(path)
         setPrefs({'workdir':path}, save=True)
@@ -808,26 +813,56 @@ def pwdir():
     print("Current workdir is %s" % os.getcwd())
 
 
-def mkdir(path):
-    """Create a new directory.
+def mkdir(path, clear=False, new=False):
+    """Create a directory.
 
-    Create a new directory, including any needed parent directories.
+    Create a directory, including any needed parent directories.
+    Any part of the path may already exist.
 
     - `path`: pathname of the directory to create, either an absolute
       or relative path. A '~' character at the start of the pathname will
-      be expanded to the user's home directory. If the path exists, the
-      function returns True without doing anything.
+      be expanded to the user's home directory.
+    - `clear`: bool. If True, and the directory already exists, its contents
+      will be deleted.
+    - `new`: bool. If True, requires the directory to be a new one. An error
+      will be raised if the path already exists.
 
-    Returns True if the pathname exists (before or after).
+    The following table gives an overview of the actions for different
+    combinations of the parameters:
+
+    ======   ====  ====================  =============
+    clear    new   path does not exist   path exists
+    ======   ====  ====================  =============
+    F        F     kept as is            newly created
+    T        F     emptied               newly created
+    T/F      T     raise                 newly created
+    ======   ====  ====================  =============
+
+    If succesful, returns the tilde-expanded path of the directory.
+    Raises an exception in the following cases:
+
+    - the directory could not be created,
+    - `clear` is True, and the existing directory could not be cleared,
+    - `new` is False, `clear` is False, and the existing path is not a directory,
+    - `new` is True, and the path exists.
+
     """
     path = utils.tildeExpand(path)
-    if not path or os.path.exists(path) and os.path.isdir(path):
-        return True
-    if os.path.exists(path):
-        raise ValueError("The path %s does exists already" % path)
-    mkdir(os.path.dirname(path))
-    os.mkdir(path)
-    return os.path.exists(path)
+    if new and os.path.exists(path):
+        raise OsError("Path already exists: %s" % path)
+    if clear:
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        else:
+            os.remove(path)
+    if sys.hexversion >= 0x03040100:
+        os.makedirs(path, exist_ok=not new)
+    else:
+        try:
+            os.makedirs(path)
+        except OSError:
+            if not os.path.isdir(path):
+                raise
 
 
 def mkpdir(path):
