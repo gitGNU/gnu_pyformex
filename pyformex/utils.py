@@ -26,6 +26,13 @@
 """
 from __future__ import absolute_import, division, print_function
 
+import os
+import re
+import sys
+import tempfile
+import time
+import random
+
 import pyformex as pf
 from pyformex.process import Process
 # These are here to re-export them as utils functions
@@ -34,11 +41,7 @@ from pyformex.software import (hasModule, checkModule, requireModule,
                                hasExternal, checkExternal, checkVersion)
 from pyformex.odict import OrderedDict
 
-import os
-import re
-import sys
-import tempfile
-import time
+shuffle = random.shuffle
 
 
 # Some regular expressions

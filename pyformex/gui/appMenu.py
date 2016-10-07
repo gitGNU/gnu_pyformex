@@ -26,16 +26,16 @@
 """
 from __future__ import absolute_import, division, print_function
 
+import os, random
+from gettext import gettext as _
+
 import pyformex as pf
 from pyformex import zip
 from pyformex import apps
 from pyformex import utils
-from pyformex import  olist
+from pyformex import olist
 from pyformex import script
 from pyformex.gui import menu
-
-import os, random
-from gettext import gettext as _
 
 catname = 'apps.cat'
 
@@ -494,9 +494,7 @@ class AppMenu(menu.Menu):
         if stopat is not None:
             files = [ f for f in files if f < stopat ]
         if random:
-            import random as r
-            r.seed()
-            r.shuffle(files)
+            utils.shuffle(files)
         if count >= 0:
             files = files[:count]
 

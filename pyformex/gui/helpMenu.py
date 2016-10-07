@@ -26,15 +26,14 @@
 """
 from __future__ import absolute_import, division, print_function
 
+import os, sys
+from gettext import gettext as _
 
 import pyformex as pf
-
-import os, sys
+from pyformex import utils
+from pyformex import software
 from pyformex.gui import draw
-from pyformex import utils,software
-import random
 from pyformex.gui import viewport
-from gettext import gettext as _
 
 
 def help(page=None):
@@ -119,11 +118,11 @@ _developers = [
     'Benedict Verhegghe',
     'Zhou Wenxuan',
     ]
-random.shuffle(_developers)
+utils.shuffle(_developers)
 
 def developers():
     """Display the list of developers."""
-    random.shuffle(_developers)
+    utils.shuffle(_developers)
     draw.showInfo("""
 The following people have
 contributed to pyFormex.
@@ -159,7 +158,7 @@ _cookies = [
     "You know, when you have a program that does something really cool, and you wrote it from scratch, and it took a significant part of your life, you grow fond of it. When it's finished, it feels like some kind of amorphous sculpture that you've created. It has an abstract shape in your head that's completely independent of its actual purpose. Elegant, simple, beautiful.\nThen, only a year later, after making dozens of pragmatic alterations to suit the people who use it, not only has your Venus-de-Milo lost both arms, she also has a giraffe's head sticking out of her chest and a cherubic penis that squirts colored water into a plastic bucket. The romance has become so painful that each day you struggle with an overwhelming urge to smash the fucking thing to pieces with a hammer. (Nick Foster)",
     "One of my most productive days was throwing away 1000 lines of code. (Ken Thompson)",
     ]
-random.shuffle(_cookies)
+utils.shuffle(_cookies)
 
 def roll(l):
     l.append(l.pop(0))
