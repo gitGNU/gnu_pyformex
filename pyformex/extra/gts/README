@@ -35,12 +35,17 @@ development files, and the pkg-config program.
 Packages for these are available for most Linux distributions.
 On Debian and like systems (Ubuntu) you just need to::
   apt-get install libgts-dev libglib2.0-dev pkg-config
+
 To build the manpage, you also need python-docutils::
   apt-get install python-docutils
 
+And you need git (which you probably already have if you run pyFormex
+directly from source, but might not if you installed from tarball)::
+  apt-get install git
+
 Then compile and install the programs with::
   make
-  make install
+  (sudo) make install
 
 The default install is under '/usr/local/' and requires root privileges.
 
@@ -49,5 +54,3 @@ Afterwards, you can clean up with::
 
 Or do it all at once with::
   make all
-
-

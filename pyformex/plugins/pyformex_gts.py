@@ -158,7 +158,7 @@ def gtsset(self,surf,op,filt='',ext='.tmp',curve=False,check=False,verbose=False
     os.remove(tmp2)
     return res
 
-
+# TODO: change pts to a Coords
 def gtsinside(self,pts,dir=0):
     """_Test whether points are inside the surface.
 
@@ -196,7 +196,7 @@ def gtsinside(self,pts,dir=0):
     return ind
 
 
-def inside(self,pts,atol='auto',multi=False):
+def inside(self,pts,atol='auto',multi=True):
     """Test which of the points pts are inside the surface.
 
     Parameters:
@@ -211,7 +211,6 @@ def inside(self,pts,atol='auto',multi=False):
     from pyformex.formex import Formex
     if not isinstance(pts, Formex):
         pts = Formex(pts)
-    pts = Formex(pts)#.asPoints()
 
     if atol == 'auto':
         atol = pts.dsize()*0.001
