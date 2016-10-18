@@ -206,7 +206,7 @@ DIST_FILES = [
     'setup.cfg',
     ] + \
     listTree('pyformex',listdirs=False,sorted=True,
-             includedirs=['gui','plugins','opengl'],
+             includedirs=['gui','plugins','opengl','fe'],
              includefiles=['.*\.py$','pyformex(rc)?$','pyformex.conf$'],
              excludefiles=['core.py','curvetools.py','backports.py'],
              ) + \
