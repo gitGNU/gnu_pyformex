@@ -27,7 +27,6 @@ Show models of animals retrieved over the web.
 """
 from __future__ import absolute_import, division, print_function
 
-
 _status = 'checked'
 _level = 'advanced'
 _topics = ['geometry']
@@ -74,18 +73,17 @@ def run():
 Animals
 -------
 
-This example requires that you have
+This example requires a network connection to the internet.
 
-- python-vtk installed on your machine
-- a network connection to the internet
-
-If not, you would better cancel now.
+If you are not connected, you'd better cancel now.
 """,choices = ['Cancel','OK'])
 
     if res == 'OK':
         ranimals = utils.inverseDict(animals)
+        choices = list(ranimals.keys())
+        utils.shuffle(choices)
 
-        res = askItems([_I('animal',choices=list(ranimals.keys()))])
+        res = askItems([_I('animal',choices=choices)])
         if res:
             show3d(ranimals[res['animal']])
 
