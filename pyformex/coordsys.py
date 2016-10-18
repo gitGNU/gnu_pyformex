@@ -184,7 +184,7 @@ class CoordSys(object):
 
     def inverse(self):
         pts = self.points()
-        pts[:3] *= -1
+        pts[:3] = -(pts[:3]-pts[3]) +pts[3]
         return CoordSys(points=pts)
 
 
