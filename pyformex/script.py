@@ -319,8 +319,7 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     # and scripts are non-reentrant
     if len(pf.scriptlock) > 0:
         print("!!Not executing because a script lock has been set: %s" % pf.scriptlock)
-        #print(pf.scriptlock)
-        return
+        return 1
 
     scriptLock('__auto/script__')
     exitrequested = False
@@ -390,6 +389,8 @@ def playScript(scr,name=None,filename=None,argv=[],pye=False):
     if exitall:
         pf.debug("Calling quit() from playscript", pf.DEBUG.SCRIPT)
         quit()
+
+    return 0
 
 
 def force_finish():
@@ -525,10 +526,26 @@ def runScript(fn,argv=[]):
 
 
 def runApp(appname,argv=[],refresh=False,lock=True,check=True):
+    """Run a pyFormex application.
+
+    A pyFormex application is a Python module that can be loaded in
+    pyFormex and that contains a function 'run()'. Running the application
+    is equivalent to executing this function.
+
+    Parameters:
+
+    - `appname`: name of the module in Python dot notation. The module should
+    live in a path included the the a file holding a pyFormex script.
+
+    - `argv`: list of arguments. This variable can be changed by the app
+    and the resulting argv will be returned to the caller.
+
+    Returns the exit value of the run function. A zero value is supposed
+    to mean a normal exit.
+    """
     global exitrequested
     if check and len(pf.scriptlock) > 0:
         print("!!Not executing because a script lock has been set: %s" % pf.scriptlock)
-        #print(pf.scriptlock)
         return
 
     from pyformex import apps
@@ -606,6 +623,7 @@ def runApp(appname,argv=[],refresh=False,lock=True,check=True):
     else:
         print(msg)
     pf.debug("Memory: %s" % vmSize(), pf.DEBUG.MEM)
+    return res
 
 
 def runAny(appname=None,argv=[],step=False,refresh=False,remember=True):
@@ -676,7 +694,12 @@ def processArgs(args):
     res = 0
     while len(args) > 0:
         fn = args.pop(0)
-        res = runAny(fn, args,remember=False)
+        if fn == '-c':
+            # next arg is a script
+            txt = args.pop(0)
+            res = playScript(txt,name='__inline__')
+        else:
+            res = runAny(fn, args,remember=False)
         if res:
             print("Error during execution of script/app %s" % fn)
 
