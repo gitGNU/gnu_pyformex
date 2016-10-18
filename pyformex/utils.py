@@ -33,6 +33,7 @@ import tempfile
 import time
 import random
 
+
 import pyformex as pf
 from pyformex.process import Process
 # These are here to re-export them as utils functions
@@ -1166,8 +1167,34 @@ def strNorm(s):
     """Normalize a string.
 
     Text normalization removes all '&' characters and converts it to lower case.
+
+    >>> strNorm("&MenuItem")
+    'menuitem'
+
     """
     return str(s).replace('&', '').lower()
+
+
+_punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.:]+')
+
+def slugify(text, delim='-'):
+    """Convert a string into a URL-ready readable ascii text.
+
+    Example:
+    >>> slugify("http://example.com/blog/[Some] _ Article's Title--")
+    'http-example-com-blog-some-article-s-title'
+    >>> slugify("&MenuItem")
+    'menuitem'
+
+    """
+    import unicodedata
+    text = unicode(text)
+    result = []
+    for word in _punct_re.split(text.lower()):
+        word = unicodedata.normalize('NFKD', word).encode('ascii', 'ignore')
+        if word:
+            result.append(word)
+    return delim.join(result)
 
 ###################### ReST conversion ###################
 
