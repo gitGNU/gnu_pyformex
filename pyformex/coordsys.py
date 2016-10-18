@@ -68,26 +68,17 @@ class CoordSys(object):
 
     >>> C = CoordSys(points=[
     ...    [ 4., 0., 0. ],
-    ...    [ 0., 2., 0. ],
-    ...    [ 0., 0., 3. ],
-    ...    [ 0., 0., 0. ]])
-    >>> print(C.points())
-    [[ 1.  0.  0.]
-     [ 0.  1.  0.]
-     [ 0.  0.  1.]
-     [ 0.  0.  0.]]
-    >>> print(C.origin())
-    [ 0.  0.  0.]
-    >>> print(C.rot)
-    [[ 1.  0.  0.]
-     [ 0.  1.  0.]
-     [ 0.  0.  1.]]
-    >>> print(C.trl)
-    [ 0.  0.  0.]
-    >>> print(C.inverse().rot)
-    [[-1. -0. -0.]
-     [-0. -1. -0.]
-     [-0. -0. -1.]]
+    ...    [ 2., 2., 0. ],
+    ...    [ 2., 0., 3. ],
+    ...    [ 2., 0., 0. ]])
+    >>> print(C)
+    CoordSys: rot=[ 1.  0.  0.], trl=[ 2.  0.  0.]
+                  [ 0.  1.  0.]
+                  [ 0.  0.  1.]
+    >>> print(C.invert())
+    CoordSys: rot=[-1. -0. -0.], trl=[ 2.  0.  0.]
+                  [-0. -1. -0.]
+                  [-0. -0. -1.]
 
     """
     def __init__(self,rot=None,trl=None,points=None):
@@ -153,10 +144,15 @@ class CoordSys(object):
 
 
     # Simple transformation methods
-    # These return self so that they can be concatenated
+    # These methods modify the object inplace
+    # They still return self, so that they can be concatenated
 
     def translate(self,trl):
-        self.trl = self.trl+trl
+        """Translate the CoordSys.
+
+        Translates the origin of the CoordSys, keeping its axes directions.
+        """
+        self.trl += trl
         return self
 
 
@@ -174,18 +170,28 @@ class CoordSys(object):
         return self
 
 
+    def invert(self):
+        """Invert the CoordSys.
+
+        Inverts all axes of the CoordSys
+        """
+        self.rot = -self.rot
+        return self
+
+
+    def __str__(self):
+        s = "CoordSys: rot=%s, trl=%s\n" % (self.rot[0],self.trl)
+        s += "              %s\n" % self.rot[1]
+        s += "              %s" % self.rot[2]
+        return s
+
+
     # methods retained for compatibility with CoordinateSystem
     def origin(self):
         return self.trl
 
     def points(self):
         return Coords.concatenate([self.trl + self.rot.transpose(),self.trl])
-
-
-    def inverse(self):
-        pts = self.points()
-        pts[:3] = -(pts[:3]-pts[3]) +pts[3]
-        return CoordSys(points=pts)
 
 
 class CoordinateSystem(Coords):
