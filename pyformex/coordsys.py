@@ -78,6 +78,16 @@ class CoordSys(object):
      [ 0.  0.  0.]]
     >>> print(C.origin())
     [ 0.  0.  0.]
+    >>> print(C.rot)
+    [[ 1.  0.  0.]
+     [ 0.  1.  0.]
+     [ 0.  0.  1.]]
+    >>> print(C.trl)
+    [ 0.  0.  0.]
+    >>> print(C.inverse().rot)
+    [[-1. -0. -0.]
+     [-0. -1. -0.]
+     [-0. -0. -1.]]
 
     """
     def __init__(self,rot=None,trl=None,points=None):
@@ -170,6 +180,12 @@ class CoordSys(object):
 
     def points(self):
         return Coords.concatenate([self.trl + self.rot.transpose(),self.trl])
+
+
+    def inverse(self):
+        pts = self.points()
+        pts[:3] *= -1
+        return CoordSys(points=pts)
 
 
 class CoordinateSystem(Coords):
