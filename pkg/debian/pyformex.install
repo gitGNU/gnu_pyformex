@@ -6,6 +6,7 @@ usr/lib/python2*/dist-packages/pyformex/*.py
 usr/lib/python2*/dist-packages/pyformex/bin
 usr/share/pyformex/data
 usr/lib/python2*/dist-packages/pyformex/examples
+usr/lib/python2*/dist-packages/pyformex/fe
 usr/lib/python2*/dist-packages/pyformex/gui
 usr/share/pyformex/icons
 usr/lib/python2*/dist-packages/pyformex/lib
