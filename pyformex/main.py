@@ -458,6 +458,10 @@ def run(argv=[]):
        action="store_true", dest="unicode", default=False,
        help="Allow unicode filenames. Beware: this is experimental!",
        )
+    MO("--experimental",
+       action="store_true", dest="experimental", default=False,
+       help="Allow the pyformex/experimental modules to be loaded. Beware: this should only be used if you know what you are doing!",
+       )
     MO("--listfiles",
        action="store_true", dest="listfiles", default=False,
        help="List the pyFormex Python source files and exit.",
@@ -570,6 +574,9 @@ def run(argv=[]):
     if pf.options.detect:
         print("Detecting installed helper software")
         print(software.reportSoftware())
+
+    if pf.options.experimental:
+        sys.path.insert(1,os.path.join(pf.pyformexdir,'experimental'))
 
     info_message(pf.fullVersion())
     info_message("pyFormex executable: %s" % pf.executable)
