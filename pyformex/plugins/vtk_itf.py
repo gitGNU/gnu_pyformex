@@ -24,7 +24,7 @@
 """Interface with VTK.
 
 This module provides an interface with some functions of the Python
-Visualiztion Toolkit (VTK).
+Visualization Toolkit (VTK).
 Documentation for VTK can be found on http://www.vtk.org/
 
 This module provides the basic interface to convert data structures between
@@ -32,9 +32,13 @@ vtk and pyFormex.
 """
 from __future__ import absolute_import, division, print_function
 
+import os
+import numpy as np
+# TODO: remove the following line
+from numpy import *
 
+import pyformex as pf
 from pyformex import software,utils,warning
-software.requireModule('vtk')
 
 from pyformex import zip
 from pyformex.arraytools import DEG, RAD, normalize, length, trfMatrix, rotationAnglesFromMatrix
@@ -44,18 +48,16 @@ from pyformex.mesh import Mesh
 from pyformex.coords import Coords
 from pyformex.varray import Varray
 from pyformex.plugins.curve import PolyLine
-import pyformex as pf
+
+#if pf.options.experimental:
+#    import vtk_mock
+
+software.requireModule('vtk')
 
 import vtk
-from vtk.util.numpy_support import numpy_to_vtk as n2v
-from vtk.util.numpy_support import vtk_to_numpy as v2n
-from vtk.util.numpy_support import create_vtk_array as cva
-from vtk.util.numpy_support import get_numpy_array_type as gnat
-from vtk.util.numpy_support import get_vtk_array_type as gvat
-from vtk import vtkXMLPolyDataReader, vtkXMLPolyDataWriter, vtkIntArray, vtkDoubleArray, vtkDataSetReader, vtkDataSetWriter, vtkPolyDataWriter
 
-from numpy import *
-import os
+from vtk.util.numpy_support import numpy_to_vtk, vtk_to_numpy, get_numpy_array_type, get_vtk_array_type
+from vtk import vtkXMLPolyDataReader, vtkXMLPolyDataWriter, vtkIntArray, vtkDoubleArray, vtkDataSetReader, vtkDataSetWriter, vtkPolyDataWriter
 
 # List of vtk data types
 #~ VTK_POLY_DATA 0
@@ -140,11 +142,11 @@ def Update(vtkobj):
 
 def getVTKtype(a):
     """Converts the  data type from a numpy to a vtk array """
-    return gvat(a.dtype)
+    return get_vtk_array_type(a.dtype)
 
 def getNtype(a):
     """Converts the  data type from a  vtk to a numpy array """
-    return gnat(a.GetDataType())
+    return get_numpy_array_type(a.GetDataType())
 
 def array2VTK(a,vtype=None):
     """Convert a numpy array to a vtk array
@@ -157,7 +159,7 @@ def array2VTK(a,vtype=None):
     """
     if vtype is None:
         vtype = getVTKtype(a)
-    return n2v(asarray(a, order='C'), deep=1, array_type=vtype) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
+    return numpy_to_vtk(np.asarray(a, order='C'), deep=1, array_type=vtype) # .copy() # deepcopy array conversion for C like array of vtk, it is necessary to avoid memry data loss
 
 def array2N(a,ntype=None):
     """Convert a vtk array to a numpy array
@@ -170,7 +172,7 @@ def array2N(a,ntype=None):
     """
     if ntype is None:
         ntype = getNtype(a)
-    return asarray(v2n(a), dtype=ntype)
+    return np.asarray(vtk_to_numpy(a), dtype=ntype)
 
 
 def cleanVPD(vpd):
@@ -225,14 +227,13 @@ def coords2VTK(coords):
 
 def elems2VTK(elems):
     """Convert pyFormex class Connectivity into VTK class vtkCellArray"""
-    from vtk import vtkIdTypeArray, vtkCellArray
     # create vtk connectivity
     Nelems = len(elems)
     Ncxel = len(elems[0])
-    elmsv = concatenate([Ncxel*ones(Nelems).reshape(-1, 1), elems], axis=1)
-    elmsv = array2VTK(elmsv,vtkIdTypeArray().GetDataType())
+    elmsv = np.concatenate([Ncxel*ones(Nelems).reshape(-1, 1), elems], axis=1)
+    elmsv = array2VTK(elmsv,vtk.vtkIdTypeArray().GetDataType())
     # set vtk Cell data
-    datav = vtkCellArray()
+    datav = vtk.vtkCellArray()
     datav.SetCells(Nelems, elmsv)
     return datav
 
@@ -276,7 +277,7 @@ def convert2VPD(M,clean=False):
         raise ValueError('conversion of %s type to vtkPolyData is not yet supported'%type(M))
 
     plex = elems.shape[1]
-    vpd = vtkPolyData()# create a vtkPolyData variable
+    vpd = vtk.vtkPolyData()# create a vtkPolyData variable
     pts = coords2VTK(M.coords)# creating  vtk coords
     vpd.SetPoints(pts)
     datav = elems2VTK(elems)# create vtk connectivity as vtkCellArray
@@ -1224,7 +1225,7 @@ def distance(self,ref,normals=None,loctol=1e-3,normtol=1e-5):
     npts = self.GetNumberOfPoints()
 
     if normals is not None:
-        normals=n2v(normals)
+        normals=numpy_to_vtk(normals)
     else:
         normals=vtkPolyDataNormals()
         normals.ComputeCellNormalsOn()
@@ -1451,9 +1452,8 @@ def findElemContainingPoint(self, pts):
     VTK FindCell seems not having tolerance in python. However, the user could enlarge (unshrink) all elems.
     Docs on http://www.vtk.org/doc/nightly/html/classvtkAbstractCellLocator.html#a0c980b5fcf6adcfbf06932185e89defb
     """
-    from vtk import vtkCellLocator
     vpd = convert2VTU(Mesh(self))
-    cellLocator=vtkCellLocator()
+    cellLocator=vtk.vtkCellLocator()
     cellLocator.SetDataSet(vpd)
     cellLocator.BuildLocator()
     cellids = array([cellLocator.FindCell(pts[i]) for i in range(len(pts))])
