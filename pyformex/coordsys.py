@@ -49,49 +49,55 @@ class CoordSys(object):
     """A Cartesian coordinate system in 3D space.
 
     The coordinate system is stored as a rotation matrix and a translation
-    vector.
+    vector, which transform the global coordinate system into the CoordSys.
+    Clearly, the translation vector is also the origin of the CoordSys, and
+    the columns(!) of the rotation matrix are the unit vectors along the
+    three axes.
 
-    It can be initialized from a rotation matrix and translation vector,
-    or from a set of 4 points: 1 point on each of the axes, plus the origin.
+    The CoordSys can be initialized in different ways:
 
-    Parameters:
-
-    - `rot`: rotation matrix (3,3): default is identity matrix.
-    - `trl`: translation vector (3,) or (1,3): default is [0,0,0].
-    - `points`: Coords-like (4,3): if specified, `rot` and `trl` arguments
-      are ignored and are determined from::
-
-         rot = :func:`arraytools.normalize`(points[:3] - points[3])
-         trl = points[3]
+    - `oab`: (3,3) float array. The CoordSys is specified by three points:
+      the origin O, a point A along the first axis, and a point B in the plane
+      of the first two axes. The three points should not be collinear.
+    - `points`: (4,3) float array. The CoordSys is specified by four points:
+      the origin (last point) and one point on each of the axes (first three
+      points). The use of this parameter is deprecated. It can be replaced
+      with `oab=points[3,0,1]`.
+    - `rot`,`trl`: directly specify the (3,3) rotation matrix and the (3,)
+      translation vector. The caller is responsible to make sure that `rot`
+      is a proper orthonormal rotation matrix.
 
     Example:
 
-    >>> C = CoordSys(points=[
+    >>> C = CoordSys(oab=[
+    ...    [ 2., 0., 0. ],
     ...    [ 4., 0., 0. ],
-    ...    [ 2., 2., 0. ],
-    ...    [ 2., 0., 3. ],
-    ...    [ 2., 0., 0. ]])
+    ...    [ 4., 4., 0. ]])
     >>> print(C)
     CoordSys: rot=[ 1.  0.  0.], trl=[ 2.  0.  0.]
                   [ 0.  1.  0.]
                   [ 0.  0.  1.]
-    >>> print(C.invert())
-    CoordSys: rot=[-1. -0. -0.], trl=[ 2.  0.  0.]
-                  [-0. -1. -0.]
-                  [-0. -0. -1.]
+    >>> print(C.reverse(0,1))
+    CoordSys: rot=[-1. -0.  0.], trl=[ 2.  0.  0.]
+                  [-0. -1.  0.]
+                  [-0. -0.  1.]
 
     """
-    def __init__(self,rot=None,trl=None,points=None):
+    def __init__(self,oab=None,points=None,rot=None,trl=None):
         """Initialize the CoordSys"""
-        if points is None:
+        if oab is not None:
+            oab = at.checkArray(oab,(3,3),'f')
+            rot = at.rotmat(oab)
+            trl = oab[0]
+        elif points is not None:
+            points = at.checkArray(points,(4,3),'f')
+            rot = at.normalize(points[:3] - points[3]).transpose()
+            trl = points[3]
+        else:
             if rot is None:
                 rot = np.eye(3, 3)
             if trl is None:
                 trl = np.zeros((3,))
-        else:
-            points = at.checkArray(points,(4,3),'f')
-            rot = at.normalize(points[:3] - points[3]).transpose()
-            trl = points[3]
 
         self.rot = rot
         self.trl = trl
@@ -118,10 +124,6 @@ class CoordSys(object):
         """Set the rotation matrix to (3,3) value"""
         self._rot = at.checkArray(value,shape=(3,3),kind='f')
 
-    def axis(self,i):
-        """Return the unit vectors along the axes of the CoordinateSystem."""
-        return self.rot[:,i]
-
     @property
     def u(self):
         """Return unit vector along axis 0 (x)"""
@@ -141,6 +143,23 @@ class CoordSys(object):
     def o(self):
         """Return the origin"""
         return self.trl
+
+
+    def axis(self,i):
+        """Return the unit vector along the axis i (0..2)."""
+        return self.rot[:,i]
+
+    def origin(self):
+        """Return the origin of the CoordSys"""
+        return self.trl
+
+    def axes(self):
+        """Return unit  vectors along the axes."""
+        return self.rot.transpose()
+
+    def points(self):
+        """Return origin and endpoints of unit vectors along axes."""
+        return Coords.concatenate([self.axes()+self.trl, self.trl])
 
 
     # Simple transformation methods
@@ -170,12 +189,21 @@ class CoordSys(object):
         return self
 
 
-    def invert(self):
-        """Invert the CoordSys.
+    def reverse(self,*axes):
+        """Reverse some axes of the CoordSys.
 
-        Inverts all axes of the CoordSys
+        Parameters:
+
+        - `axes`: one or more ints in the range 0..2. The specified
+        axes will be reversed.
+
+        Note the reversing a single axis will change a right-hand-sided
+        CoordSys into a left-hand-sided one. Therefore, this method is
+        normally used only with two axis numbers, unless you want to change
+        the handedness.
         """
-        self.rot = -self.rot
+        for axis in axes:
+            self.rot[:,axis] *= -1.0
         return self
 
 
@@ -184,14 +212,6 @@ class CoordSys(object):
         s += "              %s\n" % self.rot[1]
         s += "              %s" % self.rot[2]
         return s
-
-
-    # methods retained for compatibility with CoordinateSystem
-    def origin(self):
-        return self.trl
-
-    def points(self):
-        return Coords.concatenate([self.trl + self.rot.transpose(),self.trl])
 
 
 class CoordinateSystem(Coords):
