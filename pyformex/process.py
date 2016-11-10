@@ -162,9 +162,15 @@ class Process(subprocess.Popen):
             # Wait for the process to finish and retrieve its stdout/stdin
             out, err = self.communicate()
             if out is not None:
-                out = out.decode(encoding='UTF-8')
+                try:
+                    out = out.decode(encoding='UTF-8')
+                except:
+                    pass
             if err is not None:
-                err = err.decode(encoding='UTF-8')
+                try:
+                    err = err.decode(encoding='UTF-8')
+                except:
+                    pass
             self.out, self.err = out,err
             #pf.debug("Command output %s %s" % (type(out),type(err)),pf.DEBUG.UNICODE)
 
