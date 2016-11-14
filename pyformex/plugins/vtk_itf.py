@@ -398,6 +398,7 @@ def convertFromVPD(vpd,samePlex=True):
     # getting Cells
     if vtkdtype not in [0]: # this list need to be updated according to the data type
         if  vpd.GetCells().GetData().GetNumberOfTuples():
+            print(vpd.GetCells())
             if samePlex == True:
                 Nplex = vpd.GetCells().GetMaxCellSize()
                 cells = array2N(vpd.GetCells().GetData()).reshape(-1, Nplex+1)[:, 1:]
@@ -1365,18 +1366,96 @@ def octree(surf,tol=0.0,npts=1,return_levels = False):
     return regions,pfrep
 
 
-def convexHull(object):
-    """Compute a tetralihzed convex hull of any pyFormex class.
 
-    Returns a Mesh object of tet4.
+    
+def delaunay2D(object, alpha=0.0, tol=0.001,offset = 1.25, bound_tri=False,constraints=None):
+    """Constructs a 2D Delaunay triangulation from a Coords object or a Geometry.
+    
+    Parameters:
+    
+    - `object`: Coords or Geometry (or subclasses).
+    - `alpha`: float. Specify alpha (or distance) value to control output of this filter.
+        If alpha == 0, the output is a convex hull. If non-zero alpha distance value is
+        specified will give concave hull.(The notion of alpha value is derived from 
+        Edelsbrunner's work on "alpha shapes".) 
+    - `tol`: float. Specify a tolerance to control discarding of closely spaced points. 
+    - `offset`: float. Specify a multiplier to control the size of the initial, bounding
+      Delaunay triangulation.
+    - `bound_tri`: boolean. Boolean controls whether bounding triangulation points 
+      (and associated triangles) are included in the output. 
+    - `constraints`: Geometry (or subclasses). Specify the source object used 
+      to specify constrained edges and loops. If set, and lines/polygons are defined, a 
+      constrained triangulation is created. The lines/polygons are assumed to reference 
+      points in the input point set (i.e. point ids are identical in the input and source).
+      Note that this method does not connect the pipeline. See SetSourceConnection 
+      for connecting the pipeline.
 
+    Returns a list of Geometry (or subclass).Usually the output is a triangle mesh,
+    but if a non-zero alpha distance value is specified the utput may result in arbitrary 
+    combinations of triangles, lines, and vertices. 
     """
+    from vtk import vtkDelaunay2D
+    chull = vtkDelaunay2D()
+    chull = SetInput(chull,convert2VPD(object))
+    chull.SetAlpha(alpha)
+    chull.SetTolerance(tol)
+    chull.SetOffset(offset)
+    chull.SetBoundingTriangulation(bound_tri)
+    if constraints is not None:
+        raise NotImplementedError
+    chull = Update(chull)
+    chull=convertFromVPD(chull.GetOutput(),samePlex=False)
+    coords=chull[0][0]
+    elems=chull[0][2].split()
+    eltyps=['point','line2','tri3']
+    meshes=[]
+    for els in elems:
+        meshes.append(Mesh(coords,els, eltype=eltyps[els.shape[1]-1] )) 
+    return meshes
+    
+    
+@utils.deprecated_by('convexHull','delaunay3D')
+def convexHull(object):
+    pass    
+    
+    
+def delaunay3D(object, alpha=0.0, tol=0.001,offset=2.5, bound_tri=False):
+    """Constructs a 3D Delaunay triangulation from a Coords object or a Geometry.
+    
+    Parameters:
+    
+    - `object`: Coords or Geometry (or subclasses).
+    - `alpha`: float. Specify alpha (or distance) value to control output of this filter.
+        If alpha == 0, the output is a convex hull. If non-zero alpha distance value is
+        specified will give concave hull.(The notion of alpha value is derived from 
+        Edelsbrunner's work on "alpha shapes".) 
+    - `tol`: float. Specify a tolerance to control discarding of closely spaced points. 
+    - `offset`: float. Specify a multiplier to control the size of the initial, bounding
+      Delaunay triangulation.
+    - `bound_tri`: boolean. Boolean controls whether bounding triangulation points 
+      (and associated triangles) are included in the output. 
+
+    Returns a list of Geometry (or subclass).Usually the output is a tetrahedral mesh,
+    but if a non-zero alpha distance value is specified the utput may result in arbitrary 
+    combinations of tetrahedrons, triangles, lines, and vertices. 
+    """
+    
     from vtk import vtkDelaunay3D
     chull = vtkDelaunay3D()
     chull = SetInput(chull,convert2VPD(object))
+    chull.SetAlpha(alpha)
+    chull.SetTolerance(tol)
+    chull.SetOffset(offset)
+    chull.SetBoundingTriangulation(bound_tri)
     chull = Update(chull)
-    chull=convertFromVPD(chull.GetOutput())
-    return Mesh(chull[0][0], chull[0][1], eltype='tet4')
+    chull=convertFromVPD(chull.GetOutput(),samePlex=False)
+    coords=chull[0][0]
+    elems=chull[0][1].split()
+    eltyps=['point','line2','tri3','tet4']
+    meshes=[]
+    for els in elems:
+        meshes.append(Mesh(coords,els, eltype=eltyps[els.shape[1]-1] )) 
+    return meshes
 
 def decimate(self, targetReduction=0.5, boundaryVertexDeletion=True):
     """Decimate a surface (both tri3 or quad4) and returns a trisurface
