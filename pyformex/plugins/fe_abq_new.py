@@ -2605,9 +2605,10 @@ class AbqData(object):
       Default value is 1.
     - `nofs` : integer defining the node offset for the abaqus numbering.
       Default value is 1.
+    - `extra` : string to be added at model level.
     """
 
-    def __init__(self,model,prop,nprop=None,eprop=None,steps=[],res=[],out=[],initial=None,eofs=1,nofs=1):
+    def __init__(self,model,prop,nprop=None,eprop=None,steps=[],res=[],out=[],initial=None,eofs=1,nofs=1,extra=''):
         """Create new AbqData."""
         if not isinstance(model, Model) or not isinstance(prop, PropertyDB):
             raise ValueError("Invalid arguments: expected Model and PropertyDB, got %s and %s" % (type(model), type(prop)))
@@ -2622,6 +2623,7 @@ class AbqData(object):
         self.out = out
         self.eofs = eofs
         self.nofs = nofs
+        self.extra = extra
 
 
     def write(self,jobname=None,group_by_eset=True,group_by_group=False,header='',create_part=False):
@@ -2829,7 +2831,9 @@ Script: %s
             fil.write(fmtSectionHeading("BOUNDARY CONDITIONS"))
             for p in prop:
                 fil.write(fmtBoundary(p))
-
+        
+        fil.write(self.extra)
+        
         print("Writing steps")
         for step in self.steps:
             fil.write(fmtSectionHeading("STEP %s" % (step.name if step.name else '')))
