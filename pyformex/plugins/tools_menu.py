@@ -349,7 +349,7 @@ def pointlabels(color=0):
         col = mycolor(color)
         drawopt = dict(color=col,bbox='last', view=None)
         out = pickSinglePoint()
-        if out == None:
+        if out is None:
             undraw(D)
             break
         pos = out[3]
@@ -381,7 +381,7 @@ def query_distances(color=0):
         drawopt = dict(color=col,bbox='last', view=None)
         s = "*** Distance report *** \n"
         out = pickSinglePoint()
-        if out == None:
+        if out is None:
             undraw(D)
             break
         Anum, Atype, Pnum, p0 = out
@@ -389,7 +389,7 @@ def query_distances(color=0):
         print ('pick one or multiple points or ESC')
         set_selection('point', filter='single')
         K = selection
-        if K == None:
+        if K is None:
             undraw(D)
             break
         s += "To points [x, y, z] magnitude: \n"
@@ -418,18 +418,18 @@ def query_angle(color=0):
         drawopt = dict(color=col,bbox='last', view=None)
         showInfo("Pick 3 points, one at a time or ESC")
         out =  pickSinglePoint()
-        if out == None:
+        if out is None:
             undraw(D)
             break
         Anum, Atype, Pnum, p0 = out
         out =  pickSinglePoint()
-        if out == None:
+        if out is None:
             undraw(D)
             break
         Anum, Atype, Pnum, p1 = out
         D += [draw(Formex([[p0, p1]]), linewidth=3, **drawopt)]
         out =  pickSinglePoint()
-        if out == None:
+        if out is None:
             undraw(D)
             break
         Anum, Atype, Pnum, p2 = out
@@ -537,8 +537,23 @@ def projectOnSurface2(p,**args):
         return p.projectOnSurface(**args)
     except:
         return []
-            
-            
+
+
+def isNoneOrEmpty(p):
+    """Check if p is None or an empty list.
+    
+    Returns:
+    - True if p is None or an empty list,
+    - False if p is a non-empty list,
+    - raise error if p is not None and not a list
+    """
+    if p is None:
+        return True
+    if len(p) ==0:
+        return True
+    return False
+
+
 def create_point(obj = None):
     """Returns a point anywhere on the screen or on a given object.
 
@@ -559,15 +574,12 @@ def create_point(obj = None):
         return _create_point()
     S = obj.toSurface()
     p = _create_point()
-    if p is None: # NB the order is important
-        return p
-    elif len(p) ==0:
+    if isNoneOrEmpty(p):
         return p
     p = projectOnSurface2(p,S=S, dir=getCameraCS().w)
     if len(p) > 0:
         return p
     return create_point(S)
-
 
 
 def query_point2D(color=0):
@@ -585,7 +597,7 @@ def query_point2D(color=0):
         col = mycolor(color)
         drawopt = dict(color=col,bbox='last', view=None)
         P = create_point()
-        if P==None or P == []:
+        if isNoneOrEmpty(P):
             undraw(D)
             break
         p, CS = toCameraCS(P)
@@ -614,7 +626,7 @@ def query_distance2D(color=0):
         drawopt = dict(color=col,bbox='last', view=None)
         print ('starting point')
         p0 = create_point()
-        if p0==None or p0 == []:
+        if isNoneOrEmpty(p0):
             undraw(D)
             break
         p0c, CS0 = toCameraCS(p0)
@@ -622,7 +634,7 @@ def query_distance2D(color=0):
         D += [draw(p0, **drawopt)]
         print ('end point')
         p1 = create_point()
-        if p1==None or p1 == []:
+        if isNoneOrEmpty(p1):
             undraw(D)
             break
         p1c, CS1 = toCameraCS(p1)
@@ -656,14 +668,14 @@ def query_angle2D(color=0):
         print("Pick 3 points in 2D")
         print("Pick point on first ray")
         p0 = create_point()
-        if p0==None or p0 == []:
+        if isNoneOrEmpty(p0):
             undraw(D)
             break
         w0 = getCameraCS().w
         D += [draw(p0, **drawopt)]
         print("Pick the vertex")
         p1 = create_point()
-        if p1==None or p1 == []:
+        if isNoneOrEmpty(p1):
             undraw(D)
             break
         w1 = getCameraCS().w
@@ -674,7 +686,7 @@ def query_angle2D(color=0):
             return
         print("Pick point on second ray")
         p2 = create_point()
-        if p2==None or p2 == []:
+        if isNoneOrEmpty(p2):
             undraw(D)
             break
         w2 = getCameraCS().w

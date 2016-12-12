@@ -540,7 +540,11 @@ class GeometryFile(object):
                     self.readField(**self.decode(s))
 
                 elif s.startswith('attrib'):
-                    self.readAttrib(**self.decode(s))
+                    try: # GDS 291116
+                        self.readAttrib(**self.decode(s))
+                    except:# GDS 291116
+                        pf.warning('FIXED by GIANLUCA, to read COLORs from PGF')
+                        pass# GDS 291116
 
                 elif s.startswith('pyFormex Geometry File'):
                     # we have a new header line
