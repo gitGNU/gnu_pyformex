@@ -492,7 +492,7 @@ def isPerspective():
     return cam.perspective
 
 
-def create_point():
+def _create_point():
     """Returns a point anywhere on the screen.
 
     You can exit in 3 ways:
@@ -501,6 +501,8 @@ def create_point():
     - left click returns a single point
 
     You need the perspective OFF, otherwise it will set it OFF for you and re-run the function.
+    
+    This function should not be used directly, but through the create_point().
     """
     from pyformex.plugins.tools_menu import isPerspective
     while True:
@@ -525,6 +527,47 @@ def create_point():
             else:
                 print (p)
                 raise ValueError('how did you get here?')
+
+
+# GDS: maybe change the projectOnSurface() in coords.py
+def projectOnSurface2(p,**args):  
+    """Wrap around projectOnSurface
+    that returns empty list instead of error"""
+    try:
+        return p.projectOnSurface(**args)
+    except:
+        return []
+            
+            
+def create_point(obj = None):
+    """Returns a point anywhere on the screen or on a given object.
+
+    If obj is None a point is created anywhere on the screen,
+    otherwise a point is created on the object.
+    The object needs to be converted into a TriSurface.
+    If you want to create a point on multiple objects, first convert all objects to TriSurface
+    objects and then sum them.
+    
+    You can exit in 3 ways:
+    - you can escape the create_point without creating a point by pushing ESC on Keyboard: None is returned
+    - right click or ENTER returns an empty list []
+    - left click returns a single point
+
+    You need the perspective OFF, otherwise it will set it OFF for you and re-run the function.
+    """
+    if obj is None:
+        return _create_point()
+    S = obj.toSurface()
+    p = _create_point()
+    if p is None: # NB the order is important
+        return p
+    elif len(p) ==0:
+        return p
+    p = projectOnSurface2(p,S=S, dir=getCameraCS().w)
+    if len(p) > 0:
+        return p
+    return create_point(S)
+
 
 
 def query_point2D(color=0):
