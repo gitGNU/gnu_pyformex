@@ -582,6 +582,52 @@ def create_point(obj = None):
     return create_point(S)
 
 
+def create_points(color=0, obj=None):
+    """Create points on visible objects.
+    
+    Points are picked on the surface of a list of objects
+    or of all visible objects (default).
+    It returns all the points in the order they were picked 
+    and a variable indicating how  you have exited:
+    - you can escape the create_points by pushing ESC on Keyboard: None is returned
+    - right click or ENTER returns an empty list []
+    """
+    # build one surface around all visible objects or the given objects
+    if obj is None:
+        canvas = pf.GUI.viewports.current
+        obj = [a.object for a in canvas.actors]
+    S = []
+    for o in obj:
+        try:
+            S.append(o.toSurface())
+        except:
+            pass
+    if len(S)==0:
+        warning('there are no objects on the screen')
+        return []
+    S = TriSurface.concatenate(S) # the surface of all visible objects
+    # now pick points on the surface
+    D = []
+    P = []
+    while True:
+        col = mycolor(color)
+        drawopt = dict(color=col,bbox='last', view=None)
+        p = create_point(S)
+        if isNoneOrEmpty(p):
+            undraw(D)
+            break
+        s = "*** Point 3D report ***\n"
+        s += '%s'%p
+        cprint (s, color=col) # print in color on pyFormex message board
+        D+=[
+        draw(p, **drawopt),
+        drawMarks([p,], [color,], size=20, mode='smooth',**drawopt) # smooth is needed for drawMarks
+        ]
+        P.append(p)
+        color+=1
+    return Coords.concatenate(P), p
+
+
 def query_point2D(color=0):
     """2D point coordinates based on current camera
 
@@ -1085,7 +1131,8 @@ def create_menu():
             ('&Point 2D', query_point2D),
             ('&Distance 2D', query_distance2D),
             ('&Angle 2D', query_angle2D),
-            ('&Point labels',pointlabels)
+            ('&Point labels',pointlabels),
+            ('&Create points',create_points),
             ]),
         ("---", None),
         ('&Reload', reload_menu),
