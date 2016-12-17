@@ -29,6 +29,11 @@ pyFormex Geometry File Format.
 """
 from __future__ import absolute_import, division, print_function
 
+import os
+import re
+from distutils.version import StrictVersion as Version
+import numpy as np
+
 import pyformex as pf
 from pyformex import utils
 from pyformex import filewrite
@@ -39,9 +44,6 @@ from pyformex.mesh import Mesh
 # We need to import the Mesh subclasses that can be read !
 from pyformex.trisurface import TriSurface
 
-from distutils.version import StrictVersion as Version
-import numpy as np
-import os
 
 class GeometryFile(object):
     """A class to handle files in the pyFormex Geometry File format.
@@ -295,14 +297,23 @@ class GeometryFile(object):
 
         if geom.attrib and Version(self.version) >= Version('2.0'):
             try:
-                if geom.attrib:
-                    self.fil.write("# attrib = %s\n" % geom.attrib)
+                self.writeAttrib(geom.attrib)
             except:
                 pf.warning("Error while writing objects of type %s to geometry file: skipping" % type(geom))
                 raise
 
-
         return 0
+
+
+    def writeAttrib(self,attrib):
+        """Write the Attributes block of the Geometry
+
+        attrib: the Attributes dict of a Geometry object
+        """
+        # We rely on Attributes __repr__ method, but multiple line
+        # representations are coerced to a single line to allow readback
+        s = re.sub('\n *','',repr(attrib))
+        self.fil.write("# attrib = %s\n" % s)
 
 
     def writeMesh(self,F,name=None,sep=None,objtype='Mesh'):
@@ -540,11 +551,7 @@ class GeometryFile(object):
                     self.readField(**self.decode(s))
 
                 elif s.startswith('attrib'):
-                    try: # GDS 291116
-                        self.readAttrib(**self.decode(s))
-                    except:# GDS 291116
-                        pf.warning('FIXED by GIANLUCA, to read COLORs from PGF')
-                        pass# GDS 291116
+                    self.readAttrib(**self.decode(s))
 
                 elif s.startswith('pyFormex Geometry File'):
                     # we have a new header line
@@ -564,9 +571,12 @@ class GeometryFile(object):
 
         Returns a dict with the interpreted values of the line.
         """
+        # Empty dict for return value
         kargs = {}
+        # Dict with defined symbols used in the string repr in PGF format
+        loc = { 'array':np.array }
         try:
-            exec(s,kargs)
+            exec(s,loc,kargs)
         except:
             raise RuntimeError("This does not look like a regular pyFormex geometry file. I got stuck on the following line:\n==> %s" % s)
         return kargs
@@ -687,15 +697,12 @@ class GeometryFile(object):
         """Read an Attributes dict defined on the last read geometry.
 
         """
-#        s = ''
-#        for line in self.fil:
-#            if line.startswith('# end_attrib'):
-#                break
-#            s += line
-#        #print(s)
-#        attr = json.loads(s)
-#        #print(type(attr))
-        self.geometry.attrib(**attrib)
+        try:
+            self.geometry.attrib(**attrib)
+        except:
+            # Attributes readback may produce an error with
+            # complex data types, e.g. vertex color array
+            pf.warning("GeometryFile.read: Error while reading an Attribute block. The current version does not support the readback of some complex attribute data types (like a vertex color array). All attributes in this block will be skipped.")
 
 
     def readFormex(self, nelems, nplex, props, eltype, sep):

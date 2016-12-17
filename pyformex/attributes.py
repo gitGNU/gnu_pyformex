@@ -122,7 +122,7 @@ class Attributes(Dict):
         return self._default_dict_[key]
 
 
-    def __str__(self):
+    def __repr__(self):
         """Create a string representation of the Attributes.
 
         This will print the Attributes in a format like a dict, but with
@@ -130,9 +130,6 @@ class Attributes(Dict):
         """
         return utils.dictStr(self,['_default_dict_' ])
 
-
-    def __repr__(self):
-        return __str__(self)
 
 
 # End

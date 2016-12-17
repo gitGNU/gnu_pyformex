@@ -40,9 +40,9 @@ from pyformex.examples.Cube import cube_quad
 def run():
 
 
-    colormode = ['None', 'Single', 'Face', 'Full']
+    colormode = [None, 'Single', 'Face', 'Full']
     n = len(colormode)
-    obj = {}
+    obj = OrderedDict({})
     layout(2*n,4)
     for vp,color in enumerate(colormode):
         viewport(vp)
@@ -50,21 +50,19 @@ def run():
         reset()
         smooth()
         view('iso')
-        obj[color] = cube_quad(color)
-        draw(obj[color])
+        obj[str(color)] = o = cube_quad(color)
+        draw(o)
 
     writeGeomFile('test.pgf', obj, sep=' ')
 
     oobj = readGeomFile('test.pgf')
     for vp,color in enumerate(colormode[:4]):
-        #print(color)
-        #print(oobj[color])
         viewport(vp+n)
         clear()
         reset()
         smooth()
         view('iso')
-        draw(oobj[color])
+        draw(oobj[str(color)])
 
 
 if __name__ == '__draw__':
