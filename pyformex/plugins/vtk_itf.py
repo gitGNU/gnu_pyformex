@@ -398,7 +398,6 @@ def convertFromVPD(vpd,samePlex=True):
     # getting Cells
     if vtkdtype not in [0]: # this list need to be updated according to the data type
         if  vpd.GetCells().GetData().GetNumberOfTuples():
-            print(vpd.GetCells())
             if samePlex == True:
                 Nplex = vpd.GetCells().GetMaxCellSize()
                 cells = array2N(vpd.GetCells().GetData()).reshape(-1, Nplex+1)[:, 1:]
