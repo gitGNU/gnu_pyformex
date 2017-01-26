@@ -63,7 +63,7 @@ from pyformex.varray import Varray
 from pyformex.formex import *
 from pyformex.mesh import Mesh
 from pyformex.trisurface import TriSurface
-from pyformex.coordsys import CoordinateSystem,CoordSys
+from pyformex.coordsys import CoordSys
 from pyformex import simple
 
 
