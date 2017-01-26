@@ -42,6 +42,7 @@ from pyformex import software,utils,warning
 
 from pyformex import zip
 from pyformex.arraytools import DEG, RAD, normalize, length, trfMatrix, rotationAnglesFromMatrix
+# TODO: CoordinateSystem is deprecated! Remove/replace it
 from pyformex.coordsys import CoordinateSystem
 from pyformex.formex import Formex
 from pyformex.mesh import Mesh
@@ -1006,6 +1007,7 @@ def _vtkSphere(c, r):
     sphere.SetRadius(r)
     return sphere
 
+# TODO: Remove/replace the CoordinateSystem
 ##trf2CS is needed by setVTKbox
 def trf2CS(CS, angle_spec=DEG):
     """Return the transformations to change coordinate system.
@@ -1036,10 +1038,11 @@ def trf2CS(CS, angle_spec=DEG):
     return sz, rx, ry, rz, t
 
 
+# TODO: Use opengl.matrix.Matrix4
 ##When 4x4 matrices will be added to pyFormex, the box
 ##could be also sheared by first rotating and then scaling.
 def _vtkBox(p=None, trMat4x4=None):
-    """Return scaled an positioned vtkBox.
+    """_Return scaled an positioned vtkBox.
 
     Parameters:
 
@@ -1051,6 +1054,7 @@ def _vtkBox(p=None, trMat4x4=None):
     this vtk class, but you can transform an original box
     using affine transformations. In general a 4x4 matrix
     would be appropriate but it is not yet implemented in pyFormex.
+    !! INCORRECT: opengl.matrix has Matrix4 class
     Alternatively, 4 points corresponding to the x,y,z,o of an orthogonal
     coordinate system can be used. In this case p can be either a list of 4 coords,
     a coordinate system, a cuboid defined as hex8-element Formex
