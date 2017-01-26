@@ -116,13 +116,18 @@ def count_neg_diag(a):
     return (lu_decomp(a)[1].diagonal() < 0.0).sum()
 
 
+def sturm_count(k,m,s):
+    """Count the number of eigenvalues lower than some value s"""
+    return count_neg_diag(k - s * m)
+
+
 def sturm_check(k,m,e,bound='lu',group=True,tol=0.01,verbose=False):
     """Performs a Sturm sequence check on the eigenvalues e.
 
     When applying a shift s: ks = k - s * m, the number of negative diagonal
-    in the LDLt decomposition (or the LU decomposition) is equal to the
-    number of eigenvalues lower than s.
-    This function uses this property to check the obtained eigenvalues.
+    elements in the LDLt decomposition (or the LU decomposition) is equal to
+    the number of eigenvalues lower than s.
+    This function uses that property to check the obtained eigenvalues.
 
     e: the eigenvalues found for the eigenproblem (k,m)
     bound: either 'l', 'u' or 'lu': specifies if a shift at the lower bound,
@@ -274,7 +279,7 @@ def tjacobi(k,tol=1.e-6,maxsweeps=20,verbose=False):
     Solves the standard eigenproblem k.x = e.x, where k is a symmetric matrix.
 
     The jacobi method consists in zeroing the off-diagonal elements by
-    subsequent rotations. In this variant only elements larger that a
+    subsequent rotations. In this variant only elements larger than a
     given threshold are zeroed.
 
     Returns e,x: the eigenvalues and eigenvectors in order of increasing
@@ -286,12 +291,18 @@ def tjacobi(k,tol=1.e-6,maxsweeps=20,verbose=False):
     e = asarray(k).diagonal()
     # Execute a number of sweeps
     for m in range(maxsweeps):
+        #print("k",k)
         thres = 10.**(-2*(m+1))
+        #print("threshold: %s" % thres)
         conv2 = 0.0
+        #print(k.diagonal())
         # Loop over upper triangular off-diagonal elements
         for i in range(n-1):
             for j in range(i+1,n):
-                coupling = sqrt( k[i,j]*k[i,j] / k[i,i]*k[j,j])
+                c2 = k[i,j]*k[i,j] / (k[i,i]*k[j,j])
+                #if c2 < 0.:
+                #    print(i,j,k[i,i],k[i,j],k[j,j])
+                coupling = sqrt( k[i,j]*k[i,j] / (k[i,i]*k[j,j]))
                 if coupling > conv2:
                     conv2 = coupling
                 if coupling > thres:
@@ -303,7 +314,6 @@ def tjacobi(k,tol=1.e-6,maxsweeps=20,verbose=False):
                     k[[i,j]] = Pi.T * k[[i,j]]
                     k[:,[i,j]] = k[:,[i,j]] * Pi
                     x[:,[i,j]] = x[:,[i,j]] * Pi
-        #print(k)
         #print(x)
         ei = asarray(k).diagonal()
         # Compute convergence
@@ -314,7 +324,7 @@ def tjacobi(k,tol=1.e-6,maxsweeps=20,verbose=False):
         if conv1 < tol and conv2 < tol:
             break
 
-    return (reorder(e,x))
+    return reorder(e,x)
 
 
 def gjacobi(k,m,tol=1.e-6,maxsweeps=20,verbose=False):
@@ -356,8 +366,8 @@ def gjacobi(k,m,tol=1.e-6,maxsweeps=20,verbose=False):
             for j in range(i+1,n):
                 kii, kij, kjj = k[i,i], k[i,j], k[j,j]
                 mii, mij, mjj = m[i,i], m[i,j], m[j,j]
-                kcoupling = sqrt( kij*kij / kii*kjj )
-                mcoupling = sqrt( mij*mij / mii*mjj )
+                kcoupling = sqrt( kij*kij / (kii*kjj) )
+                mcoupling = sqrt( mij*mij / (mii*mjj) )
                 conv2 = max(conv2,kcoupling,mcoupling)
                 if kcoupling > thres or mcoupling > thres:
                     # Zero this element in both k and m
@@ -483,7 +493,7 @@ def subspace(k,m,p,q=None,x=None,tol=1.e-6,maxit=20,verbose=False,check=True):
         # Sensible choice of subspace size
         q = min(2*p,p+8,n)
     if q is None:
-        # x was spcified, acknowledge it
+        # x was specified, acknowledge it
         mx = m*x
         q = mx.shape[1]
     else:
@@ -529,7 +539,7 @@ def subspace(k,m,p,q=None,x=None,tol=1.e-6,maxit=20,verbose=False,check=True):
     return e,flip(x)
 
 
-def lanczos(k,m,p,q=None,randx=False,check=True):
+def lanczos(k,m,p,q=None,randx=False,check=True,verbosity=0):
     """Solves a generalized eigenproblem using lanczos vectors.
 
     Solves for the p smallest eigenvalues (and corresponding eigenvectors)
@@ -580,6 +590,10 @@ def lanczos(k,m,p,q=None,randx=False,check=True):
         beta = float(beta)
         t[i-1,i] = t[i,i-1] = beta
     # Now find the eigenvalues of the associated problem
+    if verbosity > 0:
+        print("Associated problem")
+        print(t)
+        print(x)
     e,xt = tjacobi(t)
     # And compute approximations for full problem
     e = 1/e
