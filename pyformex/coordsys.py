@@ -214,53 +214,11 @@ class CoordSys(object):
         return s
 
 
-class CoordinateSystem(Coords):
-    """_A CoordinateSystem defines a coordinate system in 3D space.
-
-    The coordinate system is defined by and stored as a set of four points:
-    three endpoints of the unit vectors along the axes at the origin, and
-    the origin itself as fourth point.
-
-    The constructor takes a (4,3) array as input. The default constructs
-    the standard global Cartesian axes system.
-
-    Example:
-
-    >>> C = CoordinateSystem()
-    >>> print(C.points())
-    [[ 1.  0.  0.]
-     [ 0.  1.  0.]
-     [ 0.  0.  1.]
-     [ 0.  0.  0.]]
-    >>> print(C.origin())
-    [ 0.  0.  0.]
-
-    """
+class CoordinateSystem(CoordSys):
     @utils.deprecated_by('CoordinateSystem','CoordSys')
-    def __new__(clas,coords=None,origin=None,axes=None):
+    def __init__(coords):
         """Initialize the CoordinateSystem"""
-        if coords is None:
-            coords = np.eye(4, 3)
-            if axes is not None:
-                coords[:3] = axes
-            if origin is not None:
-                coords += origin
-        else:
-            coords = at.checkArray(coords, (4, 3), 'f', 'i')
-        coords = Coords.__new__(clas, coords)
-        return coords
+        CoordSys.init(self,points=coords)
 
-
-    def origin(self):
-        """Return the origin of the CoordinateSystem."""
-        return Coords(self[3])
-
-
-    def axes(self):
-        """Return the axes of the CoordinateSystem."""
-        return Coords(self[:3]-self[3])
-
-    def points(self):
-        return self
 
 ### End
