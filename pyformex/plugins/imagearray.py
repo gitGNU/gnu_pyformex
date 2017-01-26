@@ -326,6 +326,8 @@ if utils.checkModule('pil'):
 # Import images using dicom
 _dicom_spacing = None
 _dicom_origin = None
+_dicom_intercept = 0
+_dicom_slope = 1
 
 if utils.checkModule('dicom'):
 
@@ -426,15 +428,18 @@ if utils.checkModule('gdcm'):
             data = np.frombuffer(gdcm_array, dtype=dtype).reshape(shape)
             spacing = np.array(image.GetSpacing())
             origin = np.array(image.GetOrigin())
-            return data, spacing, origin
+            intercept = image.GetIntercept()
+            slope = image.GetSlope()
+            return data, spacing, origin, slope, intercept
 
 
-        global _dicom_spacing, _dicom_origin
-        r = gdcm.ImageReader()
-        r.SetFileName(filename)
-        if not r.Read():
+        global _dicom_spacing, _dicom_origin, _dicom_slope, _dicom_intercept
+        rdr = gdcm.ImageReader()
+        rdr.SetFileName(filename)
+
+        if not rdr.Read():
             raise ValueError("Could not read image file '%s'" % filename)
-        pix, _dicom_spacing, _dicom_origin = gdcm_to_numpy(r.GetImage())
+        pix, _dicom_spacing, _dicom_origin, _dicom_slope, _dicom_intercept = gdcm_to_numpy(rdr.GetImage())
         return pix
 
     readDicom = loadImage_gdcm
@@ -485,9 +490,12 @@ if utils.checkModule('gdcm'):
                     obj.image = loadImage_gdcm(fn)
                     obj.spacing = _dicom_spacing
                     obj.origin = _dicom_origin
+                    obj.intercept = _dicom_intercept
+                    obj.slope = _dicom_slope
                     ok.append(obj)
                 except:
                     rejected.append(obj)
+                    raise
 
             if zsort:
                 ok.sort(key=lambda obj:obj.origin[2], reverse=reverse)
@@ -546,13 +554,17 @@ if utils.checkModule('gdcm'):
             return self.ok[i].image
 
 
-        def pixar(self):
+        def pixar(self,raw=False):
             """Return the DicomStack as an array
 
             Returns all images in a single array. This is only succesful
             if all accepted images have the same size.
             """
-            return np.dstack([ obj.image for obj in self.ok ])
+            if raw:
+                data = np.dstack([ obj.image for obj in self.ok ])
+            else:
+                data = np.dstack([ obj.image*obj.slope+obj.intercept for obj in self.ok ])
+            return data
 
 
 def dicom2numpy(files):
