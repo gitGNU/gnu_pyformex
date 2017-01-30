@@ -256,7 +256,6 @@ scriptlock = set()
 scriptMode = None
 
 
-
 # define default of warning and error
 warning = print
 error = print
@@ -309,7 +308,6 @@ def debugLevel(sl):
         except:
             pass
     return lev
-
 
 def debug(s,level=DEBUG.ALL):
     """Print a debug message"""
