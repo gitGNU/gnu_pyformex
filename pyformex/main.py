@@ -241,7 +241,6 @@ def list_modules(pkgs):
 
     """
     for subpkg in pkgs:
-        #print("### %s ###" % subpkg)
         files = utils.moduleList(subpkg)
         print('\n'.join(files))
 
@@ -308,6 +307,50 @@ def doc_module(module):
     """
     from . import py2rst
     return py2rst.do_module(module)
+
+
+def migrateUserConfig():
+    """Migrate the user preferences to $HOME/.config
+
+    In older pyFormex versions, the user preferences were stored in
+    a directory $HOME/.pyformex/pyformexrc, while in newer versions
+    they are stored in $HOME/.config/pyformex/pyformex.conf.
+    Running this function will migrate an existing old configuration
+    to the new location, if the latter does not exist.
+    """
+    if not os.path.exists(pf.cfg['userprefs']):
+        # Check old place
+        olduserprefs = os.path.join(homedir, '.pyformex', 'pyformexrc')
+        if os.path.exists(olduserprefs):
+            print("Migrating your user preferences\n  from %s\n  to %s" % (olduserprefs, pf.cfg['userprefs']))
+            # We move the user config from HOME/.pyformex/.pyformexrc
+            # to HOME/.config/pyformex/pyformex.conf
+            # The directory change is because of changing standards in Linux
+            # The filename change is to no clash with the defaults file
+            # (which is ./pyformex/pyformexrc) when being executed from
+            # the pyformex directory.
+            # We link back the new config location to the old one, so that
+            # versions < 0.9.1 can still pick up the user config.
+            try:
+                import shutil
+                olddir = os.path.dirname(olduserprefs)
+                newdir = pf.cfg['userconfdir']
+                # Move old user conf file to new and link back
+                oldfile = os.path.join(olddir, 'pyformexrc')
+                newfile = os.path.join(olddir, 'pyformex.conf')
+                print("Moving %s to %s" % (oldfile, newfile))
+                shutil.move(oldfile, newfile)
+                newfile = 'pyformex.conf'
+                print("Symlinking %s to %s" % (newfile, oldfile))
+                os.symlink(newfile, oldfile)
+                # Move old config dir to new and link back to old
+                print("Moving %s to %s" % (olddir, newdir))
+                shutil.move(olddir, newdir)
+                print("Symlinking %s to %s" % (newdir, olddir))
+                os.symlink(newdir, olddir)
+
+            except:
+                raise RuntimeError("Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\n to get a fresh start with default config." % (olddir, newdir))
 
 
 def loadDefaultConfig():
@@ -411,44 +454,19 @@ def loadUserConfig():
     apply_config_changes(pf.prefcfg)
 
 
-###########################  app  ################################
+def parseArguments(args):
+    """Process command line arguments
 
-def run(argv=[]):
-    """The pyFormex main function.
+    Parameters:
 
-    After pyFormex launcher script has correctly set up the Python import
-    paths, this function is executed. It is responsible for reading the
-    configuration file(s), processing the command line options and starting
-    the application.
+    - args: a list of command line arguments.
 
-    The basic configuration file is 'pyformexrc' located in the pyFormex
-    main directory. It should always be present and be left unchanged.
-    If you want to make changes, copy (parts of) this file to another location
-    where you can change them. Then make sure pyFormex reads you modifications
-    file. By default, pyFormex will try to read the following
-    configuration files if they are present (and in this order)::
-
-        default settings:     <pyformexdir>/pyformexrc   (always loaded)
-        system-wide settings: /etc/pyformex.conf
-        user settings:        <configdir>/pyformex/pyformex.conf
-        local settings        $PWD/.pyformexrc
-
-    Also, an extra config file can be specified in the command line, using
-    the --config option. The system-wide and user settings can be skipped
-    by using the --nodefaultconfig option.
-
-    Config files are loaded in the above order. Settings always override
-    those loaded from a previous file.
-
-    When pyFormex exits, the preferences that were changed are written to the
-    last read config file. Changed settings are those that differ from the
-    settings obtained after loading all but the last config file.
-    If none of the optional config files exists, a new user settings file
-    will be created, and an error will occur if the <configdir> path is
-    not writable.
-
+    The arguments of the pyFormex command line can be splitted in
+    options and remaining arguments. This function will split the
+    options from the other arguments and store them in the variable
+    pf.options for access throughout pyFormex. The remaining arguments
+    are stored in pf.options.args
     """
-    # Process options
     import argparse
     parser = argparse.ArgumentParser(
         prog = pf.__prog__,
@@ -457,7 +475,7 @@ def run(argv=[]):
         epilog = "More info on http://pyformex.org",
 #        formatter = optparse.TitledHelpFormatter(),
         )
-    MO = parser.add_argument
+    MO = parser.add_argument # create a shorthand notation
     MO("--version",
        action='version',version = pf.fullVersion())
     MO("--gui",
@@ -608,8 +626,8 @@ def run(argv=[]):
        help="pyFormex script files to be executed on startup. The files should have a .py extension. Their contents will be executed as a pyFormex script. While mostly used with the --nogui option, this will also work in GUI mode.",
        )
 
-    pf.options = parser.parse_args(argv)
-    args = pf.options.args
+    pf.options = parser.parse_args(args)
+    # TODO: maybe store pf.parser instead ??
     pf.print_help = parser.print_help
 
     # Set debug level
@@ -622,92 +640,116 @@ def run(argv=[]):
         sys.exit()
 
     pf.debug("Options: %s" % pf.options, pf.DEBUG.ALL)
+    #pf.debug("Other arguments: %s" % pf.options.args, pf.DEBUG.ALL)
 
-    ########## Load default configuration ##################################
-    loadDefaultConfig()
 
-    ########## Process special options which do not start pyFormex #######
+def processReportOptions():
+    """Process the reporting options
 
-    if pf.options.pytest is not None:
-        run_pytest(pf.options.pytest)
-        return
-
-    if pf.options.doctest is not None:
-        for a in pf.options.doctest:
-            doctest_module(a)
-        return
+    Returns True if at least one reporting option was found,
+    otherwise False.
+    """
+    ret = False
 
     if pf.options.docmodule is not None:
         for a in pf.options.docmodule:
             doc_module(a)
-        return
+        # This is an all_exclusive option !!
+        # So we immediately return
+        return True
 
-    if pf.options.remove:
-        remove_pyFormex(pf.pyformexdir, pf.executable)
-        return
+    if pf.options.experimental:
+        sys.path.insert(1,os.path.join(pf.pyformexdir,'experimental'))
+        pf.options.whereami = True
 
-    def info_message(s):
-        if pf.options.whereami:
-            print(s)
-        else:
-            pf.debug(s, pf.DEBUG.INFO)
-
-#    if pf.options.whereami: # or pf.options.detect :
-#        pf.options.debuglevel |= pf.DEBUG.INFO
+    if pf.options.whereami:
+        print(pf.fullVersion())
+        print("pyFormex executable: %s" % pf.executable)
+        print("pyFormex installation (%s): %s " % (pf.installtype,pf.pyformexdir))
+        print("Python sys.path: %s" % sys.path)
+        ret = True
 
     if pf.options.detect:
         print("Detecting installed helper software")
         print(software.reportSoftware())
+        ret = True
 
-    if pf.options.experimental:
-        sys.path.insert(1,os.path.join(pf.pyformexdir,'experimental'))
+    if pf.options.listmodules is not None:
+        if not pf.options.listmodules:
+            # Set default subpackages
+            pf.options.listmodules = [ 'core', 'lib', 'plugins', 'gui', 'opengl' ]
+        list_modules(pf.options.listmodules)
+        ret = True
 
-    info_message(pf.fullVersion())
-    info_message("pyFormex executable: %s" % pf.executable)
-    info_message("pyFormex installation (%s): %s " % (pf.installtype,pf.pyformexdir))
-    info_message("Python sys.path: %s" % sys.path)
+    if pf.options.pytest is not None:
+        run_pytest(pf.options.pytest)
+        ret = True
 
-    if pf.options.whereami or pf.options.detect :
+    if pf.options.doctest is not None:
+        for a in pf.options.doctest:
+            doctest_module(a)
+        ret = True
+
+    if pf.options.remove and pf.executable:
+        remove_pyFormex(pf.pyformexdir, pf.executable)
+        # After this option, we can not continue,
+        # so this should be the last option processed
+        ret = True
+
+    return ret
+
+
+###########################  app  ################################
+
+def run(args=[]):
+    """The pyFormex main function.
+
+    After pyFormex launcher script has correctly set up the Python import
+    paths, this function is executed. It is responsible for reading the
+    configuration file(s), processing the command line options and starting
+    the application.
+
+    The basic configuration file is 'pyformexrc' located in the pyFormex
+    main directory. It should always be present and be left unchanged.
+    If you want to make changes, copy (parts of) this file to another location
+    where you can change them. Then make sure pyFormex reads you modifications
+    file. By default, pyFormex will try to read the following
+    configuration files if they are present (and in this order)::
+
+        default settings:     <pyformexdir>/pyformexrc   (always loaded)
+        system-wide settings: /etc/pyformex.conf
+        user settings:        <configdir>/pyformex/pyformex.conf
+        local settings        $PWD/.pyformexrc
+
+    Also, an extra config file can be specified in the command line, using
+    the --config option. The system-wide and user settings can be skipped
+    by using the --nodefaultconfig option.
+
+    Config files are loaded in the above order. Settings always override
+    those loaded from a previous file.
+
+    When pyFormex exits, the preferences that were changed are written to the
+    last read config file. Changed settings are those that differ from the
+    settings obtained after loading all but the last config file.
+    If none of the optional config files exists, a new user settings file
+    will be created, and an error will occur if the <configdir> path is
+    not writable.
+
+    """
+    ## Load default configuration ##
+    loadDefaultConfig()
+
+    ## Parse the arguments ##
+    parseArguments(args)
+
+    ## Process special options which do not start pyFormex ##
+    if processReportOptions():
         return
 
-    ########### Migrate the user configuration files ####################
+    ## Migrate the user configuration files ##
+    migrateUserConfig()
 
-    # Migrate the user preferences to the new place under $HOME/.config
-    if not os.path.exists(pf.cfg['userprefs']):
-        # Check old place
-        olduserprefs = os.path.join(homedir, '.pyformex', 'pyformexrc')
-        if os.path.exists(olduserprefs):
-            print("Migrating your user preferences\n  from %s\n  to %s" % (olduserprefs, pf.cfg['userprefs']))
-            # We move the user config from HOME/.pyformex/.pyformexrc
-            # to HOME/.config/pyformex/pyformex.conf
-            # The directory change is because of changing standards in Linux
-            # The filename change is to no clash with the defaults file
-            # (which is ./pyformex/pyformexrc) when being executed from
-            # the pyformex directory.
-            # We link back the new config location to the old one, so that
-            # versions < 0.9.1 can still pick up the user config.
-            try:
-                import shutil
-                olddir = os.path.dirname(olduserprefs)
-                newdir = pf.cfg['userconfdir']
-                # Move old user conf file to new and link back
-                oldfile = os.path.join(olddir, 'pyformexrc')
-                newfile = os.path.join(olddir, 'pyformex.conf')
-                print("Moving %s to %s" % (oldfile, newfile))
-                shutil.move(oldfile, newfile)
-                newfile = 'pyformex.conf'
-                print("Symlinking %s to %s" % (newfile, oldfile))
-                os.symlink(newfile, oldfile)
-                # Move old config dir to new and link back to old
-                print("Moving %s to %s" % (olddir, newdir))
-                shutil.move(olddir, newdir)
-                print("Symlinking %s to %s" % (newdir, olddir))
-                os.symlink(newdir, olddir)
-
-            except:
-                raise RuntimeError("Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\n to get a fresh start with default config." % (olddir, newdir))
-
-    ########### Load the user configuration  ####################
+    ## Load the user configuration ##
     loadUserConfig()
 
     ####################################################################
@@ -715,6 +757,7 @@ def run(argv=[]):
 
     # process non-starting options dependent on config
 
+    args = pf.options.args
     if pf.options.search or pf.options.listfiles:
         extended = False
         if len(args) > 0:
@@ -737,13 +780,6 @@ def run(argv=[]):
             print("SEARCH = [%s]" % search)
             cmd = 'grep %s "%s" %s' % (' '.join(opts), search, ''.join([" '%s'" % f for f in files]))
             os.system(cmd)
-        return
-
-    if pf.options.listmodules is not None:
-        #print(pf.options.listmodules)
-        if not pf.options.listmodules:
-            pf.options.listmodules = [ 'core', 'lib', 'plugins', 'gui', 'opengl' ]
-        list_modules(pf.options.listmodules)
         return
 
     # Start normal pyformex program (gui or nogui)
@@ -859,7 +895,7 @@ pyFormex Warning
 
     if pf.options.debuglevel & pf.DEBUG.INFO:
         # NOTE: inside an if to avoid computing the report when not printed
-        pf.debug(utils.reportSoftware(), pf.DEBUG.INFO)
+        pf.debug(software.reportSoftware(), pf.DEBUG.INFO)
 
     #
     # Qt4 may have changed the locale.
@@ -902,7 +938,7 @@ pyFormex Warning
         #playScript(sys.stdin)
 
     # after processing all args, go into interactive mode
-    if pf.options.gui and pf.app:
+    if pf.options.gui and pf.app and pf.executable:
         res = guimain.runGUI()
 
     ## elif pf.options.interactive:

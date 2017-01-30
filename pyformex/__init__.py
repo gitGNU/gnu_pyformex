@@ -48,6 +48,9 @@ startup_messages = ''
 startup_warnings = ''
 started = False
 
+# Placeholder for excutable, filled in by startup.py
+executable = None
+
 #########  Check Python version #############
 
 # A single variable to flag Python 3+
@@ -322,5 +325,10 @@ def debugt(s, level):
     """Print a debug message with timer"""
     debug("%s: %s" % (time.time(), s))
 
+
+from .main import loadDefaultConfig, parseArguments, loadUserConfig, run
+
+# Always load default config (pyFormex does not work if not loaded)
+loadDefaultConfig()
 
 # End

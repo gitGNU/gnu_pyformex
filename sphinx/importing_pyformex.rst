@@ -72,8 +72,8 @@ pyFormex and make its scripting language usable just like in a pyFormex
 script/application:
 
 - make sure Python finds the path from which to import pyFormex,
-- import pyFormex,
-- load the default pyFormex configuration,
+- import pyFormex (this is done implicitely when importing one of
+  the modules or subpackages from pyFormex),
 - import the pyFormex scripting language, if you want to use it. You
   probably want to, since you have imported pyFormex, but you would
   not need it if you just want to use some pyFormex classes or modules.
@@ -111,11 +111,7 @@ The contents of 'example1.py' looks like this::
   import sys
   sys.path.insert(0,'/home/user/pyformex')
 
-  # Import pyFormex and load default configuration
-  from pyformex.main import loadDefaultConfig
-  loadDefaultConfig()
-
-  # Import the pyFormex scripting language
+  # Import the pyFormex with its full scripting language
   from pyformex.script import *
 
   # Show that we can do some pyFormex operations
@@ -139,12 +135,8 @@ Example2
 --------
 Instead of hardcoding the pyFormex package path inside the script, you can
 set it in the PYTHONPATH environment variable. Also, in this example we do
-not import everything from the pyFormex scripting language, must the few
+not import everything from the pyFormex scripting language, only the few
 things we need::
-
-  # Import pyFormex and load default configuration
-  from pyformex.main import loadDefaultConfig
-  loadDefaultConfig()
 
   # Import some required modules
   import numpy
