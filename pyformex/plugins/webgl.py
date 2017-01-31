@@ -410,6 +410,15 @@ class WebGL(object):
             elif attr.useObjectColor > 0 and attr.objectColor is not None:
                 # front faces or back faces same color as front
                 s += "%s.color = %s;\n" % (name, list(attr.objectColor))
+            else:
+                # TODO: THIS is experimental
+                # IT WILL DISABLE different front/back colors
+                # Copy _front color to _faces
+                if attr.name.endswith("_faces"):
+                    parent_name = attr.name[:-6]
+                    front_name = parent_name+"_front"
+                    if front_name in attr.children:
+                        s += "%s.color = %s.color;\n" % (name, front_name)
             if attr.alpha is not None:
                 s += "%s.opacity = %s;\n" % (name, attr.alpha)
             if attr.lighting is not None:
