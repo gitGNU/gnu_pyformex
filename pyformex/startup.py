@@ -67,7 +67,6 @@ except:
 pyformex.executable = sys.argv[1]
 
 if __name__ == "__main__":
-    from pyformex import main
-    sys.exit(main.run(sys.argv[2:]))
+    sys.exit(pyformex.run(sys.argv[2:]))
 
 # End

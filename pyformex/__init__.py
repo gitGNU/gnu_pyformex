@@ -49,7 +49,7 @@ startup_warnings = ''
 started = False
 
 # Placeholder for excutable, filled in by startup.py
-executable = None
+executable = sys.executable
 
 #########  Check Python version #############
 
@@ -120,6 +120,7 @@ else:
 
 # Install type.
 # This can have the followig values:
+#     'S' : obsolete (used to refer to Subversion sources)
 #     'G' : unreleased version running from GIT sources: no installation
 #           required. This is set if directory containing the
 #           pyformex start script is a git repository.
@@ -139,13 +140,32 @@ parentdir = os.path.dirname(pyformexdir)
 if os.path.exists(os.path.join(parentdir, '.git')):
     installtype = 'G'
 
-########## import libraries ##############
-
+########## acceleration libraries ##############
 
 libraries = [ 'misc_', 'nurbs_' ]
 
+
+########## Special adjustements for source versions ############
+
 if installtype in 'SG':
-    # Running from source tree: check if compiled libraries are up-to-date
+    # We are running from a source tree (Git)
+
+    def run_cmd(cmd):
+        """Run command"""
+        import subprocess
+        P = subprocess.Popen(cmd,stdout=subprocess.PIPE,shell=True,universal_newlines=True)
+        out,err = P.communicate()
+        return P.returncode,out,err
+
+    # Clean the source tree
+    source_clean = os.path.join(pyformexdir, 'source_clean')
+    if os.path.exists(source_clean):
+        try:
+            run_cmd(source_clean)
+        except:
+            print("Error while executing %s, ignore error and continue" % source_clean)
+
+    # Running from source tree: make sure the compiled libraries are up-to-date
     libdir = os.path.join(pyformexdir, 'lib')
 
     def checkLibraries():
@@ -182,16 +202,7 @@ You should probably exit pyFormex, fix the problem first and then restart pyForm
 """ % pyformexdir
     startup_warnings += msg
 
-
-# Set the proper revision number when running from git sources
-if installtype=='G':
-
-    def run_cmd(cmd):
-        """Run command"""
-        import subprocess
-        P = subprocess.Popen(cmd,stdout=subprocess.PIPE,shell=True,universal_newlines=True)
-        out,err = P.communicate()
-        return P.returncode,out,err
+    # Set the proper revision number when running from git sources
 
     def set_revision():
         global __revision__
@@ -213,6 +224,8 @@ if installtype=='G':
     set_revision()
     set_branch()
 
+
+################ pyFormex global variables and functions ###############
 
 def Version():
     """Return a string with the pyFormex name and version"""
@@ -246,11 +259,6 @@ class options:
 
 
 print_help = None  # the function to print(the pyformex help text (pyformex -h))
-
-cfg = {}           # the current session configuration
-prefcfg = None     # the preferenced configuration
-refcfg = None      # the reference configuration
-preffile = None    # the file where the preferenced configuration will be saved
 
 PF = {}            # explicitely exported globals
 
@@ -326,9 +334,32 @@ def debugt(s, level):
     debug("%s: %s" % (time.time(), s))
 
 
-from .main import loadDefaultConfig, parseArguments, loadUserConfig, run
+########## Load default configuration (pyFormex does not work if not loaded) ###########
 
-# Always load default config (pyFormex does not work if not loaded)
-loadDefaultConfig()
+from pyformex.config import Config
+# Create a config instance
+
+cfg = Config()     # the current session configuration
+prefcfg = None     # the preferenced configuration
+refcfg = None      # the reference configuration
+preffile = None    # the file where the preferenced configuration will be saved
+
+# Fill in the pyformexdir, homedir variables
+# (use a read, not an update)
+if os.name == 'posix':
+    homedir = os.environ['HOME']
+elif os.name == 'nt':
+    homedir = os.environ['HOMEDRIVE']+os.environ['HOMEPATH']
+cfg.read("pyformexdir = '%s'\n" % pyformexdir)
+cfg.read("homedir = '%s'\n" % homedir)
+
+# Read the defaults (before the options)
+defaults = os.path.join(pyformexdir, "pyformexrc")
+cfg.read(defaults)
+
+# The default user config path (do not change!)
+cfg['userprefs'] = os.path.join(cfg['userconfdir'], 'pyformex.conf')
+
+from .main import run
 
 # End

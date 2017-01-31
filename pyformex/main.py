@@ -32,6 +32,7 @@ startup script.
 from __future__ import absolute_import, division, print_function
 
 import sys, os
+
 import pyformex as pf
 from pyformex.config import Config
 from pyformex import utils
@@ -72,6 +73,10 @@ def printcfg(key):
 
 def remove_pyFormex(pyformexdir, executable):
     """Remove the pyFormex installation."""
+    if not executable.endswith('/pyformex'):
+        print("The --remove option can only be executed from the pyformex command. Try: pyformex --remove.")
+        return
+
     if pf.installtype == 'D':
         print("It looks like this version of pyFormex was installed from a distribution package. You should use your distribution's package tools to remove the pyFormex installation.")
         return
@@ -79,7 +84,6 @@ def remove_pyFormex(pyformexdir, executable):
     if pf.installtype in 'SG':
         print("It looks like you are running pyFormex directly from a source tree at %s. I will not remove it. If you have enough privileges, you can just remove the whole source tree from the file system." % pyformexdir)
         return
-
 
     print("""
 BEWARE!
@@ -352,31 +356,6 @@ def migrateUserConfig():
             except:
                 raise RuntimeError("Error while trying to migrate your user configuration\nTry moving the config files yourself.\nYou may also remove the config directories %s\n and %s alltogether\n to get a fresh start with default config." % (olddir, newdir))
 
-
-def loadDefaultConfig():
-    """Load the default pyFormex configuration
-
-    Note: this function should be called to create a proper configuration
-    when pyformex is imported in Python and not started by the
-    pyFormex command.
-    """
-    # Create a config instance
-    pf.cfg = Config()
-    # Fill in the pyformexdir, homedir variables
-    # (use a read, not an update)
-    if os.name == 'posix':
-        homedir = os.environ['HOME']
-    elif os.name == 'nt':
-        homedir = os.environ['HOMEDRIVE']+os.environ['HOMEPATH']
-    pf.cfg.read("pyformexdir = '%s'\n" % pf.pyformexdir)
-    pf.cfg.read("homedir = '%s'\n" % homedir)
-
-    # Read the defaults (before the options)
-    defaults = os.path.join(pf.pyformexdir, "pyformexrc")
-    pf.cfg.read(defaults)
-
-    # The default user config path (do not change!)
-    pf.cfg['userprefs'] = os.path.join(pf.cfg['userconfdir'], 'pyformex.conf')
 
 
 def loadUserConfig():
@@ -690,7 +669,7 @@ def processReportOptions():
             doctest_module(a)
         ret = True
 
-    if pf.options.remove and pf.executable:
+    if pf.options.remove:
         remove_pyFormex(pf.pyformexdir, pf.executable)
         # After this option, we can not continue,
         # so this should be the last option processed
@@ -812,8 +791,8 @@ def run(args=[]):
     not writable.
 
     """
-    ## Load default configuration ##
-    loadDefaultConfig()
+    if pf.isString(args):
+        args = args.split()
 
     ## Parse the arguments ##
     parseArguments(args)
@@ -832,9 +811,7 @@ def run(args=[]):
     if processReportOptions2():
         return
 
-    # Start normal pyformex program (gui or nogui)
-
-    # process options that override the config
+    ## Process options that override the config ##
 
     if pf.options.pyside is not None:
         pf.cfg['gui/bindings'] = 'PySide' if pf.options.pyside else 'PyQt4'
@@ -843,22 +820,15 @@ def run(args=[]):
         pf.cfg['gui/redirect'] = pf.options.redirect
     delattr(pf.options, 'redirect') # avoid abuse
 
-    ###################################################################
+    utils.setSaneLocale()
+
+    ## Check required modules ##
+    software.checkModule('numpy', fatal=True)
 
     # Initialize the libraries
     if pf.options.uselib is None:
         pf.options.uselib = pf.cfg['uselib']
     from pyformex import lib
-
-    # If we run from a checked out source repository, we should
-    # run the source_clean procedure.
-    if pf.installtype in 'SG':
-        source_clean = os.path.join(pf.pyformexdir, 'source_clean')
-        if os.path.exists(source_clean):
-            try:
-                utils.system(source_clean)
-            except:
-                print("Error while executing %s, we ignore it and continue" % source_clean)
 
     # TODO:
     # without this, we get a crash. Maybe config related?
@@ -867,13 +837,9 @@ def run(args=[]):
     ## Activate the warning filters
     activateWarningFilters()
 
-    software.checkModule('numpy', fatal=True)
-
     # Make sure pf.PF is a Project
     from pyformex.project import Project
     pf.PF = Project()
-
-    utils.setSaneLocale()
 
     # Set application paths
     pf.debug("Loading AppDirs", pf.DEBUG.INFO)
@@ -919,6 +885,7 @@ def run(args=[]):
 
     # Startup done
     pf.started = True
+    print("pyFormex started from %s" % pf.executable)
 
     # Prepend the inline script
     if pf.options.script:
@@ -949,17 +916,12 @@ def run(args=[]):
         #from script import playScript
         #playScript(sys.stdin)
 
-    # after processing all args, go into interactive mode
-    if pf.options.gui and pf.app and pf.executable:
+    # after processing all args, and we have a gui, go into interactive mode
+    if pf.options.gui and pf.app:
         res = guimain.runGUI()
 
-    ## elif pf.options.interactive:
-    ##     print("Enter your script and end with CTRL-D")
-    ##     from script import playScript
-    ##     playScript(sys.stdin)
-
-    #Save the preferences that have changed
-    savePreferences()
+        #Save the preferences that have changed
+        savePreferences()
 
     # Exit
     return res

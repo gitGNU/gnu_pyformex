@@ -50,7 +50,31 @@ What
 from __future__ import absolute_import, division, print_function
 
 from pyformex.mydict import Dict
-from pyformex.utils import formatDict
+
+
+def formatDict(d):
+    """Format a dict in Python source representation.
+
+    Each (key,value) pair is formatted on a line of the form::
+
+       key = value
+
+    If all the keys are strings containing only characters that are
+    allowed in Python variable names, the resulting text is a legal
+    Python script to define the items in the dict. It can be stored
+    on a file and executed.
+
+    This format is the storage format of the Config class.
+    """
+    from pyformex import isString
+    s = ""
+    if isinstance(d, dict):
+        for k, v in d.items():
+            if isString(v):
+                s += '%s = %r\n' % (k, v)
+            else:
+                s += '%s = %s\n' % (k, v)
+    return s
 
 
 class Config(Dict):
@@ -306,6 +330,7 @@ class Config(Dict):
         be read back through Python to recreate the Config data. Usually
         this is done with the Config.read() method.
         """
+        from pyformex.utils import formatDict
         s = ''
         for k, v in self.items():
             if not isinstance(v, Dict):

@@ -41,6 +41,7 @@ from pyformex import (zip, round, isFile, isString)
 from pyformex.software import (hasModule, checkModule, requireModule,
                                hasExternal, checkExternal, checkVersion)
 from pyformex.odict import OrderedDict
+from pyformex.config import formatDict
 
 shuffle = random.shuffle
 
@@ -1937,30 +1938,6 @@ def dictStr(d,skipkeys=[]):
     """
     s = [ "'%s': %r" % item for item in d.items() if item[0] not in skipkeys ]
     return '{' + ', '.join(sorted(s)) + '}'
-
-
-def formatDict(d):
-    """Format a dict in Python source representation.
-
-    Each (key,value) pair is formatted on a line of the form::
-
-       key = value
-
-    If all the keys are strings containing only characters that are
-    allowed in Python variable names, the resulting text is a legal
-    Python script to define the items in the dict. It can be stored
-    on a file and executed.
-
-    This format is the storage format of the Config class.
-    """
-    s = ""
-    if isinstance(d, dict):
-        for k, v in d.items():
-            if isString(v):
-                s += '%s = %r\n' % (k, v)
-            else:
-                s += '%s = %s\n' % (k, v)
-    return s
 
 
 class DictDiff(object):
