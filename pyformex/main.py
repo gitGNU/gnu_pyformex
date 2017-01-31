@@ -699,6 +699,82 @@ def processReportOptions():
     return ret
 
 
+def processReportOptions2():
+    """Process the reporting options that depend on the user config
+
+    Returns True if at least one reporting option was found,
+    otherwise False.
+    """
+    if pf.options.search or pf.options.listfiles:
+        args = pf.options.args
+        extended = False
+        if len(args) > 0:
+            opts = [ a for a in args if a.startswith('-') ]
+            args = [ a for a in args if not a in opts ]
+            if '-a' in opts:
+                opts.remove('-a')
+                extended = True
+        if pf.options.search:
+            search = args.pop(0)
+        if len(args) > 0:
+            files = args
+        else:
+            files = utils.sourceFiles(relative=True, extended=extended)
+        if pf.options.listfiles:
+            print('\n'.join(files))
+        else:
+            if "'" in search:
+                search.replace("'", "\'")
+            print("SEARCH = [%s]" % search)
+            cmd = 'grep %s "%s" %s' % (' '.join(opts), search, ''.join([" '%s'" % f for f in files]))
+            os.system(cmd)
+        return 1
+
+    return 0
+
+
+def activateWarningFilters():
+    """Activate the warning filters
+
+    """
+    filterWarnings()
+
+    def _format_warning(message,category,filename,lineno,line=None):
+        """Replace the default warnings.formatwarning
+
+        This allows the warnings being called using a simple mnemonic
+        string. The full message is then found from the message module.
+        """
+        from pyformex import messages
+        message = messages.getMessage(message)
+        message = """..
+
+pyFormex Warning
+================
+%s
+
+`Called from:` %s `line:` %s
+""" % (message, filename, lineno)
+        if line:
+            message += "%s\n" % line
+        return message
+
+    import warnings
+    if pf.cfg['warnings/deprec']:
+        # activate DeprecationWarning (since 2.7 default is ignore)
+        warnings.simplefilter('default', DeprecationWarning)
+
+    if pf.cfg['warnings/nice']:
+        warnings.formatwarning = _format_warning
+
+
+def processArguments(args):
+    """Process the non-option arguments on the command line"""
+
+
+    return res
+
+
 ###########################  app  ################################
 
 def run(args=[]):
@@ -752,34 +828,8 @@ def run(args=[]):
     ## Load the user configuration ##
     loadUserConfig()
 
-    ####################################################################
-    ## Post config initialization ##
-
-    # process non-starting options dependent on config
-
-    args = pf.options.args
-    if pf.options.search or pf.options.listfiles:
-        extended = False
-        if len(args) > 0:
-            opts = [ a for a in args if a.startswith('-') ]
-            args = [ a for a in args if not a in opts ]
-            if '-a' in opts:
-                opts.remove('-a')
-                extended = True
-        if pf.options.search:
-            search = args.pop(0)
-        if len(args) > 0:
-            files = args
-        else:
-            files = utils.sourceFiles(relative=True, extended=extended)
-        if pf.options.listfiles:
-            print('\n'.join(files))
-        else:
-            if "'" in search:
-                search.replace("'", "\'")
-            print("SEARCH = [%s]" % search)
-            cmd = 'grep %s "%s" %s' % (' '.join(opts), search, ''.join([" '%s'" % f for f in files]))
-            os.system(cmd)
+    ## Process special options which do not start pyFormex ##
+    if processReportOptions2():
         return
 
     # Start normal pyformex program (gui or nogui)
@@ -793,22 +843,11 @@ def run(args=[]):
         pf.cfg['gui/redirect'] = pf.options.redirect
     delattr(pf.options, 'redirect') # avoid abuse
 
-    if pf.options.uselib is None:
-        pf.options.uselib = pf.cfg['uselib']
-
     ###################################################################
 
-
-    # Set default --nogui if first remaining argument is a pyformex script.
-    if pf.options.gui is None:
-        pf.options.gui = not (len(args) > 0 and utils.is_pyFormex(args[0]))
-
-    if pf.options.gui:
-        pf.options.interactive = True
-
     # Initialize the libraries
-    #pf.print3("Trying to import the libraries")
-    #pf.print3(sys.path)
+    if pf.options.uselib is None:
+        pf.options.uselib = pf.cfg['uselib']
     from pyformex import lib
 
     # If we run from a checked out source repository, we should
@@ -825,38 +864,8 @@ def run(args=[]):
     # without this, we get a crash. Maybe config related?
     pf.cfg['gui/startup_warning'] = None
 
-    ###### We have the config and options all set up ############
-    filterWarnings()
-
-    def _format_warning(message,category,filename,lineno,line=None):
-        """Replace the default warnings.formatwarning
-
-        This allows the warnings being called using a simple mnemonic
-        string. The full message is then found from the message module.
-        """
-        from pyformex import messages
-        message = messages.getMessage(message)
-        message = """..
-
-pyFormex Warning
-================
-%s
-
-`Called from:` %s `line:` %s
-""" % (message, filename, lineno)
-        if line:
-            message += "%s\n" % line
-        return message
-
-
-    import warnings
-    if pf.cfg['warnings/deprec']:
-        # activate DeprecationWarning (since 2.7 default is ignore)
-        warnings.simplefilter('default', DeprecationWarning)
-
-    if pf.cfg['warnings/nice']:
-        warnings.formatwarning = _format_warning
-
+    ## Activate the warning filters
+    activateWarningFilters()
 
     software.checkModule('numpy', fatal=True)
 
@@ -873,7 +882,10 @@ pyFormex Warning
 
     # Start the GUI if needed
     # Importing the gui should be done after the config is set !!
-    #print(pf.options)
+    # Set default --nogui if first remaining argument is a pyformex script.
+    args = pf.options.args
+    if pf.options.gui is None:
+        pf.options.gui = not (len(args) > 0 and utils.is_pyFormex(args[0]))
     if pf.options.gui:
         if pf.options.mesa:
             os.environ['LIBGL_ALWAYS_SOFTWARE'] = '1'
