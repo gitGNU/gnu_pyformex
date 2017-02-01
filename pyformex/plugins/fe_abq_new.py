@@ -2568,7 +2568,7 @@ class Step(Dict):
         if prop:
             print("Writing general keywords")
             for p in prop:
-                fil.write(fmtKeyword(**p))
+                fil.write(fmtKeyword(*p))
 
         print("  Writing output")
         for i in out + self.out:

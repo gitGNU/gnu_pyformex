@@ -653,7 +653,7 @@ def readVTKObject(fn,samePlex=True, readernm=None):
 
 
 
-def pointInsideObject(S,P,tol=0.):
+def pointInsideObject(S,P,tol=0.,check_surface=True):
     """vtk function to test which of the points P are inside surface S
 
     Test which of the points pts are inside the surface surf.
@@ -663,6 +663,10 @@ def pointInsideObject(S,P,tol=0.):
     - `S`: a TriSurface specifying a closed surface
     - `P`: a Coords (npts,3) specifying npts points
     - `tol`: a tolerance applied on matching float values
+    - `check_surface`: bool.  A boolean flag to first check whether the surface is 
+       a closed manifold. If True and the surface is not a closed manifold, all points
+       will be marked outside. Note that if this check is not performed and the surface 
+       is not closed, the results are undefined.
 
     Returns a bool array with True/False for points inside/outside the surface.
     """
@@ -681,12 +685,14 @@ def pointInsideObject(S,P,tol=0.):
         enclosed_pts.SetSurface(vps)
     if vtk.VTK_MAJOR_VERSION >= 6:
         enclosed_pts.SetSurfaceData(vps)
-    enclosed_pts.SetCheckSurface(1)
+    enclosed_pts.SetCheckSurface(check_surface)
     enclosed_pts = Update(enclosed_pts)
-    inside_arr = enclosed_pts.GetOutput().GetPointData().GetArray('SelectedPoints')
+    inside_arr = enclosed_pts.GetOutput().GetPointData().GetArray('SelectedPoints')        
     enclosed_pts.ReleaseDataFlagOn()
     enclosed_pts.Complete()
     del enclosed_pts
+    if inside_arr is None:
+        return zeros(P.shape[0],dtype='bool')
     return array2N(inside_arr, 'bool')
 
 
