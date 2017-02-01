@@ -144,7 +144,6 @@ if os.path.exists(os.path.join(parentdir, '.git')):
 
 libraries = [ 'misc_', 'nurbs_' ]
 
-
 ########## Special adjustements for source versions ############
 
 if installtype in 'SG':

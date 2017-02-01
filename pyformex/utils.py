@@ -309,6 +309,7 @@ file_description = OrderedDict([
     ('all', 'All files (*)'),
     ('ccx', 'CalCuliX files (*.dat *.inp)'),
     ('gz',  'Compressed files (*.gz *.bz2)'),
+    ('dcm', 'DICOM images (*.dcm)'),
     ('dxf', 'AutoCAD .dxf files (*.dxf)'),
     ('dxfall', 'AutoCAD .dxf or converted(*.dxf *.dxftext)'),
     ('dxftext', 'Converted AutoCAD files (*.dxftext)'),

@@ -45,31 +45,22 @@ from pyformex.gui.draw import *
 from pyformex.plugins.imagearray import DicomStack
 
 
+def allcloseV(a,**kargs):
+    """Check that all values in a have the same value
 
-def readImage(fn,reader='any'):
-    """Read an image from file fn.
-
-    This can be either a file that can be read by QImage,
-    or a DICOM image that can be read by python-dicom or python-gdcm
-
-    reader can be 'qimage' or 'dicom'
-
-    Returns the image as an ndarray of an integer type.
+    a is 1D or 2D array.
+    If 2D: checks that all rows are the same. Values
+    inside a row may differ.
     """
-    if reader in ['any','qimage']:
-        try:
-            ar = qimage2numpy(fn)
-            return ar
-        except:
-            if reader == 'qimage':
-                raise
-    if reader in ['any','dicom']:
-        try:
-            ar = readDicom(f)(fn)
-            return ar
-        except:
-            if reader == 'dicom':
-                raise
+    if a.ndim == 1:
+        return allclose(a[1:],a[0],**kargs)
+    elif a.ndim == 2:
+        for i in range(a.shape[-1]):
+            if not allclose(a[1:,i],a[0,i],**kargs):
+                return False
+        return True
+    else:
+        raise ValueError("a should be 1- or 2-dim array")
 
 
 def changeColorDirect(i):
@@ -117,18 +108,18 @@ def run():
     raw = ack("Use RAW values instead of Hounsfield?")
 
     pf.GUI.setBusy()
-    pixar = DS.pixar(raw)
-    # if pixar.dtype.kind == 'i':
-    #     dtyp = dtype('u'+pixar.dtype.name)
-    #     print("Converting integer data type %s to unsigned integer type %s." % (pixar.dtype,dtyp))
-    #     pixar = pixar.astype(dtyp)
+    pixar = DS.pixar(raw).astype(Float)  # TODO: Set in DicomStack
     print(pixar.shape)
     print("Data: %s (%s..%s)" % (pixar.dtype,pixar.min(),pixar.max()))
     scale = DS.spacing()
-    if (scale == scale[0]).all():
-        print("Scale: %s " % scale[0])
+    origin = DS.origin()
+    zscale = origin[1:,2] - origin[:-1,2]
+    if allcloseV(scale) and allcloseV(origin[:,:2]) and allcloseV(zscale):
+        scale = scale[0]
+        scale[2] = zscale[0]
+        print("Scale: %s " % scale)
     else:
-        print("Scale is not uniform!")
+        print("Scale/origin is not uniform!")
 
     maxval = pixar.max()
     nx,ny,nz = pixar.shape
@@ -140,7 +131,7 @@ def run():
         base = '1:0'
     else:
         base = '4:0123'
-    F = Formex(base).replic2(nx,ny).toMesh()
+    F = Formex(base).replic2(nx,ny).toMesh().reflect(1)  # Image rows are top down, should change in DicomStack
 
     for iz in range(nz):
         color = pixar[:,:,iz] / Float(maxval)

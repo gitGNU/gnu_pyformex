@@ -192,7 +192,7 @@ def qimage2numpy(image,resize=(0, 0),order='RGBA',flip=True,indexed=None,expand=
 
 
 def numpy2qimage(array):
-        """Convert a 2D or 3D integer numpy array into a QImag
+        """Convert a 2D or 3D integer numpy array into a QImage
 
         Parameters:
 
@@ -264,7 +264,6 @@ def rgb2qimage(rgb):
         return result
 
 
-
 def qimage2glcolor(image,resize=(0, 0)):
     """Convert a bitmap image to corresponding OpenGL colors.
 
@@ -329,39 +328,43 @@ _dicom_origin = None
 _dicom_intercept = 0
 _dicom_slope = 1
 
-if utils.checkModule('dicom'):
+#
+# The use of python-dicom is deprecated! Use python-gdcm instead
+#
 
-    def loadImage_dicom(filename):
-        """Load a DICOM image into a numpy array.
+# if utils.checkModule('dicom'):
 
-        This function uses the python-dicom module to load a DICOM image
-        into a numpy array. See also :func:`loadImage_gdcm` for an
-        equivalent using python-gdcm.
+#     def loadImage_dicom(filename):
+#         """Load a DICOM image into a numpy array.
 
-        Parameters:
+#         This function uses the python-dicom module to load a DICOM image
+#         into a numpy array. See also :func:`loadImage_gdcm` for an
+#         equivalent using python-gdcm.
 
-        - `file`: the name of a DICOM image file
+#         Parameters:
 
-        Returns a 3D array with the pixel data of all the images. The first
-          axis is the `z` value, the last the `x`.
+#         - `file`: the name of a DICOM image file
 
-        As a side effect, this function sets the global variable `_dicom_spacing`
-        to a (3,) array with the pixel/slice spacing factors, in order (x,y,z).
-        """
-        import dicom
-        global _dicom_spacing
-        _dicom_spacing = None
-        try:
-            dcm = dicom.read_file(filename)
-            #print("%s %s %s %s" % (filename[-10:],dcm.PixelSpacing[0],dcm.PixelSpacing[1],dcm.SliceThickness))
-        except:
-            print("While reading file '%s'" % filename)
-            raise
-        pix = dcm.pixel_array
-        _dicom_spacing = np.array(dcm.PixelSpacing + [dcm.SliceThickness])
-        return pix
+#         Returns a 2D array with the pixel data of all the image. The first
+#           axis is the `y` value, the last the `x`.
 
-    readDicom = loadImage_dicom
+#         As a side effect, this function sets the global variable `_dicom_spacing`
+#         to a (3,) array with the pixel/slice spacing factors, in order (x,y,z).
+#         """
+#         import dicom
+#         global _dicom_spacing
+#         _dicom_spacing = None
+#         try:
+#             dcm = dicom.read_file(filename)
+#             #print("%s %s %s %s" % (filename[-10:],dcm.PixelSpacing[0],dcm.PixelSpacing[1],dcm.SliceThickness))
+#         except:
+#             print("While reading file '%s'" % filename)
+#             raise
+#         pix = dcm.pixel_array
+#         _dicom_spacing = np.array(dcm.PixelSpacing + [dcm.SliceThickness])
+#         return pix
+
+#     readDicom = loadImage_dicom
 
 
 if utils.checkModule('gdcm'):
@@ -378,12 +381,13 @@ if utils.checkModule('gdcm'):
 
         - `file`: the name of a DICOM image file
 
-        Returns a 3D array with the pixel data of all the images. The first
-          axis is the `z` value, the last the `x`.
+        Returns a 2D array with the pixel data of the image. The first
+          axis is the `y` value, the last the `x`.
 
         As a side effect, this function sets the global variables
         `_dicom_spacing` and `_dicom_origin` to a to a (3,) array with
         the pixel/slice spacing factors, resp. the origin, in order (x,y,z).
+        It also sets the _dicom_slope, _dicom_intercept global variables.
         """
         import gdcm
 
@@ -443,7 +447,6 @@ if utils.checkModule('gdcm'):
         return pix
 
     readDicom = loadImage_gdcm
-
 
 
     class DicomStack(object):
