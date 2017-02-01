@@ -3458,10 +3458,15 @@ class ImageView(QtGui.QLabel):
             filename = str(image)
             image = QtGui.QImage(filename)
             if image.isNull():
-                raise ValueError("Cannot load image file %s" % filename)
+                try:
+                    fname = pf.cfg['datadir']+'/image_not_loaded.png'
+                    print(fname)
+                    image = QtGui.QImage(pf.cfg['datadir']+'/image_not_loaded.png')
+                except:
+                    raise ValueError("Cannot load image file %s" % filename)
             if maxheight:
                 image = image.scaledToHeight(maxheight)
-        #print("Size %sx%s" % (image.width(),image.height()))
+        print("Size %sx%s" % (image.width(),image.height()))
         self.setPixmap(QtGui.QPixmap.fromImage(image))
         self.filename = filename
         self.image = image
