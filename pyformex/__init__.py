@@ -171,6 +171,8 @@ if installtype in 'SG':
         # find extension used by compiled library (.so)
         import sysconfig
         ext = sysconfig.get_config_var('SO')
+        if ext is None:
+            ext = '.so'
         msg = ''
         for lib in libraries:
             src = os.path.join(libdir, lib+'.c')
