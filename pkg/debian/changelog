@@ -1,8 +1,8 @@
-pyformex (1.0.3-a3-1) unstable; urgency=medium
+pyformex (1.0.4-a1-1) unstable; urgency=medium
 
   * New upstream release
 
- -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Tue, 18 Oct 2016 18:02:26 +0200
+ -- Benedict Verhegghe <benedict.verhegghe@ugent.be>  Sat, 18 Feb 2017 17:03:22 +0100
 
 
 pyformex (0.9.1-1) unstable; urgency=low

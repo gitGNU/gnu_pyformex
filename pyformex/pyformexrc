@@ -287,11 +287,11 @@ notes = os.path.join(pyformexdir,"doc","ReleaseNotes")
 license = os.path.join(pyformexdir,"doc","COPYING")
 style = os.path.join(pyformexdir,"doc","STYLE")
 website = "http://pyformex.org"
-webdoc = website+"/doc"
+webdoc = website+"/doc-1.0"
 projpage = "http://savannah.nongnu.org/projects/pyformex/"
 support = "http://savannah.nongnu.org/support/?func=additem&group=pyformex"
 bugs = "http://savannah.nongnu.org/bugs/?func=additem&group=pyformex"
-links = [('pyFormex','pyformex.org'),('pyFormex-dev',projpage),('Python','www.python.org'),('IBiTech-bioMMeda','www.biommeda.ugent.be'),('stent-boys@bioMMeda','www.stent-ibitech.ugent.be'),('FEops','www.feops.com'),]
+links = [('pyFormex','pyformex.org'),('pyFormex-dev',projpage),('Python','www.python.org'),('IBiTech-bioMMeda','www.biommeda.ugent.be'),('FEops','www.feops.com'),]
 docs = [('&Online documentation',webdoc),('&Local documentation',localdoc),('&Reference Manual',refman),('Tutorial',tutorial),('&Running pyFormex',running),('&Module Index',modindex),('&Index',index),]
 docs2 = [('&Readme',readme),('&ReleaseNotes',notes),('&License',license)]
 
