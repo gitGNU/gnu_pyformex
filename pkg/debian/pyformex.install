@@ -7,8 +7,11 @@ usr/lib/python2*/dist-packages/pyformex/bin
 usr/share/pyformex/data
 usr/lib/python2*/dist-packages/pyformex/examples
 usr/lib/python2*/dist-packages/pyformex/fe
+usr/lib/python2*/dist-packages/pyformex/freetype
+usr/lib/python2*/dist-packages/pyformex/glsl
 usr/lib/python2*/dist-packages/pyformex/gui
 usr/share/pyformex/icons
 usr/lib/python2*/dist-packages/pyformex/lib
+usr/lib/python2*/dist-packages/pyformex/opengl
 usr/lib/python2*/dist-packages/pyformex/plugins
 usr/lib/python2*/dist-packages/pyformex/extra/calpy
