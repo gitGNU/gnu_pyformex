@@ -32,6 +32,8 @@ from pyformex.coords import Coords
 
 import numpy as np
 
+
+
 ###########################################################################
 ##
 ##   class CoordSys
@@ -49,10 +51,10 @@ class CoordSys(object):
     """A Cartesian coordinate system in 3D space.
 
     The coordinate system is stored as a rotation matrix and a translation
-    vector, which transform the global coordinate system into the CoordSys.
-    Clearly, the translation vector is also the origin of the CoordSys, and
-    the columns(!) of the rotation matrix are the unit vectors along the
-    three axes.
+    vector, which transform the global coordinate axes into the axes of the
+    CoordSys.
+    Clearly, the translation vector is the origin of the CoordSys, and the
+    rows of the rotation matrix are the unit vectors along the three axes.
 
     The CoordSys can be initialized in different ways:
 
@@ -69,18 +71,43 @@ class CoordSys(object):
 
     Example:
 
-    >>> C = CoordSys(oab=[
-    ...    [ 2., 0., 0. ],
-    ...    [ 4., 0., 0. ],
-    ...    [ 4., 4., 0. ]])
+    Three points O,A,B in the xy-plane, first two parallel to x-axis,
+    third at higher y-value.
+    >>> OAB = Coords([[2.,1.,0.],[5.,1.,0.],[0.,3.,0.]])
+
+    Resulting CoordSys is global axes translated to point O.
+    >>> print(CoordSys(oab=OAB))
+    CoordSys: trl=[ 2.  1.  0.]; rot=[[ 1.  0.  0.]
+                                      [ 0.  1.  0.]
+                                      [ 0.  0.  1.]]
+
+    Now translate the points so that O is on the z-axis, and rotate the
+    points 30 degrees around z-axis.
+    >>> OAB = OAB.trl([-2.,-1.,5.]).rot(30)
+    >>> print(OAB)
+    [[ 0.    0.    5.  ]
+     [ 2.6   1.5   5.  ]
+     [-2.73  0.73  5.  ]]
+    >>> C = CoordSys(oab=OAB)
     >>> print(C)
-    CoordSys: rot=[ 1.  0.  0.], trl=[ 2.  0.  0.]
-                  [ 0.  1.  0.]
-                  [ 0.  0.  1.]
+    CoordSys: trl=[ 0.  0.  5.]; rot=[[ 0.87  0.5   0.  ]
+                                      [-0.5   0.87  0.  ]
+                                      [ 0.   -0.    1.  ]]
+
+    Reverse x,y-axes. The resulting CoordSys is still righthanded. This is
+    equivalent to a rotation over 180 degrees around z-axis.
     >>> print(C.reverse(0,1))
-    CoordSys: rot=[-1. -0.  0.], trl=[ 2.  0.  0.]
-                  [-0. -1.  0.]
-                  [-0. -0.  1.]
+    CoordSys: trl=[ 0.  0.  5.]; rot=[[-0.87 -0.5  -0.  ]
+                                      [ 0.5  -0.87 -0.  ]
+                                      [ 0.   -0.    1.  ]]
+
+    Now rotate C over 150 degrees around z-axis to become parallel with
+    the global axes. Remember that transformations change the CoordSys
+    in place (unlike Geometry classes).
+    >>> print(C.rotate(150,2))
+    CoordSys: trl=[ 0.  0.  5.]; rot=[[ 1.  0.  0.]
+                                      [-0.  1.  0.]
+                                      [ 0.  0.  1.]]
 
     """
     def __init__(self,oab=None,points=None,rot=None,trl=None):
@@ -91,7 +118,7 @@ class CoordSys(object):
             trl = oab[0]
         elif points is not None:
             points = at.checkArray(points,(4,3),'f')
-            rot = at.normalize(points[:3] - points[3]).transpose()
+            rot = at.normalize(points[:3] - points[3])
             trl = points[3]
         else:
             if rot is None:
@@ -147,7 +174,7 @@ class CoordSys(object):
 
     def axis(self,i):
         """Return the unit vector along the axis i (0..2)."""
-        return self.rot[:,i]
+        return self.rot[i]
 
     def origin(self):
         """Return the origin of the CoordSys"""
@@ -155,7 +182,7 @@ class CoordSys(object):
 
     def axes(self):
         """Return unit  vectors along the axes."""
-        return self.rot.transpose()
+        return self.rot
 
     def points(self):
         """Return origin and endpoints of unit vectors along axes."""
@@ -175,17 +202,19 @@ class CoordSys(object):
         return self
 
 
-    def rotate(self,*args,**kargs):
+    def rotate(self,*args):
         """Rotate the CoordSys.
 
-        Parameters: either a single (3,3) rotation matrix, or parameters
-        like in the :meth:`coords.Coords.rotate` method.
+        Parameters: either a single (3,3) rotation matrix, or two parameters
+        angle, axis like in :func:`arraytools:rotationMatrix
         """
-        if len(args)==1 and not kargs:
-            self.rot = np.dot(self.rot,args[0])
+        if len(args)==1:
+            rot = args[0]
+        elif len(args)==2:
+            rot = at.rotationMatrix(args[0],args[1])
         else:
-            X = self.points().rotate(*args,**kargs)
-            self.__init__(points=X)
+            raise ValueError("Invalid number of arguments")
+        self.rot = np.dot(self.rot,rot)
         return self
 
 
@@ -203,15 +232,13 @@ class CoordSys(object):
         the handedness.
         """
         for axis in axes:
-            self.rot[:,axis] *= -1.0
+            self.rot[axis] *= -1.0
         return self
 
 
     def __str__(self):
-        s = "CoordSys: rot=%s, trl=%s\n" % (self.rot[0],self.trl)
-        s += "              %s\n" % self.rot[1]
-        s += "              %s" % self.rot[2]
-        return s
+        return at.stringar("CoordSys: trl=%s; rot=" % self.trl,self.rot)
+
 
 
 class CoordinateSystem(CoordSys):

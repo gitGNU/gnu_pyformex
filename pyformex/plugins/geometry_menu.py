@@ -788,12 +788,12 @@ def showPrincipal():
         I = F.inertia()
     C = I.ctr
     Iprin, Iaxes = I.principal()
-    print("Center of gravity: %s" % C)
-    print("Principal Directions:\n %s" % Iaxes)
-    print("Principal Values: %s" % Iprin)
-    print("Inertia tensor: %s" % I)
+    printar("Center of gravity: ",C)
+    printar("Principal Directions: ",Iaxes)
+    printar("Principal Values: ",Iprin)
+    printar("Inertia tensor: ",I)
     # display the axes
-    CS = coordsys.CoordSys(rot=Iaxes,trl=C)
+    CS = coordsys.CoordSys(rot=Iaxes.transpose(),trl=C)
     size = F.dsize()
     drawAxes(CS, size=size, psize=0.1*size)
     data = (I,Iprin,Iaxes)

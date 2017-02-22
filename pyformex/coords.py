@@ -593,7 +593,7 @@ class Coords(ndarray):
         from pyformex.coordsys import CoordSys
         I = self.inertia(mass)
         prin, axes = I.principal()
-        return CoordSys(rot=axes,trl=I.ctr)
+        return CoordSys(rot=axes.transpose(),trl=I.ctr)
 
 
     def principalSizes(self):
@@ -1126,15 +1126,33 @@ class Coords(ndarray):
     def toCS(self,cs):
         """Transform the coordinates to another CoordSys.
 
+        Parameters:
+
+        - `cs`: :class:`coordsys.CoordSys`
+
+        Returns an object identical to the input but having global coordinates
+        equal to the coordinates of the input object in the cs CoordSys.
+
+        This is the inverse transformation of :method:`fromCS`.
         """
-        return self.trl(-cs.trl).rot(cs.rot)
+        return self.trl(-cs.trl).rot(cs.rot.transpose())
 
 
     def fromCS(self,cs):
         """Transform the coordinates from another CoordSys.
 
+        Parameters:
+
+        - `cs`: :class:`CoordSys`
+
+        Returns an object identical to the input but transformed in the
+        same way as the global axes have been transformed to obtain the
+        CoordSys cs.
+
+        This is the inverse transformation of :method:`toCS`.
+
         """
-        return self.rot(cs.rot.transpose()).trl(cs.trl)
+        return self.rot(cs.rot).trl(cs.trl)
 
 
     def position(self, x, y):
@@ -1769,6 +1787,7 @@ class Coords(ndarray):
         """
         # This is currently implemented using isopar, but could
         # obviously also be done using affine
+        # or fromCS and toCS
         return self.isopar('tet4', currentCS.points(), initialCS.points())
 
 

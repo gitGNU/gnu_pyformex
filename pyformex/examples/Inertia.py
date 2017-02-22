@@ -39,9 +39,9 @@ def unitAxes():
     Hx = Formex('l:1', 5).translate([-0.5, 0.0, 0.0])
     Hy = Hx.rotate(90)
     Hz = Hx.rotate(-90, 1)
-    Hx.setProp(4)
-    Hy.setProp(5)
-    Hz.setProp(6)
+    Hx.setProp(1)
+    Hy.setProp(2)
+    Hz.setProp(3)
     return Formex.concatenate([Hx, Hy, Hz])
 
 def showPrincipal1(F):
@@ -53,8 +53,8 @@ def showPrincipal1(F):
     print("Center: %s" % I.ctr)
     print("Inertia tensor: %s" % I.tensor)
     Iprin, Iaxes = I.principal()
-    pf.debug("Principal Values: %s" % Iprin)
-    pf.debug("Principal Directions:\n%s" % Iaxes)
+    print("Principal Values: %s" % Iprin)
+    print("Principal Directions:\n%s" % Iaxes)
 
     siz = F.dsize()
     H = unitAxes().scale(siz).affine(Iaxes.transpose(), C)
@@ -68,23 +68,17 @@ def run():
     wireframe()
     view('front')
 
-    #F = Formex('l:1').replic(2,2,1).replic(2,2,2).scale(2)
     nx, ny, nz = 2, 3, 4
-    dx, dy, dz = 4, 3, 2
+    dx, dy, dz = 2, 3, 4
     F = Formex([[[0, 0, 0]]]).replic(nx, dx, 0).replic(ny, dy, 1).replic(nz, dz, 2)
 
     Fr = F
     showPrincipal1(Fr)
 
-    sleep(2)
+    pause()
     Fr = F.rotate(30, 0).rotate(45, 1).rotate(60, 2)
     showPrincipal1(Fr)
 
-
-    ## sleep(2)
-    ## Fo = Formex([[C]])
-    ## Fc = connect([Fo,Fr],loop=True)
-    ## draw(Fc)
 
 if __name__ == '__draw__':
     run()

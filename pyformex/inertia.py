@@ -243,6 +243,8 @@ class Tensor(np.ndarray):
 
         >>> t = Tensor([-19., 4.6, -8.3, 11.8, 6.45, -4.7 ])
         >>> p,a = t.principal()
+        >>> print(p)
+        >>> print(a)
         >>> print(t.rotate(np.linalg.linalg.inv(a)))
         [[ 11.62   0.     0.  ]
          [ -0.    -9.    -0.  ]
@@ -346,6 +348,8 @@ class Inertia(Tensor):
         """Transform the coordinates to another CoordSys.
 
         """
+        raise ImplementationError("Inertia.toCS is currently not implemented")
+        # We need to check the following (after transposing CoordSys.rot)
         return self.tensor.translateTo(cs.trl) + self.tensor.rotate(np.dot(self.CS.rot.T,cs.rot))
 
 

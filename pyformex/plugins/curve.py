@@ -512,7 +512,7 @@ class Curve(Geometry):
         X,T,N,B = self.frenet()
         if csys:
             geom = geom.fromCS(csys)
-        return [ geom.fromCS(CoordSys(rot=column_stack([t,n,b]),trl=x)) for x,t,n,b in zip(X,T,N,B) ]
+        return [ geom.fromCS(CoordSys(rot=row_stack([t,n,b]),trl=x)) for x,t,n,b in zip(X,T,N,B) ]
 
 
     def sweep(self,mesh,eltype=None,csys=None):
