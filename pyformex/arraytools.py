@@ -76,10 +76,49 @@ def isNum(obj):
     return isInt(obj) or isFloat(obj)
 
 
+def stringar(s,a):
+    """Format a string followed by an indented array.
+
+    Formats a string s and an array a for proper alignment in printing.
+    Returns a multiline string where the first line consists of the
+    string s and the first line of the formatted array, and the next lines
+    hold the remainder of the array lines, properly indented to align with
+    the first line of the array.
+
+    >>> print(stringar("Indented array: ",np.arange(4).reshape(2,2)))
+    Indented array: [[0 1]
+                     [2 3]]
+
+    """
+    s = str(s)
+    n = len(s)
+    repl = ' '*n
+    return s + str(a).replace('\n','\n'+repl)
+
+
+def printar(s,a):
+    """Print a string followed by an indented array.
+
+    Print a string s and an array a with proper alignment.
+    The string and the first row of the array are printed on a
+    single line. The next rows of the array are printed below with
+    proper indentation to align with the first row of the array.
+
+    >>> printar("Indented array: ",np.arange(4).reshape(2,2))
+    Indented array: [[0 1]
+                     [2 3]]
+
+    """
+    print(stringar(s,a))
+
+
 def powers(x, n):
     """Compute all the powers of x from zero up to n
 
-    Returns a list of arrays with same shape as x
+    Returns a list of arrays with same shape as x.
+
+    >>> powers(2,5)
+    [1, 2, 4, 8, 16, 32]
     """
     return [ x ** i for i in range(n+1) ]
 
@@ -557,11 +596,34 @@ def rotationMatrix(angle,axis=None,angle_spec=DEG):
 def rotmat(x):
     """Create a rotation matrix defined by 3 points in space.
 
-    x is an array of 3 points.
-    After applying the resulting rotation matrix to the global axes,
-    the 0 axis becomes // to the vectors x0-x1,
-    the 1 axis lies in the plane x0,x1,x2 and is orthogonal to x0-x1,
-    and the 3 axis is orthogonal to the plane x0,x1,x2.
+    Parameters:
+
+    - `x`: array-like (3,3): A set of three non-colinear points.
+
+    Returns a rotation matrix (3,3) which transforms the global axes
+    to a new (orthonormal) coordinate system with the following properties:
+
+    - the origin is at point x0,
+    - the 0 axis is along the direction x1-x0
+    - the 1 axis is in the plane (x0,x1,x2) with x2 lying at the positive side.
+
+    Note that the rows of the rotation matrix represent the unit vectors
+    of the resulting coordinate system.
+
+    Note also that the coodinates of some points in the the rotated axes
+    are obtained by the reverse transformation, i.e. multiplying the
+    points with the transpose of the obtained matrix.
+
+    >>> s,c = sind(30),cosd(30)
+    >>> R = rotmat([[0,0,0],[c,s,0],[0,1,0]])
+    >>> print(R)
+    [[ 0.87  0.5   0.  ]
+     [-0.5   0.87  0.  ]
+     [ 0.   -0.    1.  ]]
+    >>> B = array([[2.,0.,0.],[3*s,3*c,3]])
+    >>> print(dot(B,R))
+    [[ 1.73  1.    0.  ]
+     [-0.    3.    3.  ]]
     """
     x = asanyarray(x)
     u = normalize(x[1]-x[0])
