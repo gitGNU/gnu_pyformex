@@ -793,7 +793,7 @@ def showPrincipal():
     printar("Principal Values: ",Iprin)
     printar("Inertia tensor: ",I)
     # display the axes
-    CS = coordsys.CoordSys(rot=Iaxes.transpose(),trl=C)
+    CS = coordsys.CoordSys(rot=Iaxes,trl=C)
     size = F.dsize()
     drawAxes(CS, size=size, psize=0.1*size)
     data = (I,Iprin,Iaxes)
@@ -810,7 +810,7 @@ def rotatePrincipal():
     FL = selection.check()
     if FL:
         ctr, rot = data[0].ctr,data[2]
-        selection.changeValues([ F.trl(-ctr).rot(rot).trl(ctr) for F in FL ])
+        selection.changeValues([ F.trl(-ctr).rot(rot.transpose()).trl(ctr) for F in FL ])
         selection.drawChanges()
 
 
@@ -826,7 +826,7 @@ def transformPrincipal():
     FL = selection.check()
     if FL:
         ctr, rot = data[0].ctr,data[2]
-        selection.changeValues([ F.trl(-ctr).rot(rot) for F in FL ])
+        selection.changeValues([ F.trl(-ctr).rot(rot.transpose()) for F in FL ])
         selection.drawChanges()
 
 

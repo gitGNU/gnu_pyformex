@@ -47,9 +47,9 @@ from pyformex.coordsys import CoordSys
 import numpy as np
 
 class Tensor(np.ndarray):
-    """A second order symmetric(!) shaped tensor in 3D vector space.
+    """A second order symmetric(!) tensor in 3D vector space.
 
-    This is a new class under design. Only use for developemnt!
+    This is a new class under design. Only use for development!
 
     The Tensor class provides conversion between full matrix (3,3) shape
     and contracted vector (6,) shape.
@@ -128,7 +128,7 @@ class Tensor(np.ndarray):
             cs = CoordSys()
         if not(isinstance(cs,CoordSys)):
             raise ValueError('Wrong Coordinate System')
-        ar.CS = cs
+        ar.cs = cs
         return ar
 
 
@@ -140,7 +140,7 @@ class Tensor(np.ndarray):
         need to be reset in this method.
         """
         if obj is None: return
-        self.CS = getattr(obj, 'cs', CoordSys())
+        self.cs = getattr(obj, 'cs', CoordSys())
         #~ pass  # currently no new attributes defined in __new__
         # self._newattr = getattr(obj, '_newattr', None)
 
@@ -207,7 +207,7 @@ class Tensor(np.ndarray):
         - `prin`: is a (3,) array with the principal values,
         - `axes`: is a (3,3) array with the rotation matrix that
           rotates the global axes to the principal axes. This also
-          means that the columns of axes are the unit vectors along
+          means that the rows of axes are the unit vectors along
           the principal directions.
 
         Example:
@@ -217,18 +217,20 @@ class Tensor(np.ndarray):
         >>> print(p)
         [ 11.62  -9.   -25.32]
         >>> print(a)
-        [[-0.03 -0.62 -0.78]
-         [ 0.86  0.38 -0.33]
-         [ 0.5  -0.69  0.53]]
-
+        [[-0.03  0.86  0.5 ]
+         [-0.62  0.38 -0.69]
+         [-0.78 -0.33  0.53]]
         """
+        #
+        # Req: requires numpy >= 1.8.0
+        #
         prin, axes = np.linalg.eig(self.tensor)
+        axes = axes.transpose()  # put the eigenvectors rowwise.
         if sort:
             s = prin.argsort()[::-1]
-            prin = prin[s]
-            axes = axes[:, s]
-        if right_handed and not at.allclose(at.normalize(np.cross(axes[:, 0], axes[:, 1])), axes[:, 2]):
-            axes[:, 2] = -axes[:, 2]
+            prin, axes = prin[s], axes[s]
+        if right_handed and not at.allclose(at.normalize(np.cross(axes[0], axes[1])), axes[2]):
+            axes[2] = -axes[2]
         return prin, axes
 
 
@@ -243,8 +245,6 @@ class Tensor(np.ndarray):
 
         >>> t = Tensor([-19., 4.6, -8.3, 11.8, 6.45, -4.7 ])
         >>> p,a = t.principal()
-        >>> print(p)
-        >>> print(a)
         >>> print(t.rotate(np.linalg.linalg.inv(a)))
         [[ 11.62   0.     0.  ]
          [ -0.    -9.    -0.  ]
@@ -252,7 +252,7 @@ class Tensor(np.ndarray):
 
         """
         rot = at.checkArray(rot,shape=(3,3),kind='f')
-        return Tensor(at.abat(rot,self),self.CS.rotate(rot))
+        return Tensor(at.atba(rot,self),self.cs.rotate(rot))
 
 
 class Inertia(Tensor):
@@ -341,7 +341,6 @@ class Inertia(Tensor):
 
         trl = at.checkArray(ref,shape=(3,),kind='f') - self.ctr
         return self.translate(self,trl,toG=toG)
-
 
 
     def toCS(self,cs):

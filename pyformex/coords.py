@@ -578,22 +578,21 @@ class Coords(ndarray):
 
 
     def principalCS(self,mass=None):
-        """Returns a CoordSys formed by the principal axes of inertia
+        """Returns a CoordSys formed by the principal axes of inertia.
 
         Parameters:
 
         - `mass`: float array with ncoords weight values. The default is to
           attribute a weight 1.0 to each point.
 
-        Returns a Coord
-        - `axes`: the principal axes of the inertia tensor: shape (3,3)
-        - `principal`: the (prinicipal) moments of inertia: shape (3,)
+        Returns a CoordSys corresponding to the principal axes of the
+        inertia, computed with the specified mass.
 
         """
         from pyformex.coordsys import CoordSys
         I = self.inertia(mass)
         prin, axes = I.principal()
-        return CoordSys(rot=axes.transpose(),trl=I.ctr)
+        return CoordSys(rot=axes,trl=I.ctr)
 
 
     def principalSizes(self):

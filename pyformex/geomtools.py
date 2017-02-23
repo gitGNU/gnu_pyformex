@@ -1106,27 +1106,23 @@ def levelVolumes(x):
     else:
         raise ValueError("Plexitude should be one of 2, 3 or 4; got %s" % nplex)
 
-
+# TODO: move to Coords, rename to principalSizes(order=False)
 def inertialDirections(x):
-    """Return the directions of the dimension of a Coords based of inertia.
+    """Return the directions and dimension of a Coords based of inertia.
 
     - `x`: a Coords-like array
 
-    Returns a tuple of the direction vectors and the sizes  along the direction
-    and the cross directions. The arrays are ordered from the smallest to the largest direction.
+    Returns a tuple of the principal direction vectors and the sizes along
+    these directions, ordered from the smallest to the largest direction.
 
     """
-    # Dimension in a coordinate system aligned with the global axes.
     I = x.inertia()
     Iprin, Iaxes = I.principal()
     C = I.ctr
     X = x.trl(-C).rot(Iaxes)
     sizes = X.sizes()
-    i=argsort(sizes)
-    # Iaxes gives the directions as column vectors!
-    # TODO: maybe we should change that
-    N = Iaxes[:,i].T
-    return N, sizes[i]
+    i = argsort(sizes)
+    return Iaxes[i], sizes[i]
 
 
 def smallestDirection(x,method='inertia',return_size=False):

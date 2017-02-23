@@ -57,8 +57,8 @@ def showPrincipal1(F):
     print("Principal Directions:\n%s" % Iaxes)
 
     siz = F.dsize()
-    H = unitAxes().scale(siz).affine(Iaxes.transpose(), C)
-    Ax, Ay, Az = Iaxes[:, 0], Iaxes[:, 1], Iaxes[:, 2]
+    H = unitAxes().scale(siz).affine(Iaxes, C)
+    Ax, Ay, Az = Iaxes
     G = Formex([[C, C+Ax], [C, C+Ay], [C, C+Az]], 3)
     draw([F, G, H])
 
@@ -67,6 +67,7 @@ def run():
     reset()
     wireframe()
     view('front')
+    setTriade()
 
     nx, ny, nz = 2, 3, 4
     dx, dy, dz = 2, 3, 4
