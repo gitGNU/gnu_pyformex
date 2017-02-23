@@ -171,22 +171,17 @@ class CoordSys(object):
         """Return the origin"""
         return self.trl
 
+    # Some aliases
+    origin = o
+    axes = rot
+
+    def points(self):
+        """Return origin and endpoints of unit vectors along axes."""
+        return Coords.concatenate([self.axes+self.trl, self.trl])
 
     def axis(self,i):
         """Return the unit vector along the axis i (0..2)."""
         return self.rot[i]
-
-    def origin(self):
-        """Return the origin of the CoordSys"""
-        return self.trl
-
-    def axes(self):
-        """Return unit  vectors along the axes."""
-        return self.rot
-
-    def points(self):
-        """Return origin and endpoints of unit vectors along axes."""
-        return Coords.concatenate([self.axes()+self.trl, self.trl])
 
 
     # Simple transformation methods
