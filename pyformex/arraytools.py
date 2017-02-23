@@ -423,6 +423,15 @@ def abat(a,b):
     return np.dot( np.dot(a,b) , a.T )
 
 
+def atba(a,b):
+    """Compute the matrix product at * b * a
+
+    This multiplication typically occurs when rotating a symmetric tensor b
+    to axes defined by the rotation matrix a.
+    """
+    return np.dot( np.dot(a.T,b) , a )
+
+
 def horner(a, u):
     """Compute the value of a polynom using Horner's rule.
 
