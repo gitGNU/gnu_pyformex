@@ -585,7 +585,7 @@ def create_point(obj = None):
 def create_points(color=0, obj=None):
     """Create points on visible objects.
     
-    Points are picked on the surface of a list of objects
+    Points are picked on the surface of a single object, a list of objects
     or of all visible objects (default).
     It returns all the points in the order they were picked 
     and a variable indicating how  you have exited:
@@ -596,6 +596,8 @@ def create_points(color=0, obj=None):
     if obj is None:
         canvas = pf.GUI.viewports.current
         obj = [a.object for a in canvas.actors]
+    if type(obj)!=list:
+        obj = [obj]
     S = []
     for o in obj:
         try:
