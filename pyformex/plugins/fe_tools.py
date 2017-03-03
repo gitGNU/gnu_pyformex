@@ -178,7 +178,7 @@ class UniaxialStrain(object):
 
     def log(self):
         """Return the strain data as logarithmic (true) strains"""
-        return log(self.data)
+        return np.log(self.data)
 
     def nominal(self):
         """Return the strain data as nominal (engineering) strains"""
