@@ -40,10 +40,16 @@ from pyformex.plugins.imagearray import *
 
 def changeColorDirect(i):
     """Change the displayed color by directly changing color attribute."""
-    global FA
+    global FA,model
     F = FA.object
-    color = F.getField('color_%s' % i).data
-    FA.drawable[0].changeVertexColor(color)
+    color = F.getField('color_%s' % i)
+    if model == 'Quads':
+        color = color.convert('elemn')
+    color = color.data
+    print("Color shape = %s" % str(color.shape))
+    #print("Drawables: %s:" % len(FA.drawable))
+    for dr in FA.drawable[:2]:
+        dr.changeVertexColor(color)
     pf.canvas.update()
 
 
@@ -52,7 +58,7 @@ def setFrame(item):
 
 
 def run():
-    global width,height,FA,dia,dotsize
+    global width,height,FA,dia,dotsize,model
     clear()
     smooth()
     lights(False)
@@ -67,9 +73,12 @@ def run():
         return
     nx, ny = im.width(), im.height()
     print("Image size: %s x %s" % (nx,ny))
+    ntot = nx*ny
+    print("Total cells = %s" % ntot)
 
     # Create a 2D grid of nx*ny elements
-    model = 'Dots'
+    res = askItems([_I('model',itemtype='hradio',choices=['Dots','Quads'])])
+    model = res['model']
     dotsize = 3
     if model == 'Dots':
         base = '1:0'
@@ -77,12 +86,19 @@ def run():
         base = '4:0123'
     F = Formex(base).replic2(nx,ny).toMesh()
 
+
     # Draw the image
     color, colormap = qimage2glcolor(im)
     if colormap is not None:
         print("This image is not fit for our purposes.")
         return
 
+    # Currently, Field Color changes will only work with VertexColor.
+    # Therefore, when using Quads, multiplex the color to vertexcolor.
+#    if model == 'Quads':
+#        color = multiplex(color,4)
+
+    print("Color shape = %s" % str(color.shape))
     FA = draw(F, color=color, colormap=None, marksize=dotsize, name='image')
 
     # Create some color fields
@@ -92,7 +108,9 @@ def run():
     mix = [ 0.7, 0.3 ]
     for i in range(nframes):
         fld = mix[0] * color + mix[1] * pf.canvas.settings.colormap[i]
-        F.addField('node',fld,'color_%s' % i)
+        #fldtype = 'node' if model == 'Dots' else 'elemc'
+        fldtype = 'elemc'
+        F.addField(fldtype,fld,'color_%s' % i)
 
     frame = 0
     dia = Dialog([

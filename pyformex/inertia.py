@@ -184,6 +184,7 @@ class Tensor(np.ndarray):
     def sym(self):
         """Return the symmetric part of the tensor."""
         return (self+self.T) / 2
+
     @property
     def asym(self):
         """Return the antisymmetric part of the tensor."""
