@@ -1758,7 +1758,7 @@ Most likely because 'python-scipy' is not installed on your system.""")
             e1 = 2*arange(len(coords)//2)
             elems = column_stack([e1, e1+1, e1+2])
             if self.closed:
-                elems = elems[-1][-1] = 0
+                elems[-1][-1] = 0
             return Mesh(coords, elems, eltype='line3')
 
 
