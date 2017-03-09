@@ -188,7 +188,7 @@ class CoordSys(object):
     # These methods modify the object inplace
     # They still return self, so that they can be concatenated
 
-    def translate(self,trl):
+    def _translate(self,trl):
         """Translate the CoordSys.
 
         Translates the origin of the CoordSys, keeping its axes directions.
@@ -197,20 +197,28 @@ class CoordSys(object):
         return self
 
 
-    def rotate(self,*args):
+    def _rotate(self,rot):
         """Rotate the CoordSys.
 
-        Parameters: either a single (3,3) rotation matrix, or two parameters
-        angle, axis like in :func:`arraytools:rotationMatrix
+        Parameters: (3,3) rotation matrix
         """
-        if len(args)==1:
-            rot = args[0]
-        elif len(args)==2:
-            rot = at.rotationMatrix(args[0],args[1])
-        else:
-            raise ValueError("Invalid number of arguments")
+        rot = checkArray(rot,(3,3))
         self.rot = np.dot(self.rot,rot)
         return self
+
+
+    def translate(self,*args,**kargs):
+        """Translate the CoordSys like a Coords object.
+
+        """
+        return CoordSys(points=self.points().translate(*args,**kargs))
+
+
+    def rotate(self,*args,**kargs):
+        """Rotate the CoordSys like a Coords object.
+
+        """
+        return CoordSys(points=self.points().rotate(*args,**kargs))
 
 
     def reverse(self,*axes):
