@@ -230,6 +230,19 @@ def remesh(self,elementsizemode='edgelength',edgelength=None,
       If there is a border (ie. the surface is open) conformal=`border`
       preserves the border line (both points and connectivity); conformal=`regionsborder`
       preserves both border line and lines between regions with different property numbers.
+    
+    Detected BUGS:
+    
+    - preserveboundary = True
+    
+        With VMTK 1.3 and VTK6 there is a bug: if surface has a boundary (is not closed) and you want preserveboundary=False you can an error:
+        python: /build/vtk6-E5SYwm/vtk6-6.3.0+dfsg1/Common/Core/vtkDataArrayTemplate.h:191: T vtkDataArrayTemplate<T>::GetValue(vtkIdType) [with T = int; vtkIdType = long long int]: Assertion `id >= 0 && id < this->Size' failed.
+        Aborted
+    
+        As a workaround, you can
+        - either close the surface (so there is no boundary, and preserveboundary will be ignored) 
+        - or add some extensions (with different property number) to the borders and use preserveboundary=True
+        After remeshing you can clip the added parts using their property number.
     """
     if includeprop is not None:
         if excludeprop is not None:
