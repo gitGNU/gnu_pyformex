@@ -47,6 +47,8 @@ from numpy import int32,float32
 
 ### Drawable Objects ###############################################
 
+def size_report(s,a):
+    print('%s: size %s; shape %s; type %s' % (s,a.size,a.shape,a.dtype))
 
 def glObjType(nplex):
     if nplex <= 3:
@@ -214,8 +216,13 @@ class Drawable(Attributes):
                 self.vertexColor = self.color
 
             if self.vertexColor is not None:
+                if pf.options.shader == 'alpha':
+                    if self.vertexColor.shape[-1] == 3:
+                        # Expand to 4 !!!
+                        self.vertexColor = at.growaxis(self.vertexColor,1)
                 self.cbo = VBO(self.vertexColor.astype(float32))
-                print("VERTEX COLOR SHAPE = %s" % str(self.cbo.shape))
+                if pf.options.shader == 'alpha':
+                    size_report("Created cbo VBO",self.cbo)
 
         #### TODO: should we make this configurable ??
         #
@@ -240,11 +247,18 @@ class Drawable(Attributes):
         """
         if self.useObjectColor:
             return
-        if color.shape != self.cbo.shape:
+        if pf.options.shader == 'alpha':
+        #if color.size != self.cbo.size:
+            size_report('color',color)
+            size_report('cbo',self.cbo)
+            print(self.cbo.size / color.size)
             print("Can not change vertex color from shape %s to shape %s" % (str(self.cbo.shape),str(color.shape)))
-            return
+            #return
         self.vertexColor = self.color
         self.cbo = VBO(color.astype(float32))
+        if pf.options.shader == 'alpha':
+            print("Replace cbo with")
+            size_report('cbo',self.cbo)
 
 
     def prepareTexture(self):
@@ -338,7 +352,7 @@ class Drawable(Attributes):
         if self.cbo:
             self.cbo.bind()
             GL.glEnableVertexAttribArray(renderer.shader.attribute['vertexColor'])
-            GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'], 3, GL.GL_FLOAT, False, 0, self.cbo)
+            GL.glVertexAttribPointer(renderer.shader.attribute['vertexColor'], self.cbo.shape[-1], GL.GL_FLOAT, False, 0, self.cbo)
 
         if self.tbo:
             self.tbo.bind()
