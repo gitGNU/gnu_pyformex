@@ -312,8 +312,13 @@ class GeometryFile(object):
         """
         # We rely on Attributes __repr__ method, but multiple line
         # representations are coerced to a single line to allow readback
+        # And we need to set numpy printoptions to display the full
+        # array, not a truncated one
+        opt = np.get_printoptions()
+        np.set_printoptions(threshold=np.inf)
         s = re.sub('\n *','',repr(attrib))
         self.fil.write("# attrib = %s\n" % s)
+        np.set_printoptions(**opt)
 
 
     def writeMesh(self,F,name=None,sep=None,objtype='Mesh'):
