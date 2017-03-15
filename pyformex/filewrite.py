@@ -73,7 +73,7 @@ def writeData(fil,data,sep='',fmt=None,end=''):
       according to the specified format. This uses the pyFormex functions
       `misc.tofile_int32` or `misc.tofile_float32`, which have accelerated
       versions in the pyFormex C library. This also means that the data arrays
-      will be force to type `float32` or `int32` before writing.
+      will be forced to type `float32` or `int32` before writing.
 
       The format string should contain a valid format converter for a
       a single data item in both Python and C. They should also contain

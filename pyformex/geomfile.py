@@ -309,16 +309,42 @@ class GeometryFile(object):
         """Write the Attributes block of the Geometry
 
         attrib: the Attributes dict of a Geometry object
+
+        Beware: this is work in progress. Not all Attributes can currently
+        be stored in the PGF format.
         """
+        def filter_attrib(attrib):
+            """Filter the storable attributes.
+
+            Currently, only bool, int, float and str types are stored.
+            """
+            okkeys = [ k for k in attrib
+                           if k is not 'color' and (
+                               isinstance(attrib[k],(bool,int,float,str))
+                               or isInt(attrib[k]) or isFloat(attrib[k]) ) ]
+            return utils.selectDict(attrib,okkeys)
+
         # We rely on Attributes __repr__ method, but multiple line
         # representations are coerced to a single line to allow readback
-        # And we need to set numpy printoptions to display the full
-        # array, not a truncated one
-        opt = np.get_printoptions()
-        np.set_printoptions(threshold=np.inf)
-        s = re.sub('\n *','',repr(attrib))
-        self.fil.write("# attrib = %s\n" % s)
-        np.set_printoptions(**opt)
+
+        # Select the exportable attributes
+        okattr = filter_attrib(attrib)
+        if okattr:
+            # In case we would allow array attributes, We need to set
+            # numpy printoptions to display the full array, not a truncated one
+            opt = np.get_printoptions()
+            np.set_printoptions(threshold=np.inf)
+            # Get a reversible representation of the attrib dict
+            s = repr(filter_attrib(okattr))
+            # Restore the numpy printoptions
+            np.set_printoptions(**opt)
+            # Remove the newlines, so everything can be read as a single line
+            s = re.sub('\n *','',s)
+            # In case arrays are stored, remove the dtype (only int and float
+            # dtypes are supported, and type is obvious from the stored values)
+            s = re.sub(', *dtype=[^)]*\)',')',s)
+            # Write the result to the file
+            self.fil.write("# attrib = %s\n" % s)
 
 
     def writeMesh(self,F,name=None,sep=None,objtype='Mesh'):
@@ -397,6 +423,7 @@ class GeometryFile(object):
         if hasnorm:
             self.writeData(F.normals, sep)
         if color == 'element' or color == 'vertex':
+            print("COLOR IS TYPE %s" % Fc.dtype)
             self.writeData(Fc, sep)
         for field in F.fields:
             fld = F.fields[field]
