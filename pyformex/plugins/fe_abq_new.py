@@ -2626,7 +2626,7 @@ class AbqData(object):
         self.extra = extra
 
 
-    def write(self,jobname=None,group_by_eset=True,group_by_group=False,header='',create_part=False,copy_script=False):
+    def write(self,jobname=None,group_by_eset=True,group_by_group=False,header='',create_part=False,copy_script=True):
         """Write an Abaqus input file.
 
         - `jobname` : the name of the inputfile, with or without '.inp'
