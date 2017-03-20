@@ -2070,7 +2070,7 @@ class AbqData(object):
         self.out = out
 
 
-    def write(self,jobname=None,group_by_eset=True,group_by_group=False,header='',create_part=False,copy_script=True):
+    def write(self,jobname=None,group_by_eset=True,group_by_group=False,header='',create_part=False,copy_script=False):
         """Write an Abaqus input file.
 
         - `jobname` : the name of the inputfile, with or without '.inp'
@@ -2078,7 +2078,7 @@ class AbqData(object):
           An extra header text may be specified.
         - `create_part` : if True, the model will be created as an Abaqus Part,
           followed by an assembly of that part.
-        - `copy_script`: if True, the pyFormex script used to generate the input file is written. To extract the script from the 
+        - `copy_script`: if True, the pyFormex script used to generate the input file is written. To extract the script from the
             input file used the function: scriptFromInpFile.
         """
         global materialswritten
@@ -2308,7 +2308,7 @@ def exportMesh(filename,mesh,eltype,header=''):
 
 def scriptFromInpFile(jobname, key='**pyFormex|'):
     """Writes the pyFormex scripts inside the .inp file to a file.
-    
+
     Create a new jobname.py file with the lines of the input file
     corresponding to the pyForme scipts.
     It only works if the pyFormex scripts was copied in the inp file:
@@ -2321,7 +2321,7 @@ def scriptFromInpFile(jobname, key='**pyFormex|'):
     newscript = jobname+'.py'
     fil = open(newscript, 'w')
     lkey = len(key)
-    for line in lines:        
+    for line in lines:
         if line[:lkey] == key:
             fil.write(line[lkey:])
     fil.close()
