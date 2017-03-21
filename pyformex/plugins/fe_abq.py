@@ -26,13 +26,16 @@ from __future__ import absolute_import, division, print_function
 import pyformex as pf
 
 # This trick is for Sphinx
-try:
-    oldabq = pf.options.oldabq
-except:
-    oldabq = False
+# try:
+#     oldabq = pf.options.oldabq
+# except:
+#     oldabq = False
 
-if oldabq:
-    from .fe_abq_old import *
+# if oldabq:
+#     from .fe_abq_old import *
 
-else:
-    from .fe_abq_new import *
+# else:
+#     from .fe_abq_new import *
+
+
+from .fe_abq_new import *
