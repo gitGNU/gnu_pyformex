@@ -590,7 +590,7 @@ def create_points(color=0, obj=None):
     It returns all the points in the order they were picked 
     and a variable indicating how  you have exited:
     - you can escape the create_points by pushing ESC on Keyboard: None is returned
-    - right click or ENTER returns an empty list []
+    - right mouse click or ENTER returns an empty list []
     """
     # build one surface around all visible objects or the given objects
     if obj is None:
@@ -661,45 +661,75 @@ def query_point2D(color=0):
         color+=1
 
 
-def query_distance2D(color=0):
+def query_distance2D(p0=None, drawopt=None):
+    """2D distance between 2 points based on current camera
+
+    The first point (p0) can be given as input.
+    
+    It prints the 2D distance and also the horizontal
+    and vertical components based on the current camera.
+    
+    It returns the drawn object to be used to undraw, 
+    the 2D distance vector on camera plane,
+    the 3D distance vector on global coordinate system.
+    
+    Push on ESC or right mouse click or ENTER to interrupt.
+    """
+    args = [p0,drawopt] # only needed in case you rotate the camera between first and second point
+    
+    if drawopt is None:
+        col = mycolor(0)
+        drawopt = dict(color=col,bbox='last', view=None)
+        
+    D = []
+    print ('starting point')
+    if p0 is None:
+        p0 = create_point()
+    if isNoneOrEmpty(p0):
+        undraw(D)
+        return
+    p0c, CS0 = toCameraCS(p0)
+    h0,v0 = p0c[:2]
+    D += [draw(p0, **drawopt)]
+    print ('end point')
+    p1 = create_point()
+    if isNoneOrEmpty(p1):
+        undraw(D)
+        return
+    p1c, CS1 = toCameraCS(p1)
+    h1,v1 = p1c[:2]
+    D += [draw(p1, **drawopt)]
+    if abs(CS1.w - CS0.w).sum(axis=0)>1.e-5: # zcam is the camera axis
+        warning('You can not perform 2D measurements if you rotate the camera. Repeat.')
+        undraw(D)
+        return query_distance2D(*args)
+    d = length(p1-p0)
+    s = "*** Distance 2D report ***\n"
+    s += "[H %s, V %s] %s \n" % (h1-h0, v1-v0, d)
+    cprint (s, color=drawopt['color']) # print in color on pyFormex message board
+    D+=[
+    drawMarks([(p0+p1)*0.5], ['%.2e'%d], size=20, mode='smooth',**drawopt),
+    draw(Formex([[p0, p1]]), linewidth=3, **drawopt)
+    ]
+    return D, array([h1-h0, v1-v0]), asarray(p1-p0)
+
+
+def query_distances2D(color=0):
     """2D distance between 2 points based on current camera
 
     It prints the 2D distance and also the horizontal
     and vertical components based on the current camera.
-    Push on ESC to terminate, otherwise it repeats.
+    Push on ESC or right mouse click or ENTER to terminate, otherwise it repeats.
     """
     D = []
     while True:
         col = mycolor(color)
         drawopt = dict(color=col,bbox='last', view=None)
-        print ('starting point')
-        p0 = create_point()
-        if isNoneOrEmpty(p0):
+        res = query_distance2D(drawopt=drawopt)
+        if isNoneOrEmpty(res):
             undraw(D)
             break
-        p0c, CS0 = toCameraCS(p0)
-        h0,v0 = p0c[:2]
-        D += [draw(p0, **drawopt)]
-        print ('end point')
-        p1 = create_point()
-        if isNoneOrEmpty(p1):
-            undraw(D)
-            break
-        p1c, CS1 = toCameraCS(p1)
-        h1,v1 = p1c[:2]
-        D += [draw(p1, **drawopt)]
-        if abs(CS1.w - CS0.w).sum(axis=0)>1.e-5: # zcam is the camera axis
-            warning('You can not perform 2D measurements if you rotate the camera')
-            undraw(D)
-        d = length(p1-p0)
-        #~ print (p0, p1)
-        s = "*** Distance 2D report ***\n"
-        s += "[H %s, V %s] %s \n" % (h1-h0, v1-v0, d)
-        cprint (s, color=col) # print in color on pyFormex message board
-        D+=[
-        drawMarks([(p0+p1)*0.5], ['%.2e'%d], size=20, mode='smooth',**drawopt),
-        draw(Formex([[p0, p1]]), linewidth=3, **drawopt)
-        ]
+        D+=res[0]
         color+=1
 
 
@@ -1131,7 +1161,7 @@ def create_menu():
             ('&Distances', query_distances),
             ('&Angle', query_angle),
             ('&Point 2D', query_point2D),
-            ('&Distance 2D', query_distance2D),
+            ('&Distances 2D', query_distances2D),
             ('&Angle 2D', query_angle2D),
             ('&Point labels',pointlabels),
             ('&Create points',create_points),
