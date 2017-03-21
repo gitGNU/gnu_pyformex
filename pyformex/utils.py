@@ -456,6 +456,7 @@ def fileDescription(ftype,compr=False):
     all = 'All files (*)'
     ccx = 'CalCuliX files (*.dat *.inp)'
     gz = 'Compressed files (*.gz *.bz2)'
+    dcm = 'DICOM images (*.dcm)'
     dxf = 'AutoCAD .dxf files (*.dxf)'
     dxfall = 'AutoCAD .dxf or converted(*.dxf *.dxftext)'
     dxftext = 'Converted AutoCAD files (*.dxftext)'
@@ -1240,6 +1241,11 @@ def underlineHeader(s,char='-'):
     Adds a new line of text below the first line of s. The new line
     has the same length as the first, but all characters are equal to
     the specified char.
+
+    >>> print(underlineHeader("Hello World"))
+    Hello World
+    -----------
+
     """
     i = s.find('\n')
     if i < 0:
@@ -1253,6 +1259,13 @@ def framedText(text,padding=[0,2,0,2],border=[1,2,1,2],margin=[0,0,0,0],
 
     - `adjust`: 'l', 'c' or 'r': makes the text lines be adjusted to the
       left, center or right.
+
+    >>> print(framedText("Hello World,\\nThis is me calling",adjust='c'))
+    ##########################
+    ##     Hello World,     ##
+    ##  This is me calling  ##
+    ##########################
+
     """
     lines = text.splitlines()
     maxlen = max([len(l) for l in lines])
@@ -1281,6 +1294,49 @@ def framedText(text,padding=[0,2,0,2],border=[1,2,1,2],margin=[0,0,0,0],
     for i in range( margin[2]):
         s.append('')
     return '\n'.join(s)
+
+
+def prefixText(text,prefix):
+    """Add a prefix to all lines of a text.
+
+    - `text`: multiline string
+    - `prefix`: string: prefix to insert at the start of all lines of text.
+
+    >>> print(prefixText("line1\\nline2","** "))
+    ** line1
+    ** line2
+
+    """
+    return '\n'.join([ prefix+line for line in text.split('\n') ])
+
+
+def versaText(obj):
+    """Versatile text creator
+
+    This functions converts any input into a (multiline) string.
+    Currently, different inputs are treated as follows:
+
+    - string: return as is,
+    - function: use the output of the function as input,
+    - anything else: use str() or repr() on the object.
+
+    >>> versaText("Me")
+    'Me'
+    >>> versaText(1)
+    '1'
+    >>> versaText(len("Me"))
+    '2'
+    >>> versaText({1:"Me"})
+    "{1: 'Me'}"
+    """
+    if callable(obj):
+        obj = obj()
+    if not isinstance(obj,str):
+        try:
+            obj = str(obj)
+        except:
+            obj = repr(obj)
+    return obj
 
 
 ###################### file conversion ###################
@@ -2067,6 +2123,18 @@ def defaultMonoFont():
 
 
 ###########################################################################
+
+
+def currentScript():
+    """Return the text of the script in execution, if any.
+
+    If a script file is currently being executed, returns the text of that
+    script, else returns an empty string.
+    """
+    if pf.scriptMode == 'script' and os.path.exists(pf.scriptName):
+        return open(pf.scriptName).read()
+    else:
+        return ''
 
 
 def procInfo(title):
