@@ -661,7 +661,7 @@ def query_point2D(color=0):
         color+=1
 
 
-def query_distance2D(p0=None, drawopt=None):
+def query_distance2D(p0=None, p1=None, drawopt=None):
     """2D distance between 2 points based on current camera
 
     The first point (p0) can be given as input.
@@ -675,15 +675,15 @@ def query_distance2D(p0=None, drawopt=None):
     
     Push on ESC or right mouse click or ENTER to interrupt.
     """
-    args = [p0,drawopt] # only needed in case you rotate the camera between first and second point
+    args = [p0, p1, drawopt] # only needed in case you rotate the camera between first and second point
     
     if drawopt is None:
         col = mycolor(0)
         drawopt = dict(color=col,bbox='last', view=None)
         
     D = []
-    print ('starting point')
     if p0 is None:
+        print ('starting point')
         p0 = create_point()
     if isNoneOrEmpty(p0):
         undraw(D)
@@ -691,8 +691,9 @@ def query_distance2D(p0=None, drawopt=None):
     p0c, CS0 = toCameraCS(p0)
     h0,v0 = p0c[:2]
     D += [draw(p0, **drawopt)]
-    print ('end point')
-    p1 = create_point()
+    if p1 is None:
+        print ('end point')
+        p1 = create_point()
     if isNoneOrEmpty(p1):
         undraw(D)
         return
@@ -711,7 +712,64 @@ def query_distance2D(p0=None, drawopt=None):
     drawMarks([(p0+p1)*0.5], ['%.2e'%d], size=20, mode='smooth',**drawopt),
     draw(Formex([[p0, p1]]), linewidth=3, **drawopt)
     ]
-    return D, array([h1-h0, v1-v0]), asarray(p1-p0)
+    return D, array([h1-h0, v1-v0]), asarray(p1-p0) # draw_object, 2D distance, 3D distance
+
+
+def query_angle2D(p0=None, p1=None, p2=None, drawopt=None):
+    """Planar angle based on current camera plane.
+
+    It prints the planar angle on the current camera plane.
+    Push on ESC to terminate, otherwise it repeats.
+    """
+    args = [p0, p1, p2, drawopt] # only needed in case you rotate the camera between first and second point
+    
+    if drawopt is None:
+        col = mycolor(0)
+        drawopt = dict(color=col,bbox='last', view=None)
+
+    D = []
+    print("Pick 3 points in 2D")
+    if p0 is None:
+        print("Pick point on first ray")
+        p0 = create_point()
+    if isNoneOrEmpty(p0):
+        undraw(D)
+        return
+    w0 = getCameraCS().w
+    D += [draw(p0, **drawopt)]
+    if p1 is None:
+        print("Pick the vertex")
+        p1 = create_point()
+    if isNoneOrEmpty(p1):
+        undraw(D)
+        return
+    w1 = getCameraCS().w
+    D += [draw(p1, **drawopt)]
+    if abs(w1 - w0).sum(axis=0)>1.e-5:
+        warning('You can not perform 2D measurements if you rotate the camera. Repeat.')
+        undraw(D)
+        return query_angle2D(*args)
+    if p2 is None:
+        print("Pick point on second ray")
+        p2 = create_point()
+    if isNoneOrEmpty(p2):
+        undraw(D)
+        return
+    w2 = getCameraCS().w
+    D += [draw(p2, **drawopt)]
+    if abs(w2 - w0).sum(axis=0)>1.e-5:
+        warning('You can not perform 2D measurements if you rotate the camera. Repeat.')
+        undraw(D)
+        return query_angle2D(*args)
+    angle = rotationAngle(A=p0-p1,B=p2-p1,m=w0,angle_spec=DEG)
+    angle = angle[0]
+    s = "*** Angle 2D report ***\n"
+    s += '%s degrees around camera axis'%angle
+    cprint (s, color=drawopt['color']) # print in color on pyFormex message board
+    D += [draw(Formex([[p0, p1]]), linewidth=3, **drawopt)]
+    D += [draw(Formex([[p1, p2]]), linewidth=3, **drawopt)]
+    D += [drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, mode='smooth',**drawopt)]
+    return D, angle, w0, p1 # draw_object, angle, axis, around
 
 
 def query_distances2D(color=0):
@@ -733,7 +791,7 @@ def query_distances2D(color=0):
         color+=1
 
 
-def query_angle2D(color=0):
+def query_angles2D(color=0):
     """Planar angle based on current camera plane.
 
     It prints the planar angle on the current camera plane.
@@ -743,44 +801,13 @@ def query_angle2D(color=0):
     while True:
         col = mycolor(color)
         drawopt = dict(color=col,bbox='last', view=None)
-        print("Pick 3 points in 2D")
-        print("Pick point on first ray")
-        p0 = create_point()
-        if isNoneOrEmpty(p0):
+        res = query_angle2D(drawopt=drawopt)
+        if isNoneOrEmpty(res):
             undraw(D)
             break
-        w0 = getCameraCS().w
-        D += [draw(p0, **drawopt)]
-        print("Pick the vertex")
-        p1 = create_point()
-        if isNoneOrEmpty(p1):
-            undraw(D)
-            break
-        w1 = getCameraCS().w
-        D += [draw(p1, **drawopt)]
-        if abs(w1 - w0).sum(axis=0)>1.e-5:
-            warning('You can not perform 2D measurements if you rotate the camera')
-            undraw(D)
-            return
-        print("Pick point on second ray")
-        p2 = create_point()
-        if isNoneOrEmpty(p2):
-            undraw(D)
-            break
-        w2 = getCameraCS().w
-        D += [draw(p2, **drawopt)]
-        if abs(w2 - w0).sum(axis=0)>1.e-5:
-            warning('You can not perform 2D measurements if you rotate the camera')
-            undraw(D)
-        angle = rotationAngle(A=p0-p1,B=p2-p1,m=w0,angle_spec=DEG)
-        angle = angle[0]
-        s = "*** Angle 2D report ***\n"
-        s += '%s degrees around camera axis'%angle
-        cprint (s, color=col) # print in color on pyFormex message board
-        D += [draw(Formex([[p0, p1]]), linewidth=3, **drawopt)]
-        D += [draw(Formex([[p1, p2]]), linewidth=3, **drawopt)]
-        D += [drawMarks([(p0+p2)*0.5], ['%.1f'%angle], size=20, mode='smooth',**drawopt)]
+        D+=res[0]
         color+=1
+
 
 def report_selection():
     if selection is None:
@@ -1162,7 +1189,7 @@ def create_menu():
             ('&Angle', query_angle),
             ('&Point 2D', query_point2D),
             ('&Distances 2D', query_distances2D),
-            ('&Angle 2D', query_angle2D),
+            ('&Angles 2D', query_angles2D),
             ('&Point labels',pointlabels),
             ('&Create points',create_points),
             ]),
