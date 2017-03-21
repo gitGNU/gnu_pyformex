@@ -2668,7 +2668,7 @@ class AbqData(object):
         self.extra = extra
 
 
-    def write(self,jobname=None,group_by_eset=True,group_by_group=False,comment=None,header='',create_part=False,copy_script=False):
+    def write(self,jobname=None,group_by_eset=True,group_by_group=False,comment=None,header='',create_part=False):
         """Write an Abaqus input (INP) file.
 
         - `jobname`: relative or absolute path name of the exported Abaqus INP
@@ -2898,20 +2898,6 @@ Script: %s
             fil.close()
         print("Wrote Abaqus input file %s" % filename)
 
-        if copy_script:
-            print ('copy pyFormex script in the inp file')
-            fil=open(filename,'r')
-            inp_lines=fil.readlines()
-            fil.close()
-            py_lines=open(pf.scriptName,'r').readlines()
-            key = '**pyFormex|' # probably ugly, but it should by ease to read back by the function: scriptFromInpFile (see below)
-            py_lines=[key+key.join(py_lines)+'\n']
-            lines = py_lines+inp_lines
-            fil=open(filename,'w')
-            for line in lines:
-                fil.write('%s'%line)
-            fil.close()
-
 
 ##################################################
 ## Some convenience functions
@@ -2944,28 +2930,6 @@ def exportMesh(filename,mesh,eltype,header=''):
         eofs += m.nelems()
     fil.close()
     print("Abaqus file %s written." % filename)
-
-
-def scriptFromInpFile(jobname, key='**pyFormex|'):
-    """Writes the pyFormex scripts inside the .inp file to a file.
-
-    Create a new jobname.py file with the lines of the input file
-    corresponding to the pyForme scipts.
-    It only works if the pyFormex scripts was copied in the inp file:
-    abq = AbqData(...)
-    abq.write(jobname=...,header=.., copy_script=True)
-    """
-    fil = open(jobname, 'r')
-    lines = fil.readlines()
-    fil.close()
-    newscript = jobname+'.py'
-    fil = open(newscript, 'w')
-    lkey = len(key)
-    for line in lines:
-        if line[:lkey] == key:
-            fil.write(line[lkey:])
-    fil.close()
-    print ('the pyFormex scripts %s has been written succesfully' %newscript)
 
 
 # End
