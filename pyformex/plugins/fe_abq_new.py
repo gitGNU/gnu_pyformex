@@ -21,7 +21,7 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with this program.  If not, see http://www.gnu.org/licenses/.
 ##
-"""Exporting finite element models in Abaqus\ |trade| input file format.
+"""Export finite element models in Abaqus\ |trade| input file format.
 
 This module provides functions and classes to export finite element models
 from pyFormex in the Abaqus\ |trade| input format (.inp).
@@ -336,14 +336,56 @@ class Command(object):
         return out
 
 
+def fmtWatermark():
+    """Format the pyFormex watermark.
+
+    The pyFormex watermark contains the version used to create the output.
+    This should always be the first line of the output file.
+
+    >>> print(fmtWatermark())
+    ** Abaqus input file created by pyFormex 1.0.4-a1 (http://pyformex.org)
+    **
+    <BLANKLINE>
+
+    """
+    return """\
+** Abaqus input file created by %s (%s)
+**
+""" % (pf.Version(), pf.Url)
+
+
+def fmtComment(text=None):
+    """Format the initial comment section.
+
+    >>> print(fmtComment("This is a comment\\n of two lines."))
+    **This is a comment
+    ** of two lines.
+    <BLANKLINE>
+
+    """
+    out = utils.prefixText(utils.versaText(text),"**")
+    if not out.endswith('\n'):
+        out += '\n'
+    return out
+
+
 def fmtHeading(text=''):
-    """Format the heading of the Abaqus input file."""
-    out = """**  Abaqus input file created by %s (%s)
+    """Format the heading section.
+
+    Any specified text will be included in the heading section.
+
+    >>> print(fmtHeading("This is the heading"))
+    **
+    *HEADING
+    This is the heading
+    <BLANKLINE>
+
+    """
+    return """\
 **
 *HEADING
 %s
-""" % (pf.Version(), pf.Url, text)
-    return out
+""" % utils.versaText(text)
 
 
 def fmtSectionHeading(text=''):
@@ -2626,16 +2668,25 @@ class AbqData(object):
         self.extra = extra
 
 
-    def write(self,jobname=None,group_by_eset=True,group_by_group=False,header='',create_part=False,copy_script=False):
-        """Write an Abaqus input file.
+    def write(self,jobname=None,group_by_eset=True,group_by_group=False,comment=None,header='',create_part=False,copy_script=False):
+        """Write an Abaqus input (INP) file.
 
-        - `jobname` : the name of the inputfile, with or without '.inp'
-          extension. If None is specified, the output is written to sys.stdout
-          An extra header text may be specified.
+        - `jobname`: relative or absolute path name of the exported Abaqus INP
+          file.
+          If the name does not end in '.inp', this extension will be appended.
+          If no name is specified, the output is written to sys.stdout.
+        - `comment`: A text to be included at the top of the INP file, right
+          after the 'created by pyFormex' line. The text can be a multiline
+          string or a function returning such string. Any other object will be
+          dumped to a string in JSON format.
+          All lines of the resulting text are prepended with '** ' before
+          inclusion in the INP file, so Abaqus will recognize them as comments.
+        - `header`: A text like comments, but this one will be inserted in the
+          header section of the INP file, and not marked as comments. This is
+          commonly used to add information that should appear in the result
+          files.
         - `create_part` : if True, the model will be created as an Abaqus Part,
           followed by an assembly of that part.
-        - `copy_script`: if True, the pyFormex script used to generate the input file is written. To extract the script from the
-            input file used the function: scriptFromInpFile.
         """
         global materialswritten
         materialswritten = []
@@ -2647,7 +2698,9 @@ class AbqData(object):
             jobname, filename = abqInputNames(jobname)
             fil = open(filename, 'w')
             print("Writing to file %s" % (filename))
-
+        fil.write(fmtWatermark())
+        if comment is not None:
+            fil.write(fmtComment(comment))
         fil.write(fmtHeading("""Model: %s     Date: %s      Created by pyFormex
 Script: %s
 %s
@@ -2860,8 +2913,6 @@ Script: %s
             fil.close()
 
 
-
-
 ##################################################
 ## Some convenience functions
 ##################################################
@@ -2878,7 +2929,7 @@ def exportMesh(filename,mesh,eltype,header=''):
     element set. The resulting file  can then be imported in Abaqus/CAE
     or manual be edited to create a full model.
     If an eltype is specified, it will override the value stored in the mesh.
-    This should be used to set a correct Abaqus element type matchin the mesh.
+    This should be used to set a correct Abaqus element type matching the mesh.
     """
     fil = open(filename, 'w')
     fil.write(fmtHeading(header))
@@ -2893,6 +2944,7 @@ def exportMesh(filename,mesh,eltype,header=''):
         eofs += m.nelems()
     fil.close()
     print("Abaqus file %s written." % filename)
+
 
 def scriptFromInpFile(jobname, key='**pyFormex|'):
     """Writes the pyFormex scripts inside the .inp file to a file.
@@ -2914,9 +2966,6 @@ def scriptFromInpFile(jobname, key='**pyFormex|'):
             fil.write(line[lkey:])
     fil.close()
     print ('the pyFormex scripts %s has been written succesfully' %newscript)
-
-
-
 
 
 # End
