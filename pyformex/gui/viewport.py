@@ -821,12 +821,13 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         can be tested to find how the picking operation was exited:
         True means accepted (right mouse click, ENTER key, or OK button),
         False means canceled (ESC key, or Cancel button). In the latter case,
-        the returned Collection is always empty
+        the returned Collection is always empty.
 
         Small bugs:
+
         - if oneshot=True the pf.canvas.selection_accepted is always True, even if you ESC
-        - the first time you pick the ESC does not work. You need at least to left click before.
         """
+        self.setFocus()
         self.selection_canceled = False
         self.start_selection(mode, filter, pickable)
         while not self.selection_canceled:
@@ -926,9 +927,11 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         has been reached, or when the user clicks the right mouse button or
         hits 'ENTER'.
         The return value is a (n,3) shaped Coords array.
-        To know in which way the drawing was finished check the pf.canvas.draw_accepted:
-        True means mouse right click / ENTER, False means ESC button on keyboard.
+        To know in which way the drawing was finished check
+        pf.canvas.draw_accepted: True means mouse right click / ENTER,
+        False means ESC button on keyboard.
         """
+        self.setFocus()
         self.draw_canceled = False
         self.start_draw(mode, zplane, coords)
         try:
@@ -987,6 +990,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
     def cancel_draw(self):
         """Cancel an interactive drawing mode and clear the drawing."""
+        print("CANCEL DRAW")
         self.accept_draw(clear=True)
 
 
@@ -1398,6 +1402,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             func(e.x(), self.height()-e.y(), RELEASE)
         e.accept()
 
+
     def wheelEvent(self, e):
         """Process a wheel event."""
         func = self.wheel_zoom
@@ -1406,12 +1411,12 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         e.accept()
 
 
-
     # Any keypress with focus in the canvas generates a GUI WAKEUP signal.
     # This is used to break out of a wait status.
     # Events not handled here could also be handled by the toplevel
     # event handler.
     def keyPressEvent (self, e):
+        # Make the clicked viewport the current one
         pf.GUI.signals.WAKEUP.emit()
         if e.key() == ESC:
             self.CANCEL.emit()
