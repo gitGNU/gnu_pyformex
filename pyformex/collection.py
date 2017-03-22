@@ -205,10 +205,13 @@ class Collection(object):
 
 
     def __str__(self):
-        s = ''
-        for k in self.keys():
-            s += "%s %s; " % (k, self.d[k])
-        return s.rstrip()
-
+        if len(self) == 0:
+            s = 'Empty Collection'
+        else:
+            s = ''
+            for k in self.keys():
+                s += "%s %s; " % (k, self.d[k])
+            s = s.rstrip()
+        return s
 
 # End
