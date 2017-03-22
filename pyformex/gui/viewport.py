@@ -990,7 +990,6 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
 
     def cancel_draw(self):
         """Cancel an interactive drawing mode and clear the drawing."""
-        print("CANCEL DRAW")
         self.accept_draw(clear=True)
 
 
@@ -1025,8 +1024,9 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             self.drawn = self.unproject(x, y, self.zplane)
             self.selection_busy = False
 
+
 ##########################################################################
- # line drwaing mode #
+ # line drawing mode #
 
     def drawLinesInter(self,mode='line',oneshot=False,func=None):
         """Interactively draw lines on the canvas.
@@ -1042,6 +1042,7 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         When the drawing operation is finished, the drawing is returned.
         The return value is a (n,2,2) shaped array.
         """
+        self.setFocus()
         self.drawing_canceled = False
         self.start_drawing(mode)
         while not self.drawing_canceled:
