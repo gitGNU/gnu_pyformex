@@ -815,7 +815,6 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             Currently this only works when picking mode is 'element' and
             for Actors having a partitionByConnection method.
 
-
         Returns a (possibly empty) Collection with the picked items.
         After return, the value of the pf.canvas.selection_accepted variable
         can be tested to find how the picking operation was exited:
@@ -823,9 +822,6 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
         False means canceled (ESC key, or Cancel button). In the latter case,
         the returned Collection is always empty.
 
-        Small bugs:
-
-        - if oneshot=True the pf.canvas.selection_accepted is always True, even if you ESC
         """
         self.setFocus()
         self.selection_canceled = False
@@ -835,10 +831,6 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
             if not self.selection_canceled:
                 # selection by mouse_picking
                 self.pick_func[self.pick_mode]()
-                #print("PICKED")
-                #print(self.picked)
-                #print("CLOSEST PICK")
-                #print(self.closest_pick)
                 if len(self.picked) > 0:
                     if self.selection_filter is None:
                         if self.mod == _PICK_SET:
@@ -882,11 +874,10 @@ class QtCanvas(QtOpenGL.QGLWidget, canvas.Canvas):
                     # Nothing picked and set mode:
                     self.selection.set([])
                 if func:
-                    #print("EXECUTING FUNC %s" % func)
                     func(self, self.selection)
                 self.update()
-            if oneshot:
-                self.accept_selection()
+                if oneshot:
+                    self.accept_selection()
         if func and not self.selection_accepted:
             func(self, self.selection)
         self.finish_selection()
