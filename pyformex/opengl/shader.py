@@ -64,23 +64,23 @@ def defaultShaders():
 
         if pf.options.opengl is not None:
             if SaneVersion(pf.options.opengl) >= SaneVersion('3.3'):
-                pf.options.shader = '_330'
+                pf.options.shader = '330'
 
         # Default shaders for some hardware
 
         pf.debug("Selecting best default shader",pf.DEBUG.OPENGL)
 
         if 'Mesa' in renderer or 'Mesa' in version:
-            pf.options.shader = '_mesa'
+            pf.options.shader = 'mesa'
 
-        # For Radeon, select _330 if available
+        # For Radeon, select 330 if available
         if 'Radeon' in renderer and SaneVersion(availversion) >= SaneVersion('3.3'):
-            pf.options.shader = '_330'
+            pf.options.shader = '330'
 
 
     if pf.options.shader:
-        vertexshader += str(pf.options.shader)
-        fragmentshader += str(pf.options.shader)
+        vertexshader += '_%s' % pf.options.shader
+        fragmentshader += '_%s' % pf.options.shader
     vertexshader += '.c'
     fragmentshader += '.c'
     return vertexshader,fragmentshader

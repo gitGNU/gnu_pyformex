@@ -390,6 +390,26 @@ def Libraries():
     return [ m.__name__ for m in accelerated ]
 
 
+def Shaders():
+    """Return a list of the available GPU shader programs.
+
+    Shader programs are in the pyformex/glsl directory and consist
+    at least of two files:
+    'vertex_shader_SHADER.c' and 'fragment_shader_SHADER.c'.
+    This function will return a list of all the SHADER filename parts
+    currently available. The default shader programs do not have the
+    '_SHADER' part and will not be contained in this list.
+    """
+    from pyformex import utils
+    files = utils.listTree(pf.cfg['shaderdir'],listdirs=False, sorted=True,
+        includefiles=['vertex_shader_.*\.c$', 'fragment_shader_.*\.c$'])
+    files = [ os.path.basename(f) for f in files ]
+    vshaders = [ f[14:-2] for f in files if f.startswith('v') ]
+    fshaders = [ f[16:-2] for f in files if f.startswith('f') ]
+    shaders = set(vshaders) & set(fshaders)
+    return sorted(shaders)
+
+
 def detectedSoftware(all=True):
     """Return a dict with all detected helper software"""
     if all:
@@ -402,7 +422,8 @@ def detectedSoftware(all=True):
             ('pyFormex_version', the_version['pyformex']),
             ('pyFormex_installtype', pf.installtype),
             ('pyFormex_fullversion', pf.fullVersion()),
-            ('pyFormex_libraries', Libraries()),
+            ('pyFormex_libraries', ', '.join(Libraries())),
+            ('pyFormex_shaders', ', '.join(Shaders())),
             ('Python_version', the_version['python']),
             ('Python_fullversion', sys.version.replace('\n', ' ')),
             ('System', system),

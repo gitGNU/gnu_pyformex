@@ -813,6 +813,7 @@ def listIconNames(dirs=None,types=None):
         icons.extend(files)
     return icons
 
+
 ##########################################################################
 ## File lists ##
 ################

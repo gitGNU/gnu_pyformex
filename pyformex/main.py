@@ -518,11 +518,11 @@ def parseArguments(args):
        )
     MO("--opengl",
        action="store", dest="opengl", default='2.0',
-       help="Force the usage of an OpenGL version. The version should be specified as a string 'a.b'. The default is 2.0",
+       help="Force the use of a specific OpenGL version. The version should be specified as a string 'a.b'. The default is 2.0",
        )
     MO("--shader",
        action="store", dest="shader", default='',
-       help="An extra string to add into the name of the shader programs, located in pyformex/data. The value will be added in before the '.c' extension.",
+       help="Force the use of an alternate GPU shader for the OpenGL rendering. If the default selected shader does not work well for your hardware, you can use this option to try one of the alternate shaders. See 'pyformex --detect' for a list of the available shaders.",
        )
     MO("--newviewports",
        action="store_true", dest="newviewports", default=False,
