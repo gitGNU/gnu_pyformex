@@ -153,7 +153,7 @@ class Drawable(Attributes):
     attributes = [
         'cullface', 'subelems', 'color', 'name', 'highlight', 'opak',
         'linewidth', 'pointsize', 'lighting', 'offset', 'vbo', 'nbo', 'ibo',
-        'alpha', 'drawface', 'objectColor', 'useObjectColor',
+        'alpha', 'drawface', 'objectColor', 'useObjectColor', 'rgbamode',
         'texture', 'texcoords',
         ]
 
@@ -216,13 +216,17 @@ class Drawable(Attributes):
                 self.vertexColor = self.color
 
             if self.vertexColor is not None:
+                #print("Shader suffix:[%s]" %  pf.options.shader)
                 if pf.options.shader == 'alpha':
+                    self.alpha = 0.5
                     if self.vertexColor.shape[-1] == 3:
                         # Expand to 4 !!!
-                        self.vertexColor = at.growaxis(self.vertexColor,1)
+                        self.vertexColor = at.growAxis(self.vertexColor,1,fill=0.5)
                 self.cbo = VBO(self.vertexColor.astype(float32))
                 if pf.options.shader == 'alpha':
                     size_report("Created cbo VBO",self.cbo)
+
+        self.rgbamode = self.useObjectColor == 0 and self.vertexColor.shape[-1] == 4
 
         #### TODO: should we make this configurable ??
         #

@@ -104,6 +104,7 @@ class Renderer(object):
         self.shader.uniformInt('highlight', 0)
         self.shader.uniformFloat('lighting', self.canvas.settings.lighting)
         self.shader.uniformInt('useObjectColor', 1)
+        self.shader.uniformInt('rgbamode', 0)
         self.shader.uniformVec3('objectColor', self.canvas.settings.fgcolor)
         self.shader.uniformVec3('objectBkColor', self.canvas.settings.fgcolor)
         self.shader.uniformFloat('pointsize', self.canvas.settings.pointsize)

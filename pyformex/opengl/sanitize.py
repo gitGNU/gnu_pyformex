@@ -81,14 +81,16 @@ def saneColor(color=None):
     - None: indicates that the default color will be used,
     - a single color value in a format accepted by colors.GLcolor,
     - a tuple or list of such colors,
-    - an (3,) shaped array of RGB values, ranging from 0.0 to 1.0,
+    - a (3,) shaped array of RGB values, ranging from 0.0 to 1.0,
     - an (n,3) shaped array of RGB values,
+    - a (4,) shaped array of RGBA values, ranging from 0.0 to 1.0,
+    - an (n,4) shaped array of RGBA values,
     - an (n,) shaped array of integer color indices.
 
     The return value is one of the following:
     - None, indicating no color (current color will be used),
-    - a float array with shape (3,), indicating a single color,
-    - a float array with shape (n,3), holding a collection of colors,
+    - a float array with shape (3/4,), indicating a single color,
+    - a float array with shape (n,3/4), holding a collection of colors,
     - an integer array with shape (n,), holding color index values.
 
     !! Note that a single color can not be specified as integer RGB values.
@@ -96,6 +98,10 @@ def saneColor(color=None):
     Turning the single color into a list with one item will work though.
     [[ 0, 0, 255 ]] will be the same as [ 'blue' ], while
     [ 0,0,255 ] would be a color index with 3 values.
+
+    >>> print(saneColor('red'))
+    [ 1.  0.  0.]
+
     """
     if color is None:
         # no color: use canvas color
@@ -124,7 +130,7 @@ def saneColor(color=None):
     try:
         # REMOVED THE SQUEEZE: MAY BREAK SOME THINGS !!!
         color = np.asarray(color)#.squeeze()
-        if color.dtype.kind == 'f' and color.shape[-1] == 3:
+        if color.dtype.kind == 'f' and color.shape[-1] == 3 or color.shape[-1] == 4:
             # Looks like we have a sane color array
             return color.astype(np.float32)
     except:

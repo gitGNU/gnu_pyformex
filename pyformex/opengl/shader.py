@@ -116,6 +116,7 @@ class Shader(object):
     uniforms_int = [
         'highlight',
         'useObjectColor',
+        'rgbamode',
         'useTexture',
         'texmode',
         'rendertype',
