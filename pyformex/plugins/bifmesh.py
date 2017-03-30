@@ -190,11 +190,9 @@ def cpOneSection(hc, oc=None,isBranchingSection=False, verbos=False ):
     cpbl, hlum=cpBoundaryLayer(hc,  centr=oc, issection0=isBranchingSection)
 
     ##split the inner lumen in quarters and check if the isop can be applied
-    sectype= hlum.shape[0]//24.
-    if sectype!=float(int(sectype)): raise ValueError("BE CAREFUL: the number of points along each circular section need to be 24*int in order to allow mapping!")
-    else:
-        if verbos:print("----the number of points on 1 slice is suitable for ISOP MESHING----")
-    npq= sectype*6
+    if hlum.shape[0] % 24 != 0:
+        raise ValueError("The number of points along each circular section should be a multiple of 24 in order to allow mapping!")
+    npq = hlum.shape[0] // 4
     hlum1=concatenate([hlum, [hlum[0]]], axis=0)
     quartsec=[hlum1[npq*i:npq*(i+1)+1] for i in range(4)]#split in quarters
 
