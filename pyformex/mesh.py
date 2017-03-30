@@ -1889,7 +1889,8 @@ Mesh: %s nodes, %s elems, plexitude %s, ndim %s, eltype: %s
         Returns a Mesh equivalent with self but with the elements ordered as
         specified.
 
-        See also: :meth:`Connectivity.reorder`
+        :meth:`Connectivity.renumberElems` is a deprecated alias for
+        :meth:`Connectivity.reorder`
         """
         order = self.elems.reorder(order)
         if self.prop is None:
