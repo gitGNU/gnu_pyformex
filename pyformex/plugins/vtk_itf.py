@@ -364,6 +364,15 @@ def convertVPD2Triangles(vpd):
     return triangles.GetOutput()
 
 
+
+def coordsFromVTK(vtkpoints):
+    """Convert VTK class vtkPoints into pyFormex class Coords """
+    coords = None
+    if  vtkpoints.GetData().GetNumberOfTuples():
+        coords = Coords(array2N(vtkpoints.GetData()))
+    return coords
+
+
 def convertFromVPD(vpd,samePlex=True):
     """Convert a vtkPolyData into pyFormex objects.
 
@@ -858,21 +867,27 @@ def convertTransform4x4ToVtk(trMat4x4):
 def transform(source, trMat4x4):
     """Apply a 4x4 transformation
 
-    Apply a 4x4 transformation matrix array to source of Coords or any
-    surface type.
-
-    Returns the transformed coordinates
+    Apply a 4x4 transformation matrix array to `source` whcih can be
+    a Geometry surface or Coords class. 
+    
+    Returns a copy of the source object with transformed coordinates
     """
 
     from vtk import vtkTransformPolyDataFilter
 
-    source = convert2VPD(source)
+    vtksource = convert2VPD(source)
     trMat4x4 = convertTransform4x4ToVtk(trMat4x4)
     transformFilter = vtkTransformPolyDataFilter()
-    transformFilter = SetInput(transformFilter,source)
+    transformFilter = SetInput(transformFilter,vtksource)
     transformFilter.SetTransform(trMat4x4)
     transformFilter = Update(transformFilter)
-    return Coords(convertFromVPD(transformFilter.GetOutput())[0])
+    coords = coordsFromVTK(transformFilter.GetOutput().GetPoints())
+    if isinstance(source,Coords):
+        return coords
+    else:
+        sourceout=source.copy()
+        sourceout.coords=coords
+        return sourceout
 
 
 def _vtkCutter(self,vtkif):
