@@ -245,12 +245,12 @@ class WebGL(object):
           exporter. If no name is specified, the model is not exported.
           This allows the user to add more scenes to the same model, and
           then to explicitely export it with :func:`exportScene`.
-        - `camera`: bool: if True, sets the current viewport camera as the
-          camera in the WebGL model.
+        - `camera`: bool or dict : if True, sets the current viewport camera as the
+          camera in the WebGL model. If False the default camera values of WebGL
+          will be used. If dict the camera values will be taken from the dictionary.
         """
         self._actors = List()
         self._gui = []
-        self._camera = None
 
         cv = pf.canvas
         self.bgcolor = cv.settings.bgcolor
@@ -262,11 +262,15 @@ class WebGL(object):
             otype = type(o).__name__
             pf.debug("Actor %s: %s %s Shape=(%s,%s) Color=%s"% (i, atype, otype, o.nelems(), o.nplex(), a.color), pf.DEBUG.WEBGL)
             self.addActor(a)
-
-        if camera:
+        
+        if camera is True:
             ca = cv.camera
             self.setCamera(focus=ca.focus, position=ca.eye, up=ca.upvector)
-
+        elif camera is False:
+            self._camera = None
+        else:
+            self.setCamera(**camera)
+        
         if name:
             self.exportScene(name)
 
@@ -557,7 +561,11 @@ r.init();
                 s +=  "r.camera.focus = %s;\n" % list(self._camera.focus)
             if 'up' in self._camera:
                 s +=  "r.camera.up = %s;\n" % list(self._camera.up)
-
+            if 'zoomstep' in self._camera:
+                s +=  "r.camera.zoomstep = %s;\n" % self._camera.zoomstep
+            if 'fovy' in self._camera:
+                s +=  "r.camera.fovy = %s;\n" % self._camera.fovy
+                
         s += """
 r.render();
 };
