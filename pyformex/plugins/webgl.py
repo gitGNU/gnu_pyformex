@@ -252,25 +252,27 @@ class WebGL(object):
         self._actors = List()
         self._gui = []
 
-        cv = pf.canvas
-        self.bgcolor = cv.settings.bgcolor
-        print("Exporting %s actors from current scene" % len(cv.actors))
-        sorted_actors = [ a for a in cv.actors if a.opak ] + [ a for a in cv.actors if not a.opak ]
+        self.bgcolor = pf.canvas.settings.bgcolor
+        print("Exporting %s actors from current scene" % len(pf.canvas.actors))
+        sorted_actors = [ a for a in pf.canvas.actors if a.opak ] + [ a for a in pf.canvas.actors if not a.opak ]
         for i, a in enumerate(sorted_actors):
             o = a.object
             atype = type(a).__name__
             otype = type(o).__name__
             pf.debug("Actor %s: %s %s Shape=(%s,%s) Color=%s"% (i, atype, otype, o.nelems(), o.nplex(), a.color), pf.DEBUG.WEBGL)
             self.addActor(a)
-        
+
         if camera is True:
-            ca = cv.camera
+            ca = pf.canvas.camera
+            print(ca.report())
+            if not np.allclose(ca.area,((0.,0.),(1.,1.))):
+                pf.warning("You current display uses soft zooming. The exported WebGL model currently does not have that feature, so the displayed area may be different from the pyFormex view.\nTo create a pyFormex display without soft zooming, use Camera->ZoomAll and the zoom in or out using only the Camera->DollyIn and/or Camera->Dolly/Out.")
             self.setCamera(focus=ca.focus, position=ca.eye, up=ca.upvector)
         elif camera is False:
             self._camera = None
         else:
             self.setCamera(**camera)
-        
+
         if name:
             self.exportScene(name)
 
@@ -565,7 +567,7 @@ r.init();
                 s +=  "r.camera.zoomstep = %s;\n" % self._camera.zoomstep
             if 'fovy' in self._camera:
                 s +=  "r.camera.fovy = %s;\n" % self._camera.fovy
-                
+
         s += """
 r.render();
 };
