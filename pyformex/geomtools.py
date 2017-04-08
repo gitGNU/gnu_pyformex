@@ -285,7 +285,7 @@ def intersectLineWithLine(q1,m1,q2,m2,mode='all',times=False):
         return pointsAtLines(q1, m1, t1), pointsAtLines(q2, m2, t2)
 
 
-def intersectLinesWithPlanes(q,m,p,n,mode='all',times=False):
+def intersectLineWithPlane(q,m,p,n,mode='all',times=False):
     """Find the intersection of lines (q,m) and planes (p,n)
 
     Return the intersection points of lines (q,m) and planes (p,n).
@@ -312,12 +312,12 @@ def intersectLinesWithPlanes(q,m,p,n,mode='all',times=False):
     >>> q,m = [[0,0,0],[0,1,0],[0,0,3]], [[1,0,0],[0,1,0],[0,0,1]]
     >>> p,n = [[1.,1.,1.],[1.,1.,1.]], [[1.,1.,0.],[1.,1.,1.]]
 
-    >>> t = intersectLinesWithPlanes(q,m,p,n,times=True)
+    >>> t = intersectLineWithPlane(q,m,p,n,times=True)
     >>> print(t)
     [[  2.   3.]
      [  1.   2.]
      [ inf   0.]]
-    >>> x = intersectLinesWithPlanes(q,m,p,n)
+    >>> x = intersectLineWithPlane(q,m,p,n)
     >>> print(x)
     [[[  2.   0.   0.]
       [  3.   0.   0.]]
@@ -327,7 +327,7 @@ def intersectLinesWithPlanes(q,m,p,n,mode='all',times=False):
     <BLANKLINE>
      [[ nan  nan  inf]
       [  0.   0.   3.]]]
-    >>> x = intersectLinesWithPlanes(q[:2],m[:2],p,n,mode='pair')
+    >>> x = intersectLineWithPlane(q[:2],m[:2],p,n,mode='pair')
     >>> print(x)
     [[ 2.  0.  0.]
      [ 0.  3.  0.]]
@@ -354,11 +354,11 @@ def intersectLinesWithPlanes(q,m,p,n,mode='all',times=False):
 
 
 def intersectionTimesLWP(q,m,p,n,mode='all'):
-    return intersectLinesWithPlanes(q,m,p,n,mode,times=True)
+    return intersectLineWithPlane(q,m,p,n,mode,times=True)
 
 
 def intersectionPointsLWP(q,m,p,n,mode='all'):
-    return intersectLinesWithPlanes(q,m,p,n,mode)
+    return intersectLineWithPlane(q,m,p,n,mode)
 
 
 def intersectionTimesSWP(S,p,n,mode='all'):
