@@ -548,10 +548,6 @@ def parseArguments(args):
        action="store_false", dest="pyside", default=None,
        help="Use the PyQt4 bindings for QT4 libraries",
        )
-    # MO("--oldabq",
-    #    action="store_true", dest="oldabq", default=False,
-    #    help="Use the old fe_abq (from 1.0.0) interface. Default is to use the new one.",
-    #    )
     MO("--unicode",
        action="store_true", dest="unicode", default=False,
        help="Allow unicode filenames. Beware: this is experimental!",
