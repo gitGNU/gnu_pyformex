@@ -609,13 +609,13 @@ def drawVertexNumbers(F,color='black',trl=None,ontop=False):
     return drawMarks(FC, np.resize(np.arange(F.coords.shape[-2]), (FC.shape[0])), color=color, ontop=ontop)
 
 
-def drawBbox(F,color='black',linewidth=None):
+def drawBbox(F,color='black',**kargs):
     """Draw the bounding box of the geometric object F.
 
     F is any object that has a `bbox` method.
     Returns the drawn Annotation.
     """
-    A = actors.BboxActor(F.bbox(), color=color, linewidth=linewidth)
+    A = actors.BboxActor(F.bbox(), color=color, **kargs)
     drawActor(A)
     return A
 
