@@ -37,7 +37,7 @@ Renamed functions::
     intersectionPointsLWL    -> intersectLineWithLine
     intersectionTimesLWL     -> intersectLineWithLine
     intersectionPointsLWP    -> intersectLineWithPlane
-    intersectionTimesLWP     -> intersectLineWithPlaneTimes
+    intersectionTimesLWP     -> intersectLineWithPlane
 
 
 Planned renaming of functions::
@@ -285,8 +285,10 @@ def intersectLineWithLine(q1,m1,q2,m2,mode='all',times=False):
         return pointsAtLines(q1, m1, t1), pointsAtLines(q2, m2, t2)
 
 
-def intersectionTimesLWP(q,m,p,n,mode='all'):
-    """Return the intersection of lines (q,m) with planes (p,n).
+def intersectLinesWithPlanes(q,m,p,n,mode='all',times=False):
+    """Find the intersection of lines (q,m) and planes (p,n)
+
+    Return the intersection points of lines (q,m) and planes (p,n).
 
     Parameters:
 
@@ -304,26 +306,59 @@ def intersectionTimesLWP(q,m,p,n,mode='all'):
 
     Notice that the result will contain an INF value for lines that are
     parallel to the plane.
+
+    Example:
+
+    >>> q,m = [[0,0,0],[0,1,0],[0,0,3]], [[1,0,0],[0,1,0],[0,0,1]]
+    >>> p,n = [[1.,1.,1.],[1.,1.,1.]], [[1.,1.,0.],[1.,1.,1.]]
+
+    >>> t = intersectLinesWithPlanes(q,m,p,n,times=True)
+    >>> print(t)
+    [[  2.   3.]
+     [  1.   2.]
+     [ inf   0.]]
+    >>> x = intersectLinesWithPlanes(q,m,p,n)
+    >>> print(x)
+    [[[  2.   0.   0.]
+      [  3.   0.   0.]]
+    <BLANKLINE>
+     [[  0.   2.   0.]
+      [  0.   3.   0.]]
+    <BLANKLINE>
+     [[ nan  nan  inf]
+      [  0.   0.   3.]]]
+    >>> x = intersectLinesWithPlanes(q[:2],m[:2],p,n,mode='pair')
+    >>> print(x)
+    [[ 2.  0.  0.]
+     [ 0.  3.  0.]]
     """
+    q = checkArray(q,(-1,3),'f','i')
+    m = checkArray(m,(-1,3),'f','i')
+    p = checkArray(p,(-1,3),'f','i')
+    n = checkArray(n,(-1,3),'f','i')
+
+    errh = seterr(divide='ignore', invalid='ignore')
     if mode == 'all':
-        res = (dotpr(p, n) - inner(q, n)) / inner(m, n)
+        t = (dotpr(p, n) - inner(q, n)) / inner(m, n)
     elif mode == 'pair':
-        res = dotpr(n, (p-q)) / dotpr(m, n)
-    return res
+        t = dotpr(n, p-q) / dotpr(m, n)
+    seterr(**errh)
+
+    if times:
+        return t
+    else:
+        if mode == 'all':
+            q = q[:, newaxis]
+            m = m[:, newaxis]
+        return pointsAtLines(q, m, t)
+
+
+def intersectionTimesLWP(q,m,p,n,mode='all'):
+    return intersectLinesWithPlanes(q,m,p,n,mode,times=True)
 
 
 def intersectionPointsLWP(q,m,p,n,mode='all'):
-    """Return the intersection points of lines (q,m) with planes (p,n).
-
-    This is like intersectionTimesLWP but returns a (nq,np,3) shaped
-    (`mode=all`) array of intersection points instead of the
-    parameter values.
-    """
-    t = intersectionTimesLWP(q, m, p, n, mode)
-    if mode == 'all':
-        q = q[:, newaxis]
-        m = m[:, newaxis]
-    return pointsAtLines(q, m, t)
+    return intersectLinesWithPlanes(q,m,p,n,mode)
 
 
 def intersectionTimesSWP(S,p,n,mode='all'):
