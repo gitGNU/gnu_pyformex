@@ -787,7 +787,7 @@ def drawImage(image,w=0,h=0,x=-1,y=-1,color=colors.white,ontop=False):
     return R
 
 
-def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False,**kargs):
+def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False,cvalues=None,**kargs):
     """Draw intensity of a scalar field over a Mesh.
 
     Parameters:
@@ -797,6 +797,14 @@ def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False,**kargs):
       that is to be drawn.
     - `scale`: one of the color palettes defined in :mod:`colorscale`.
       If an empty string is specified, the scale is not drawn.
+    - `symmetric_scale`: bool : if `True` the mid value of the color scale will 
+      be set to the value corresponding to the middle value of the `fld` data range.
+      If `False` the mid value of the color scale will be set to 0.0 if the range
+      extends over negative and positive values.
+    - `cvalues`: None or list : specify the values between which to span the 
+      color palette. If `None` the min , max and mid values are taken from
+      the field data. If `list` the values can be defined by the user as a list
+      of 2 values (min, max) or 3 values (min, mid, max).
     - `**kargs`: any not-recognized keyword parameters are passed to the
       draw function to draw the Geometry.
 
@@ -812,11 +820,18 @@ def drawField(fld,comp=0,scale='RAINBOW',symmetric_scale=False,**kargs):
     data = np.nan_to_num(fld.comp(comp))
 
     # create a colorscale and draw the colorlegend
-    vmin, vmax = data.min(), data.max()
-    if vmin*vmax < 0.0 and not symmetric_scale:
-        vmid = 0.0
+    vmid = None
+    if cvalues is None:
+        vmin, vmax = data.min(), data.max()
     else:
-        vmid = 0.5*(vmin+vmax)
+        vmin, vmax = cvalues[0], cvalues[-1]
+        if len(cvalues) == 3:
+            vmid = cvalues[1]
+    if vmid is None:
+        if vmin*vmax < 0.0 and not symmetric_scale:
+            vmid = 0.0
+        else:
+            vmid = 0.5*(vmin+vmax)
 
     scalev = [vmin, vmid, vmax]
     if max(scalev) > 0.0:
