@@ -39,7 +39,7 @@
 
 /****************** LIBRARY VERSION AND DOCSTRING *******************/
 
-static char *__version__ = "1.0.4-a1";
+static char *__version__ = "1.0.4-a3";
 static char *__doc__ = "pyformex.lib.nurbs_ module\n\
 \n\
 This module provides accelerated versions of the pyFormex NURBS\n\

@@ -34,7 +34,7 @@ import os, sys
 import time, datetime
 
 __prog__ = "pyformex"
-__version__ = "1.0.4-a1"
+__version__ = "1.0.4-a3"
 __revision__ = __version__
 
 Copyright = 'Copyright (C) 2004-2017 Benedict Verhegghe'
