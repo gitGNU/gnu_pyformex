@@ -645,7 +645,11 @@ class Camera(object):
 
 
     def setArea(self,hmin,vmin,hmax,vmax,relative=True,focus=False,center=False,clip=True):
-        """Set the viewable area of the camera."""
+        """Set the viewable area of the camera.
+
+        Note: Use relative=False and clip=False if you want to set the zoom
+        exactly as in previously recorded values.
+        """
         area = np.array([hmin, vmin, hmax, vmax])
         if clip:
             area = area.clip(0., 1.)
