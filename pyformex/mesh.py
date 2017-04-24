@@ -2660,6 +2660,9 @@ def seed(n,e0=0.,e1=0.):
     Returns a list of `n+1` float values in the range 0.0 to 1.0.
     The values are in ascending order, starting with 0.0 and ending with 1.0.
 
+    See also :func: `seed1` for an analogue function with attractor at
+    one end and equidistant points at the other.
+
     See also :func: `smartSeed` for an analogue function accepting a variety
     of input.
 
@@ -2671,6 +2674,61 @@ def seed(n,e0=0.,e1=0.):
     """
     x = arange(n+1) * 1. / n
     return unitAttractor(x, e0, e1)
+
+
+def seed1(n,nuni=0,e0=0.):
+    """Create a list of seed values.
+
+    A seed list is a list of float values in the range 0.0 to 1.0.
+    It can be used to subdivide a line segment or to seed nodes
+    along lines for meshing purposes.
+
+    This function divides the unit interval in `n` parts, resulting
+    in `n+1` seed values. While the intervals are by default of equal
+    length, the `nuni` and `e0` can be used to create unevenly spaced
+    seed values.
+
+    Parameters:
+
+    - `n`: positive integer: the number of elements (yielding `n+1`
+      parameter values).
+    - `nuni`: 0..n-1: number of intervals at the end of the range that
+      will have equal length. If n < 2, this funnction is equivalent
+      with seed(n,e0,0.0).
+    - `e0` : float: attractor for the start of the range.
+      A value larger than zero will attract the points closer to the
+      startpoint, while a negative value will repulse them.
+
+    Returns a list of `n+1` float values in the range 0.0 to 1.0.
+    The values are in ascending order, starting with 0.0 and ending with 1.0.
+
+    See also :func: `seed` for an analogue function with attractors at
+    both ends of the range.
+
+    Example:
+
+    >>> set_printoptions(precision=4)
+    >>> S = seed1(5,0,1.)
+    >>> print(S)
+    [ 0.    0.04  0.16  0.36  0.64  1.  ]
+    >>> print(S[1:]-S[:-1])
+    [ 0.04  0.12  0.2   0.28  0.36]
+    >>> S = seed1(5,2,1.)
+    >>> print(S)
+    [ 0.      0.0435  0.1739  0.3913  0.6957  1.    ]
+    >>> print(S[1:]-S[:-1])
+    [ 0.0435  0.1304  0.2174  0.3043  0.3043]
+    """
+    if nuni < 2:
+        seeds = seed(n,e0,0.)
+    else:
+        n0 = n-nuni+1
+        seeds = seed(n0,e0,0.)
+        length = seeds[-1] - seeds[-2]
+        seeds2 = seeds[-1] + arange(1,nuni) * length
+        seeds = concatenate([seeds,seeds2])
+    seeds /= float(seeds[-1])
+    return seeds
 
 
 def smartSeed(n,start=0):
