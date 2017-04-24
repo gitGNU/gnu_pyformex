@@ -64,7 +64,7 @@ from pyformex.formex import *
 from pyformex.mesh import Mesh
 from pyformex.trisurface import TriSurface
 from pyformex.coordsys import CoordSys
-from pyformex.curve import PolyLine, BezierSpline
+from pyformex.plugins.curve import PolyLine, BezierSpline
 from pyformex import simple
 
 
