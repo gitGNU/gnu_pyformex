@@ -39,6 +39,7 @@ from pyformex.geometry import Geometry
 from pyformex.formex import Formex, connect
 from pyformex.mesh import Mesh
 from pyformex import geomtools as gt
+from pyformex import arraytools
 from pyformex import utils
 from pyformex.varray import Varray
 
@@ -632,34 +633,71 @@ class PolyLine(Curve):
         self.closed = closed
 
 
-    def close(self):
+    def close(self,atol=0.):
         """Close a PolyLine.
 
-        If the PolyLine is already closed, it is returned unchanged.
-        Else it is closed by adding a segment from the last to the first
-        point (even if these are coincident).
+        If the PolyLine is already closed, this does nothing.
+        Else it is closed by one of two methods, depending on the distance
+        between the start and end points of the PolyLine:
+
+        - if the distance is smaller than atol, the last point is removed and
+          the last segment now connects the penultimate point with the first
+          one, leaving the number of segments unchanged and the number of points
+          decreased by one;
+        - if the distance is not smaller than atol, a new segment is added
+          connecting the last point with the first, resulting in a curve with
+          one more segment and the number of points unchanged.
+          Since the default value for atol is 0.0, this is the default
+          behavior for all PolyLines.
+
+        Returns True if the PolyLine was closed without adding a segment.
+
+        The return value can be used to reopen the PolyLine while keeping all
+        segments (see :meth:`open`).
 
         .. warning:: This method changes the PolyLine inplace.
         """
         if not self.closed:
+            d = arraytools.length(self.coords[0]-self.coords[-1])
+            if d < atol:
+                self.coords = self.coords[:-1]
+                ret = True
+            else:
+                self.nparts += 1
+                ret = False
             self.closed = True
-            self.nparts += 1
+            return ret
 
 
-    def open(self):
+    def open(self,keep_last=False):
         """Open a closed PolyLine.
 
-        If the PolyLine is closed, it is opened by removing the last segment.
-        Else, it is returned unchanged.
+        If the PolyLine is not closed, this does nothing.
+
+        Else, the PolyLine is opened in one of two ways:
+
+        - if keep_last is True, the PolyLine is opened by adding a last
+          point equal to the first, and keeping the number of segments
+          unchanged;
+        - if False, the PolyLine is opened by removing the last segment,
+          keeping the number of points unchanged. This is the default
+          behavior.
+
+        There is no return value.
+
+        If a closed PolyLine is opened with keep_last=True, the first and
+        last point will coincide. In order to close it again, a positive
+        atol value needs to be used in :meth:`close`.
 
         .. warning:: This method changes the PolyLine inplace.
 
-        Use :meth:`split` if you want to open the PolyLine without losing
-        a segment.
         """
         if self.closed:
+            if keep_last:
+                self.coords = Coords.concatenate([self.coords,self.coords[0]])
+            else:
+                self.nparts -= 1
             self.closed = False
-            self.nparts -= 1
 
 
     def nelems(self):
