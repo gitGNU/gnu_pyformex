@@ -1585,7 +1585,6 @@ def cut2AtPlane(F,p,n,side='',atol=None,newprops=None):
         G = F.clip(cutting)
         H = G.copy()
 
-
         g = G.intersectionWithPlane(p, n)
         dist = dist[cutting]
         i0 = dist[:, 0] < 0.

@@ -1029,7 +1029,7 @@ class PolyLine(Curve):
 
 
     def cutWithPlane(self,p,n,side=''):
-        """Return the parts of the polyline at one or both sides of a plane.
+        """Return the parts of the PolyLine at one or both sides of a plane.
 
         If side is '+' or '-', return a list of PolyLines with the parts at
         the positive or negative side of the plane.
@@ -1048,36 +1048,48 @@ class PolyLine(Curve):
         cut = t != roll(t, -1)
         if not self.closed:
             cut = cut[:-1]
-        w = where(cut)[0]
+        w = where(cut)[0]   # segments where side switches
 
         res = [[], []]
-        i = 0
+        i = 0        # first point to include in next part
         if t[0]:
-            sid = 0
+            sid = 0  # start at '+' side
         else:
-            sid = 1
-        Q = Coords()
+            sid = 1  # start at '-' side
+        Q = Coords() # new point from previous cutting (None at start)
 
         for j in w:
-            #print "%s -- %s" % (i,j)
-            P = gt.intersectionPointsSWP(self.coords[j:j+2], p, n, mode='pair')[0]
-            #print "%s -- %s cuts at %s" % (j,j+1,P)
+            #print("%s -- %s" % (i,j))
+            if self.closed:
+                pts = self.coords.take(range(j,j+2),axis=0,mode='wrap')
+            else:
+                pts = self.coords[j:j+2]
+            #print("Points: %s" % pts)
+            P = gt.intersectionPointsSWP(pts, p, n, mode='pair')[0]
+            #print("%s -- %s cuts at %s" % (j,j+1,P))
             x = Coords.concatenate([Q, self.coords[i:j+1], P])
-            #print "%s + %s + %s = %s" % (Q.shape[0],j-i,P.shape[0],x.shape[0])
+            #print("Save part of length %s + %s + %s = %s" % (Q.shape[0],j-i,P.shape[0],x.shape[0]))
             res[sid].append(PolyLine(x))
             sid = 1-sid
             i = j+1
             Q = P
 
+        # Remaining points
         x = Coords.concatenate([Q, self.coords[i:]])
-        #print "%s + %s = %s" % (Q.shape[0],j-i,x.shape[0])
-        res[sid].append(PolyLine(x))
-        if self.closed:
-            if len(res[sid]) > 1:
-                x = Coords.concatenate([res[sid][-1].coords, res[sid][0].coords])
-                res[sid] = res[sid][1:-1]
+        #print("%s + %s = %s" % (Q.shape[0],self.nparts-i,x.shape[0]))
+        if not self.closed:
+            # append the remainder as an extra PolyLine
+            res[sid].append(PolyLine(x))
+        else:
+            # append remaining points to the first
+            #print(res)
+            #print(len(res[sid]))
+            if len(res[sid]) > 0:
+                x = Coords.concatenate([x, res[sid][0].coords])
+                res[sid][0] = PolyLine(x)
+            else:
                 res[sid].append(PolyLine(x))
-            #print [len(r) for r in res]
+            #print([len(r) for r in res])
             if len(res[sid]) == 1 and len(res[1-sid]) == 0:
                 res[sid][0].closed = True
 
@@ -1951,7 +1963,7 @@ class Contour(Curve):
 
     def toMesh(self):
         """Convert the Contour to a Mesh."""
-        print("Convert to mesh")
+        #print("Convert to mesh")
         return [ self.stroke(i).toMesh() for i in range(self.nparts) ]
 
 ##############################################################################
